@@ -35,6 +35,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/gm-list/gm-list.component').then(m => m.GmListComponent),
       },
+      {
+        path: 'csv-files',
+        loadComponent: () =>
+          import('./features/csv-files/csv-files.component').then(m => m.CsvFilesComponent),
+      },
       // ── ROSTER ──
       {
         path: 'team-rosters',

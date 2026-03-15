@@ -1,0 +1,47 @@
+<div class="csv-container">
+  <h1 class="page-title">Pliki CSV</h1>
+
+  @if (loading()) {
+    <div class="loading">Ładowanie...</div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (!loading() && files().length === 0) {
+    <p class="empty">Brak plików CSV</p>
+  }
+
+  @if (!loading() && files().length > 0) {
+    <mat-card>
+      <mat-card-content>
+        <table class="files-table">
+          <thead>
+            <tr>
+              <th>Plik</th>
+              <th>Data</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (file of files(); track file.filename) {
+              <tr>
+                <td class="filename-cell">
+                  <mat-icon>description</mat-icon>
+                  {{ file.filename }}
+                </td>
+                <td>{{ file.modifiedAt | date: 'dd.MM.yy, HH:mm' }}</td>
+                <td>
+                  <a [href]="baseUrl + '/' + file.filename" target="_blank" class="download-btn">
+                    <mat-icon>download</mat-icon>
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
