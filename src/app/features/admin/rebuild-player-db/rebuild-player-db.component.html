@@ -1,0 +1,100 @@
+<div class="rebuild-container">
+  <h1 class="page-title">Przebudowa bazy danych graczy</h1>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  <!-- Wybór pliku CSV -->
+  <mat-card class="section-card">
+    <mat-card-header>
+      <mat-card-title>Załaduj CSV z serwera</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (loadingFiles()) {
+        <div class="loading">Ładowanie listy plików...</div>
+      } @else if (files().length === 0) {
+        <p class="empty">Brak plików CSV w folderze /public_html/csv</p>
+      } @else {
+        <div class="load-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Wybierz plik CSV</mat-label>
+            <mat-select [value]="selectedFile()" (selectionChange)="onFileSelect($event.value)">
+              @for (file of files(); track file.filename) {
+                <mat-option [value]="file.filename">
+                  {{ file.filename }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Sezon (np. 2049)</mat-label>
+            <input matInput [formControl]="seasonControl" />
+            @if (seasonControl.touched && seasonControl.hasError('required')) {
+              <mat-error>Wymagane</mat-error>
+            }
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="warn"
+            [disabled]="!selectedFile() || loading()"
+            (click)="loadFile()"
+          >
+            <mat-icon>refresh</mat-icon>
+            {{ loading() ? 'Ładowanie...' : 'Załaduj i przebuduj bazę' }}
+          </button>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Historia uploadów -->
+  <mat-card class="section-card">
+    <mat-card-header>
+      <mat-card-title>Historia</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (uploads().length === 0) {
+        <p class="empty">Brak historii</p>
+      } @else {
+        <table mat-table [dataSource]="uploads()" class="uploads-table">
+          <ng-container matColumnDef="filename">
+            <th mat-header-cell *matHeaderCellDef>Plik</th>
+            <td mat-cell *matCellDef="let u">{{ u.filename }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="season">
+            <th mat-header-cell *matHeaderCellDef>Sezon</th>
+            <td mat-cell *matCellDef="let u">{{ u.season }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="uploaded_by">
+            <th mat-header-cell *matHeaderCellDef>Przez</th>
+            <td mat-cell *matCellDef="let u">{{ u.uploaded_by }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="uploaded_at">
+            <th mat-header-cell *matHeaderCellDef>Data</th>
+            <td mat-cell *matCellDef="let u">{{ u.uploaded_at | date: 'dd.MM.yy HH:mm' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let u">
+              @if (u.is_active) {
+                <span class="badge-active">Aktywny</span>
+              } @else {
+                <span class="badge-inactive">Archiwalny</span>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="uploadsColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: uploadsColumns"></tr>
+        </table>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

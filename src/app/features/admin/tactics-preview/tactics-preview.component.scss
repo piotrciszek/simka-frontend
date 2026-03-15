@@ -1,0 +1,92 @@
+.preview-container {
+  min-width: 500px;
+  max-width: 700px;
+}
+
+.preview-section {
+  margin-bottom: 1.5rem;
+
+  h3 {
+    color: var(--accent);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.25rem;
+  }
+}
+
+.game-plan-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.key-players-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.player-chip {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+
+  &--injured {
+    border-color: #f44336;
+    color: #f44336;
+  }
+}
+
+.depth-chart-preview {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+
+  .position-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .position-header {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-align: center;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .player-row {
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 0.2rem;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+  }
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+
+  &.alert-error {
+    background: rgba(244, 67, 54, 0.15);
+    color: #f44336;
+    border: 1px solid #f44336;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}

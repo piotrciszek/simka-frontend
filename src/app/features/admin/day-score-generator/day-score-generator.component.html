@@ -1,0 +1,60 @@
+<div class="generator-container">
+  <h1 class="page-title">Day Score Generator</h1>
+
+  <mat-card class="section-card">
+    <mat-card-content>
+      <div class="controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Wybierz dzień</mat-label>
+          <mat-select [value]="selectedDay()" (selectionChange)="selectedDay.set($event.value)">
+            @for (day of days; track day) {
+              <mat-option [value]="day">Dzień {{ day }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="injured-field">
+          <mat-label>Kontuzjowani (opcjonalnie)</mat-label>
+          <!-- <input matInput [formControl]="injuredPlayers" placeholder="np. [*]Gracz1 [*]Gracz2" /> -->
+          <textarea
+            matInput
+            [formControl]="injuredPlayers"
+            rows="3"
+            placeholder="Antony Davis (Nets) - 7&#10;Luke Kennard (Knicks) - 2"
+          ></textarea>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="!selectedDay() || loading()"
+          (click)="generate()"
+        >
+          <mat-icon>auto_awesome</mat-icon>
+          {{ loading() ? 'Generowanie...' : 'Generuj' }}
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (generatedText()) {
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Wygenerowany tekst</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <pre class="generated-text">{{ generatedText() }}</pre>
+        <div class="copy-action">
+          <button mat-raised-button color="accent" (click)="copyToClipboard()">
+            <mat-icon>content_copy</mat-icon>
+            Kopiuj do schowka
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

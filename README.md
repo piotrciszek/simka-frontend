@@ -1,59 +1,101 @@
-# SimbasketFrontend
+# SimBasket — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+Angular 21 frontend for SimBasket, a closed basketball league management application.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+- **Framework:** Angular 21
+- **UI Library:** Angular Material (cyan/orange theme)
+- **Language:** TypeScript
+- **Auth:** JWT (HTTP interceptor)
+- **Other:** RxJS, Angular CDK, dotenv
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── core/               # Services, guards, interceptors, constants
+│   │   ├── constants/      # Shared constants (e.g. team order)
+│   │   ├── guards/         # Route guards (auth, role)
+│   │   ├── interceptors/   # JWT interceptor
+│   │   └── services/       # API services, auth, theme
+│   ├── features/           # Feature components (pages)
+│   │   ├── admin/          # Admin panel, activity log, tactics log
+│   │   ├── roster/         # Team rosters, statistics, salary, GM list
+│   │   ├── season/         # Standings, schedule, league leaders etc.
+│   │   ├── history/        # Historical stats, records, hall of fame
+│   │   └── tactics/        # Team tactics form
+│   └── shared/             # Shared components (navbar, layout, iframe-viewer)
+├── environments/           # environment.ts / environment.prod.ts
+└── styles.scss             # Global styles and CSS variables
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Angular CLI 21+
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/your-username/simbasket-frontend.git
+cd simbasket-frontend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Configure environment — edit `src/environments/environment.ts`:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000',
+};
+```
+
+4. Run in development mode:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+App will be available at `http://localhost:4200`.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+5. Build for production:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Output will be in `dist/simbasket-frontend/browser/` — copy contents to backend `/public` folder.
 
-## Running unit tests
+## Angular Conventions
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+This project follows strict Angular 21 conventions:
 
-```bash
-ng test
-```
+- Signal-based APIs: `signal()`, `input()`, `output()`, `viewChild()`
+- `inject()` instead of constructor DI
+- `@if` / `@for` instead of `*ngIf` / `*ngFor`
+- Standalone components only
+- No `@Input` / `@Output` decorators, no `ngOnChanges`
 
-## Running end-to-end tests
+## Theme
 
-For end-to-end (e2e) testing, run:
+Angular Material with custom cyan/orange theme. Supports three modes switchable from the navbar:
 
-```bash
-ng e2e
-```
+| Theme   | Description         |
+| ------- | ------------------- |
+| `dark`  | Dark mode (default) |
+| `light` | Light mode          |
+| `retro` | Retro orange theme  |
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+CSS variables are used throughout for consistent theming.

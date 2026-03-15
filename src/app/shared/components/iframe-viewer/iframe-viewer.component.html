@@ -1,0 +1,7 @@
+<iframe
+  #myIframe
+  [src]="safeUrl()"
+  class="content-frame"
+  name="content"
+  (load)="onIframeLoad(myIframe)"
+></iframe>

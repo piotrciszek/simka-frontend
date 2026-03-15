@@ -1,0 +1,90 @@
+<div class="preview-container">
+  <h2 mat-dialog-title>{{ data.teamName }} — podgląd taktyki</h2>
+
+  <mat-dialog-content>
+    @if (error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (!tacticsData() && !error()) {
+      <div class="loading">Ładowanie...</div>
+    }
+
+    @if (tacticsData()) {
+      <!-- GAME PLAN -->
+      <section class="preview-section">
+        <h3>Game Plan</h3>
+        <div class="game-plan-row">
+          <span>
+            <strong>Pace:</strong>
+            {{ tacticsData()!.gamePlan.pace }}
+          </span>
+          <span>
+            <strong>Trap:</strong>
+            {{ tacticsData()!.gamePlan.trapFrequency }}
+          </span>
+          <span>
+            <strong>Press:</strong>
+            {{ tacticsData()!.gamePlan.pressFrequency }}
+          </span>
+          <span>
+            <strong>Focus:</strong>
+            {{ tacticsData()!.gamePlan.offenseFocus }}
+          </span>
+        </div>
+      </section>
+
+      <!-- KEY PLAYERS -->
+      <section class="preview-section">
+        <h3>Key Players</h3>
+        <div class="key-players-row">
+          @for (p of tacticsData()!.keyPlayers; track p.id) {
+            <span class="player-chip">{{ p.firstName }} {{ p.lastName }}</span>
+          }
+        </div>
+      </section>
+
+      <!-- INJURY LIST -->
+      @if (tacticsData()!.injuredList.length > 0) {
+        <section class="preview-section">
+          <h3>Injury List</h3>
+          <div class="key-players-row">
+            @for (p of tacticsData()!.injuredList; track p.id) {
+              <span class="player-chip player-chip--injured">
+                {{ p.firstName }} {{ p.lastName }}
+              </span>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- DEPTH CHART -->
+      <section class="preview-section">
+        <h3>Depth Chart</h3>
+        <div class="depth-chart-preview">
+          @for (pos of positions; track pos) {
+            <div class="position-column">
+              <div class="position-header">{{ pos }}</div>
+              @for (p of tacticsData()!.depthChart[pos]; track p.id) {
+                <div class="player-row">{{ p.firstName }} {{ p.lastName }}</div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="cancel()">
+      <mat-icon>close</mat-icon>
+      Anuluj
+    </button>
+    @if (data.status === 'pending' && !raceCondition()) {
+      <button mat-raised-button color="primary" (click)="approve()" [disabled]="approving()">
+        <mat-icon>check</mat-icon>
+        {{ approving() ? 'Zatwierdzanie...' : 'Zatwierdź' }}
+      </button>
+    }
+  </mat-dialog-actions>
+</div>

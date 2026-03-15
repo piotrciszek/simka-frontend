@@ -1,0 +1,227 @@
+.tactics-container {
+  width: 700px;
+  min-width: 700px;
+  margin: 0 auto;
+  padding-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+.team-select {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 0.5rem;
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  h1 {
+    margin: 0;
+    padding: 0;
+    color: var(--text-primary);
+  }
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.status-draft {
+    background: var(--border);
+    color: var(--text-secondary);
+  }
+  &.status-pending {
+    background: #ff9800;
+    color: #000;
+  }
+  &.status-approved {
+    background: var(--success);
+    color: #000;
+  }
+}
+
+.tactics-meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.section-card {
+  margin-bottom: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+
+  mat-card-title {
+    color: var(--accent) !important;
+    font-size: 0.9rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  mat-card-subtitle {
+    font-size: 0.7rem !important;
+  }
+}
+
+.game-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 160px);
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+
+  mat-form-field {
+    --mat-sys-body-large-size: 14px;
+    width: 100%;
+  }
+  @media (max-width: 400px) {
+    grid-template-columns: repeat(4, 85px);
+    mat-form-field {
+      --mat-sys-body-large-size: 10px;
+      width: 100%;
+    }
+  }
+}
+
+.players-row {
+  display: grid;
+  grid-template-columns: repeat(3, 180px);
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+
+  mat-form-field {
+    --mat-sys-body-large-size: 14px;
+    width: 100%;
+  }
+  @media (max-width: 400px) {
+    grid-template-columns: repeat(3, 120px);
+    mat-form-field {
+      --mat-sys-body-large-size: 9px;
+      width: 100%;
+    }
+  }
+}
+.depth-grid-mobile {
+  display: none;
+}
+.depth-chart {
+  mat-form-field {
+    --mat-sys-body-large-size: 12px;
+  }
+  .depth-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 125px);
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+
+    mat-form-field {
+      --mat-sys-body-large-size: 11px;
+      width: 100%;
+    }
+    @media (max-width: 400px) {
+      display: none;
+    }
+  }
+
+  .depth-grid-mobile {
+    @media (max-width: 400px) {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-top: 0.25rem;
+
+      .depth-row-mobile {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .position-label-mobile {
+          color: var(--accent);
+          font-size: 0.6rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          width: 5px;
+          margin-bottom: 15px;
+          flex-shrink: 0;
+          padding-right: 0.5rem;
+        }
+
+        .depth-fields-mobile {
+          display: grid;
+          grid-template-columns: repeat(3, 120px);
+          gap: 0.25rem;
+          flex: 1;
+
+          mat-form-field {
+            --mat-sys-body-large-size: 9px;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  .depth-position {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+
+    .position-label {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1rem 0;
+  @media (max-width: 400px) {
+    padding-right: 18rem;
+  }
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+
+  &.alert-error {
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--error);
+    border: 1px solid var(--error);
+  }
+
+  &.alert-success {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--success);
+    border: 1px solid var(--success);
+  }
+}
+
+.empty-card {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+  }
+}

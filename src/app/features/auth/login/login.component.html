@@ -1,0 +1,39 @@
+<div class="login-container">
+  <div class="login-box">
+    <h1>SimBasket</h1>
+    <h2>Logowanie</h2>
+
+    @if (error()) {
+      <div class="error">{{ error() }}</div>
+    }
+
+    <div class="form-group">
+      <label for="username">Login</label>
+      <input
+        id="username"
+        type="text"
+        [value]="username()"
+        (input)="username.set($any($event.target).value)"
+        placeholder="Wpisz login"
+        [disabled]="loading()"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Hasło</label>
+      <input
+        id="password"
+        type="password"
+        [value]="password()"
+        (input)="password.set($any($event.target).value)"
+        placeholder="Wpisz hasło"
+        [disabled]="loading()"
+        (keyup.enter)="onSubmit()"
+      />
+    </div>
+
+    <button (click)="onSubmit()" [disabled]="loading()">
+      {{ loading() ? 'Logowanie...' : 'Zaloguj się' }}
+    </button>
+  </div>
+</div>

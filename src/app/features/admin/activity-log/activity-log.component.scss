@@ -1,0 +1,62 @@
+.activity-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.activity-card {
+  width: 100%;
+}
+
+.activity-table {
+  width: 100%;
+
+  th {
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  td {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+}
+
+.team-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.no-team-icon {
+  color: var(--text-secondary);
+}
+
+.never {
+  color: var(--text-secondary);
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+
+  &.alert-error {
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--error);
+    border: 1px solid var(--error);
+  }
+}

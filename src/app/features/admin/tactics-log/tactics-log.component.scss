@@ -1,0 +1,62 @@
+.tactics-log-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.tactics-table {
+  width: 100%;
+}
+
+.team-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.team-name {
+  font-weight: 600;
+}
+
+.row-pending {
+  border-left: 3px solid #ff9800;
+}
+
+.row-approved {
+  border-left: 3px solid var(--success);
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+
+  &.alert-error {
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--error);
+    border: 1px solid var(--error);
+  }
+}
+
+.empty-card {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}

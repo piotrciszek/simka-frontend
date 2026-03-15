@@ -1,0 +1,117 @@
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <span class="section-label">SimBasket</span>
+    <a routerLink="/home" routerLinkActive="active" class="nav-item">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </a>
+    <a routerLink="/tactics" routerLinkActive="active" class="nav-item">
+      <mat-icon>sports_basketball</mat-icon>
+      <span>Taktyka</span>
+    </a>
+    <a routerLink="/gm-list" routerLinkActive="active" class="nav-item">
+      <mat-icon>manage_accounts</mat-icon>
+      <span>Lista GM</span>
+    </a>
+    @if (isAdminOrKomisz()) {
+      <div class="sidebar-section">
+        <span class="section-label">Admin's</span>
+        <a routerLink="/tactics-log" routerLinkActive="active" class="nav-item">
+          <mat-icon>history</mat-icon>
+          <span>Log ustawień</span>
+        </a>
+        <a routerLink="/dsg" routerLinkActive="active" class="nav-item">
+          <mat-icon>post_add</mat-icon>
+          <span>Day Score Generator</span>
+        </a>
+        <a routerLink="/rebuild-player-db" routerLinkActive="active" class="nav-item">
+          <mat-icon>manage_search</mat-icon>
+          <span>Przebudowa db graczy</span>
+        </a>
+        <a routerLink="/activity-log" routerLinkActive="active" class="nav-item">
+          <mat-icon>people</mat-icon>
+          <span>Log aktywności</span>
+        </a>
+        <a routerLink="/admin-panel" routerLinkActive="active" class="nav-item">
+          <mat-icon>manage_accounts`</mat-icon>
+          <span>Panel Admina</span>
+        </a>
+      </div>
+    }
+    <span class="section-label">Rosters</span>
+    <a routerLink="/team-rosters" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>groups</mat-icon> -->
+      <span>Team Rosters</span>
+    </a>
+    <a routerLink="/team-statistics" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>bar_chart</mat-icon> -->
+      <span>Team Statistics</span>
+    </a>
+    <a routerLink="/salary-info" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>attach_money</mat-icon> -->
+      <span>Salary Information</span>
+    </a>
+    <a routerLink="/injury-reserve" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>personal_injury</mat-icon> -->
+      <span>Injury Reserve</span>
+    </a>
+    <span class="section-label">Season</span>
+    <a routerLink="/standings" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Standings</span>
+    </a>
+    <a routerLink="/league-leaders" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>League Leaders</span>
+    </a>
+    <a routerLink="/wm-awards" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>WM Awards</span>
+    </a>
+    <a routerLink="/draft-preview" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Draft Preview</span>
+    </a>
+    <a routerLink="/transactions" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Transactions</span>
+    </a>
+    <a routerLink="/free-agents" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Free Agents</span>
+    </a>
+    <span class="section-label">History</span>
+    <a routerLink="/historical-team-performance" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Historical Team Performance</span>
+    </a>
+    <a routerLink="/team-records" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Team Records</span>
+    </a>
+    <a routerLink="/allstar-winners" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>All-Star Weekend Winners</span>
+    </a>
+    <a routerLink="/player-game-records" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Player Game Records</span>
+    </a>
+    <a routerLink="/player-season-records" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Player Season Records</span>
+    </a>
+    <a routerLink="/player-career-records" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Player Career Records</span>
+    </a>
+    <a routerLink="/past-champions" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Past Champions</span>
+    </a>
+    <a routerLink="/past-picks" routerLinkActive="active" class="nav-item">
+      <!-- <mat-icon>person</mat-icon> -->
+      <span>Past #1 Overall Picks</span>
+    </a>
+  </div>
+</nav>

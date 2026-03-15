@@ -1,1 +1,108 @@
-/* You can add global styles to this file, and also import other style files */
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$cyan-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: Roboto,
+      density: -5,
+    )
+  );
+}
+
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}
+
+// ================================
+// DARK THEME
+// ================================
+.theme-dark {
+  color-scheme: dark;
+  --mat-sys-surface: #121212;
+  --mat-sys-on-surface: #ffffff;
+  --mat-dialog-container-color: #383838;
+
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-card: #242424;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --accent: #ff6d00;
+  --border: #333333;
+  --error: #f44336;
+  --success: #4caf50;
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+// ================================
+// LIGHT THEME
+// ================================
+.theme-light {
+  color-scheme: light;
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --accent: #ff6d00;
+  --border: #e0e0e0;
+  --error: #f44336;
+  --success: #4caf50;
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+// ================================
+// RETRO THEME
+// ================================
+.theme-retro {
+  color-scheme: dark;
+  --mat-dialog-container-color: #383838;
+  --mat-dialog-subhead-color: #ffc800;
+  --mat-dialog-supporting-text-color: #ffc800;
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-card: #1a1a1a;
+  --text-primary: #ffc800;
+  --text-secondary: #ff5000;
+  --accent: #ffc800;
+  --border: #ffc800;
+  --error: #ff5000;
+  --success: #00ff88;
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Press Start 2P', monospace;
+}
+
+mat-sidenav::-webkit-scrollbar {
+  width: 0;
+}
+
+/* ── Responsywny iframe ── */
+.content-frame {
+  width: 100%;
+  height: calc(100vh - 160px);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+}

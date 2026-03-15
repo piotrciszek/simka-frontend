@@ -1,0 +1,287 @@
+<div class="tactics-container">
+  <!-- Brak drużyn -->
+  @if (hasNoTeams()) {
+    <mat-card class="empty-card">
+      <mat-card-content>
+        <mat-icon>sports_basketball</mat-icon>
+        <p>Nie masz przypisanej żadnej drużyny.</p>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Wybór drużyny (tylko gdy więcej niż jedna) -->
+  @if (hasMultipleTeams()) {
+    <mat-form-field appearance="outline" class="team-select">
+      <mat-label>Wybierz drużynę</mat-label>
+      <mat-select [value]="selectedTeam()" (selectionChange)="selectTeam($event.value)">
+        @for (team of teams(); track team.id) {
+          <mat-option [value]="team">{{ team.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+
+  @if (selectedTeam()) {
+    <!-- Nagłówek drużyny -->
+    <div class="team-header">
+      <h1>{{ selectedTeam()!.name }}</h1>
+      @if (tactics()) {
+        <span class="status-badge status-{{ tactics()!.status }}">
+          {{
+            tactics()!.status === 'draft'
+              ? 'Szkic'
+              : tactics()!.status === 'pending'
+                ? 'Oczekuje'
+                : 'Zatwierdzona'
+          }}
+        </span>
+        <div class="tactics-meta">
+          @if (tactics()!.submittedAt) {
+            <span>Wysłano: {{ tactics()!.submittedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+          }
+          @if (tactics()!.approvedAt) {
+            <span>Zatwierdzona: {{ tactics()!.approvedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+          }
+          @if (tactics()!.approvedBy) {
+            <span>Przez: {{ tactics()!.approvedBy }}</span>
+          }
+        </div>
+      }
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    @if (!tactics()) {
+      <mat-card class="empty-card">
+        <mat-card-content>
+          <p>Brak taktyki dla tej drużyny. Skontaktuj się z adminem.</p>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (tactics()) {
+      <!-- GAME PLAN -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>Game Plan</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="game-plan-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Pace</mat-label>
+              <mat-select
+                [value]="gamePlan().pace"
+                (selectionChange)="updateGamePlan('pace', $event.value)"
+              >
+                @for (opt of paceOptions; track opt) {
+                  <mat-option [value]="opt">{{ opt }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Trap Frequency</mat-label>
+              <mat-select
+                [value]="gamePlan().trapFrequency"
+                (selectionChange)="updateGamePlan('trapFrequency', $event.value)"
+              >
+                @for (opt of frequencyOptions; track opt) {
+                  <mat-option [value]="opt">{{ opt }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Press Frequency</mat-label>
+              <mat-select
+                [value]="gamePlan().pressFrequency"
+                (selectionChange)="updateGamePlan('pressFrequency', $event.value)"
+              >
+                @for (opt of frequencyOptions; track opt) {
+                  <mat-option [value]="opt">{{ opt }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Offense Focus</mat-label>
+              <mat-select
+                [value]="gamePlan().offenseFocus"
+                (selectionChange)="updateGamePlan('offenseFocus', $event.value)"
+              >
+                @for (opt of offenseOptions; track opt) {
+                  <mat-option [value]="opt">{{ opt }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- KEY PLAYERS -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>Offense Key Players</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="players-row">
+            @for (i of [0, 1, 2]; track i) {
+              <mat-form-field appearance="outline">
+                <mat-label>#{{ i + 1 }}</mat-label>
+                <mat-select
+                  [formControl]="getControl(keyPlayersArray, i)"
+                  (selectionChange)="updateKeyPlayer(i, $event.value)"
+                  [compareWith]="comparePlayer"
+                >
+                  <mat-option [value]="null">-- wybierz --</mat-option>
+                  @for (p of availablePlayers; track p.id) {
+                    <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                  }
+                </mat-select>
+                @if (
+                  getControl(keyPlayersArray, i).touched &&
+                  getControl(keyPlayersArray, i).hasError('required')
+                ) {
+                  <mat-error>Wybierz zawodnika</mat-error>
+                }
+                @if (
+                  getControl(keyPlayersArray, i).touched && keyPlayersArray.hasError('duplicates')
+                ) {
+                  <mat-error>Gracz już wybrany</mat-error>
+                }
+              </mat-form-field>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- INJURY LIST -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>Injury List</mat-card-title>
+          <mat-card-subtitle>Wymagana jeśli skład ma więcej niż 12 zawodników</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="players-row">
+            @for (i of [0, 1, 2]; track i) {
+              <mat-form-field appearance="outline">
+                <mat-label>#{{ i + 1 }}</mat-label>
+                <mat-select
+                  [formControl]="getControl(injuredListArray, i)"
+                  (selectionChange)="updateInjuredList(i, $event.value)"
+                  [compareWith]="comparePlayer"
+                >
+                  <mat-option [value]="null">-- brak --</mat-option>
+                  @for (p of players(); track p.id) {
+                    <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                  }
+                </mat-select>
+                @if (
+                  getControl(injuredListArray, i).touched &&
+                  getControl(injuredListArray, i).hasError('required')
+                ) {
+                  <mat-error>Wybierz zawodnika</mat-error>
+                }
+                @if (
+                  getControl(injuredListArray, i).touched && injuredListArray.hasError('duplicates')
+                ) {
+                  <mat-error>Gracz już wybrany</mat-error>
+                }
+              </mat-form-field>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- DEPTH CHART -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>Depth Chart</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="depth-chart">
+            <div class="depth-grid">
+              @for (pos of positions; track pos) {
+                <div class="depth-position">
+                  <div class="position-label">{{ pos }}</div>
+                  @for (i of [0, 1, 2]; track i) {
+                    <mat-form-field appearance="outline" class="depth-field">
+                      <mat-label>#{{ i + 1 }}</mat-label>
+                      <mat-select
+                        [formControl]="getControl(depthChartArray(pos), i)"
+                        (selectionChange)="updateDepthChart(pos, i, $event.value)"
+                        [compareWith]="comparePlayer"
+                      >
+                        <mat-option [value]="null">--</mat-option>
+                        @for (p of availablePlayers; track p.id) {
+                          <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                        }
+                      </mat-select>
+                      @if (
+                        getControl(depthChartArray(pos), i).touched &&
+                        getControl(depthChartArray(pos), i).hasError('required')
+                      ) {
+                        <mat-error>Wybierz zawodnika</mat-error>
+                      }
+                      @if (
+                        i === 0 &&
+                        getControl(depthChartArray(pos), i).touched &&
+                        form.get('depthChart')!.hasError('starterDuplicates')
+                      ) {
+                        <mat-error>Starter już wybrany</mat-error>
+                      }
+                    </mat-form-field>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="depth-grid-mobile">
+              @for (pos of positionsMobile; track pos) {
+                <div class="depth-row-mobile">
+                  <div class="position-label-mobile">{{ pos }}</div>
+                  <div class="depth-fields-mobile">
+                    @for (i of [0, 1, 2]; track i) {
+                      <mat-form-field appearance="outline">
+                        <mat-label>#{{ i + 1 }}</mat-label>
+                        <mat-select
+                          [formControl]="getControl(depthChartArray(pos), i)"
+                          (selectionChange)="updateDepthChart(pos, i, $event.value)"
+                          [compareWith]="comparePlayer"
+                        >
+                          <mat-option [value]="null">--</mat-option>
+                          @for (p of availablePlayers; track p.id) {
+                            <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- PRZYCISKI -->
+      <div class="actions">
+        <button mat-stroked-button (click)="clearForm()">
+          <mat-icon>clear</mat-icon>
+          Wyczyść
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="submitTactics()"
+          [disabled]="submitting()"
+        >
+          <mat-icon>send</mat-icon>
+          {{ submitting() ? 'Wysyłanie...' : 'Wyślij do zatwierdzenia' }}
+        </button>
+      </div>
+    }
+  }
+</div>

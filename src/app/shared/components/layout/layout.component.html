@@ -1,0 +1,18 @@
+<div class="app-wrapper">
+  <app-navbar (menuToggle)="toggleSidenav()" [isMobile]="isMobile()" />
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+      #sidenav
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="!isMobile()"
+      class="sidenav"
+    >
+      <app-sidebar />
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <main class="main-content">
+        <router-outlet />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

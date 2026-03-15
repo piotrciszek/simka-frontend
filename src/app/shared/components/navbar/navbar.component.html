@@ -1,0 +1,90 @@
+<header class="navbar">
+  <div class="navbar-brand">
+    @if (isMobile()) {
+      <button mat-icon-button (click)="menuToggle.emit()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
+    <div class="brand-text">
+      <span class="brand-name">SimBasket</span>
+    </div>
+  </div>
+
+  <div class="navbar-actions">
+    <!-- Przełącznik motywu -->
+    <button mat-icon-button [matMenuTriggerFor]="themeMenu" title="Zmień motyw">
+      <mat-icon>palette</mat-icon>
+    </button>
+    <mat-menu #themeMenu="matMenu">
+      @for (theme of themes; track theme.value) {
+        <button mat-menu-item (click)="setTheme(theme.value)">
+          <mat-icon>{{ theme.icon }}</mat-icon>
+          <span>{{ theme.label }}</span>
+        </button>
+      }
+    </mat-menu>
+
+    <!-- User info -->
+    <!-- <div class="user-info">
+      <mat-icon>person</mat-icon>
+      <span>{{ authService.getCurrentUser()?.username }}</span> -->
+    <!-- <span class="role-badge">{{ authService.getCurrentUser()?.role }}</span> -->
+    <!-- </div> -->
+
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-info">
+      <mat-icon>person</mat-icon>
+      <span>{{ authService.getCurrentUser()?.username }}</span>
+      <!-- <span class="role-badge role-{{ authService.getCurrentUser()?.role }}">
+        {{ authService.getCurrentUser()?.role }}
+      </span> -->
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item routerLink="/change-password">
+        <mat-icon>lock</mat-icon>
+        <span>Zmień hasło</span>
+      </button>
+      <button mat-menu-item (click)="openEmailDialog()">
+        <mat-icon>email</mat-icon>
+        <span>Ustaw e-mail</span>
+      </button>
+    </mat-menu>
+
+    <!-- Wyloguj -->
+    <button mat-icon-button (click)="logout()" title="Wyloguj">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+</header>
+
+@if (showEmailDialog()) {
+  <div class="dialog-overlay" (click)="closeEmailDialog()">
+    <div class="dialog-box" (click)="$event.stopPropagation()">
+      <h2>Ustaw e-mail</h2>
+
+      @if (emailError()) {
+        <div class="alert alert-error">{{ emailError() }}</div>
+      }
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Adres e-mail</mat-label>
+        <input matInput type="email" [formControl]="emailControl" />
+        @if (emailControl.touched && emailControl.hasError('email')) {
+          <mat-error>Nieprawidłowy adres e-mail</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="dialog-actions">
+        <button mat-stroked-button (click)="closeEmailDialog()">Anuluj</button>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="submitEmail()"
+          [disabled]="emailLoading()"
+        >
+          {{ emailLoading() ? 'Zapisywanie...' : 'Zapisz' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,61 @@
+<div class="gm-container">
+  <h1 class="page-title">Lista GM</h1>
+
+  @if (loading()) {
+    <div class="loading">Ładowanie...</div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (!loading()) {
+    <mat-card class="gm-card">
+      <mat-card-content>
+        <table class="gm-table">
+          <thead>
+            <tr>
+              <th>Drużyna</th>
+              <th>GM</th>
+              <th>Kontakt</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (gm of sortedGms(); track gm.teamName) {
+              <tr>
+                <td class="team-cell">
+                  @if (gm.logo_path) {
+                    <img [src]="gm.logo_path" [alt]="gm.teamName" class="team-logo" />
+                  } @else {
+                    <mat-icon class="team-icon">sports_basketball</mat-icon>
+                  }
+                  <span>{{ gm.teamName }}</span>
+                </td>
+                <td>{{ gm.username ?? '—' }}</td>
+                <td class="contact-cell">
+                  <div class="contact-icons">
+                    @if (gm.email) {
+                      <a [href]="'mailto:' + gm.email" class="contact-link" [matTooltip]="gm.email">
+                        <mat-icon>email</mat-icon>
+                      </a>
+                    }
+                    @if (gm.username) {
+                      <a
+                        [href]="FORUM_INBOX"
+                        target="_blank"
+                        class="contact-link"
+                        matTooltip="PM forum.e-nba.pl"
+                      >
+                        <mat-icon>forum</mat-icon>
+                      </a>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

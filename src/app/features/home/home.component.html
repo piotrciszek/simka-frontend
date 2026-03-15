@@ -1,0 +1,61 @@
+<div class="home-container">
+  <div class="home-header">
+    <h1>Aktualności</h1>
+    @if (isAdminOrKomisz()) {
+      <button mat-raised-button (click)="showForm.set(!showForm())">
+        <mat-icon>{{ showForm() ? 'close' : 'add' }}</mat-icon>
+        {{ showForm() ? 'Anuluj' : 'Dodaj news' }}
+      </button>
+    }
+  </div>
+
+  @if (showForm()) {
+    <div class="news-form">
+      <input
+        type="text"
+        placeholder="Tytuł"
+        [value]="newTitle()"
+        (input)="newTitle.set($any($event.target).value)"
+      />
+      <textarea
+        placeholder="Treść"
+        [value]="newContent()"
+        (input)="newContent.set($any($event.target).value)"
+        rows="4"
+      ></textarea>
+      <button mat-raised-button (click)="addNews()" [disabled]="submitting()">
+        {{ submitting() ? 'Dodawanie...' : 'Dodaj' }}
+      </button>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="loading">Ładowanie...</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (!loading() && news().length === 0) {
+    <p class="empty">Brak aktualności.</p>
+  }
+
+  @for (item of news(); track item.id) {
+    <div class="news-card">
+      <div class="news-header">
+        <h2>{{ item.title }}</h2>
+        @if (isAdminOrKomisz()) {
+          <button mat-icon-button (click)="deleteNews(item.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+      <div class="news-meta">
+        <span>{{ item.author }}</span>
+        <span>{{ item.created_at | date: 'dd.MM.yyyy HH:mm' }}</span>
+      </div>
+      <p class="news-content">{{ item.content }}</p>
+    </div>
+  }
+</div>

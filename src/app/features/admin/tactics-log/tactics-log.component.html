@@ -1,0 +1,88 @@
+<div class="tactics-log-container">
+  <h1 class="page-title">Log ustawień taktyki</h1>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="loading">Ładowanie...</div>
+  }
+
+  @if (!loading() && entries().length === 0) {
+    <mat-card class="empty-card">
+      <mat-card-content>
+        <mat-icon>history</mat-icon>
+        <p>Brak taktyk do wyświetlenia</p>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (!loading() && entries().length > 0) {
+    <mat-card>
+      <mat-card-content>
+        <table mat-table [dataSource]="entries()" class="tactics-table">
+          <!-- Team -->
+          <ng-container matColumnDef="team">
+            <th mat-header-cell *matHeaderCellDef>Drużyna</th>
+            <td mat-cell *matCellDef="let entry">
+              <div class="team-cell">
+                <span class="team-name">{{ entry.teamName }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Manager -->
+          <ng-container matColumnDef="manager">
+            <th mat-header-cell *matHeaderCellDef>Manager</th>
+            <td mat-cell *matCellDef="let entry">
+              {{ entry.ownerUsername || '—' }}
+            </td>
+          </ng-container>
+
+          <!-- Data zmiany -->
+          <ng-container matColumnDef="submittedAt">
+            <th mat-header-cell *matHeaderCellDef>Data zmiany</th>
+            <td mat-cell *matCellDef="let entry">
+              {{ entry.submittedAt ? (entry.submittedAt | date: 'dd.MM.yy HH:mm') : '—' }}
+            </td>
+          </ng-container>
+
+          <!-- Zatwierdził -->
+          <ng-container matColumnDef="approvedBy">
+            <th mat-header-cell *matHeaderCellDef>Zatwierdził</th>
+            <td mat-cell *matCellDef="let entry">
+              {{ entry.approvedBy || '—' }}
+            </td>
+          </ng-container>
+
+          <!-- Data zatwierdzenia -->
+          <ng-container matColumnDef="approvedAt">
+            <th mat-header-cell *matHeaderCellDef>Data zatwierdzenia</th>
+            <td mat-cell *matCellDef="let entry">
+              {{ entry.approvedAt ? (entry.approvedAt | date: 'dd.MM.yy HH:mm') : '—' }}
+            </td>
+          </ng-container>
+
+          <!-- Akcje -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Akcje</th>
+            <td mat-cell *matCellDef="let entry">
+              <button mat-icon-button (click)="openTactics(entry)" title="Podgląd taktyki">
+                <mat-icon>search</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            [class.row-pending]="row.status === 'pending'"
+            [class.row-approved]="row.status === 'approved'"
+          ></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
