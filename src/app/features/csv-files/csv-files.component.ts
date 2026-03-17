@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,7 @@ interface CsvFile {
 @Component({
   selector: 'app-csv-files',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, DatePipe, DecimalPipe],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, DatePipe],
   templateUrl: './csv-files.component.html',
   styleUrl: './csv-files.component.scss',
 })

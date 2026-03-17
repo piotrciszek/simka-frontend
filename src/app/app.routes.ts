@@ -1,7 +1,162 @@
 import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './core/guards/auth.guard';
+import { PublicLayoutComponent } from './features/public/public-layout/public-layout.component';
 
 export const routes: Routes = [
+  // --- NIEZALGOWANY ---
+  { path: '', redirectTo: 'html/standings', pathMatch: 'full' },
+  {
+    path: 'html',
+    component: PublicLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'standings', pathMatch: 'full' },
+      // ── ROSTER ──
+      {
+        path: 'team-rosters',
+        loadComponent: () =>
+          import('./features/roster/team-rosters/team-rosters.component').then(
+            m => m.TeamRostersComponent,
+          ),
+      },
+      {
+        path: 'team-statistics',
+        loadComponent: () =>
+          import('./features/roster/team-statistics/team-statistics.component').then(
+            m => m.TeamStatisticsComponent,
+          ),
+      },
+      {
+        path: 'salary-info',
+        loadComponent: () =>
+          import('./features/roster/salary-info/salary-info.component').then(
+            m => m.SalaryInfoComponent,
+          ),
+      },
+      {
+        path: 'injury-reserve',
+        loadComponent: () =>
+          import('./features/roster/injury-reserve/injury-reserve.component').then(
+            m => m.InjuryReserveComponent,
+          ),
+      },
+      // ── SEASON ──
+      {
+        path: 'standings',
+        loadComponent: () =>
+          import('./features/season/standings/standings.component').then(m => m.StandingsComponent),
+      },
+      {
+        path: 'schedule',
+        loadComponent: () =>
+          import('./features/season/schedule/schedule.component').then(m => m.ScheduleComponent),
+      },
+      {
+        path: 'league-leaders',
+        loadComponent: () =>
+          import('./features/season/league-leaders/league-leaders.component').then(
+            m => m.LeagueLeadersComponent,
+          ),
+      },
+      {
+        path: 'wm-awards',
+        loadComponent: () =>
+          import('./features/season/wm-awards/wm-awards.component').then(m => m.WmAwardsComponent),
+      },
+      {
+        path: 'draft-preview',
+        loadComponent: () =>
+          import('./features/season/draft-preview/draft-preview.component').then(
+            m => m.DraftPreviewComponent,
+          ),
+      },
+      {
+        path: 'transactions',
+        loadComponent: () =>
+          import('./features/season/transactions/transactions.component').then(
+            m => m.TransactionsComponent,
+          ),
+      },
+      {
+        path: 'free-agents',
+        loadComponent: () =>
+          import('./features/season/free-agents/free-agents.component').then(
+            m => m.FreeAgentsComponent,
+          ),
+      },
+      // ── HISTORY ──
+      {
+        path: 'historical-team-performance',
+        loadComponent: () =>
+          import('./features/history/hist-team-perf/hist-team-perf.component').then(
+            m => m.HistTeamPerfComponent,
+          ),
+      },
+      {
+        path: 'team-records',
+        loadComponent: () =>
+          import('./features/history/team-records/team-records.component').then(
+            m => m.TeamRecordsComponent,
+          ),
+      },
+      {
+        path: 'allstar-winners',
+        loadComponent: () =>
+          import('./features/history/allstar-winners/allstar-winners.component').then(
+            m => m.AllstarWinnersComponent,
+          ),
+      },
+      {
+        path: 'player-game-records',
+        loadComponent: () =>
+          import('./features/history/player-game-records/player-game-records.component').then(
+            m => m.PlayerGameRecordsComponent,
+          ),
+      },
+      {
+        path: 'player-season-records',
+        loadComponent: () =>
+          import('./features/history/player-season-records/player-season-records.component').then(
+            m => m.PlayerSeasonRecordsComponent,
+          ),
+      },
+      {
+        path: 'player-career-records',
+        loadComponent: () =>
+          import('./features/history/player-career-records/player-career-records.component').then(
+            m => m.PlayerCareerRecordsComponent,
+          ),
+      },
+      {
+        path: 'past-champions',
+        loadComponent: () =>
+          import('./features/history/past-champions/past-champions.component').then(
+            m => m.PastChampionsComponent,
+          ),
+      },
+      {
+        path: 'hall-of-fame',
+        loadComponent: () =>
+          import('./features/history/hall-of-fame/hall-of-fame.component').then(
+            m => m.HallOfFameComponent,
+          ),
+      },
+      {
+        path: 'player-career-records',
+        loadComponent: () =>
+          import('./features/history/player-career-records/player-career-records.component').then(
+            m => m.PlayerCareerRecordsComponent,
+          ),
+      },
+      {
+        path: 'past-picks',
+        loadComponent: () =>
+          import('./features/history/past-picks/past-picks.component').then(
+            m => m.PastPicksComponent,
+          ),
+      },
+    ],
+  },
+  // --- ZALGOWANY ---
   {
     path: 'login',
     loadComponent: () =>
@@ -113,7 +268,7 @@ export const routes: Routes = [
             m => m.FreeAgentsComponent,
           ),
       },
-      // ── SEASON ──
+      // ── HISTORY ──
       {
         path: 'historical-team-performance',
         loadComponent: () =>

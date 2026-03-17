@@ -1,0 +1,136 @@
+.header {
+  height: 60px;
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 100;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 2rem;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+@media (max-width: 645px) {
+  .logo {
+    display: none;
+  }
+}
+
+.nav {
+  display: flex;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+}
+
+.nav-item.open .nav-btn {
+  color: var(--accent);
+}
+
+.chevron {
+  transition: transform 0.2s;
+}
+
+.nav-item.open .chevron {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+}
+
+.dropdown-link {
+  display: block;
+  padding: 0.6rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+}
+
+.header-actions {
+  margin-left: auto;
+}
+
+.login-btn {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--accent);
+    color: white;
+  }
+}
+
+@media (max-width: 515px) {
+  .header-inner {
+    gap: 0.5rem;
+  }
+  .nav {
+    gap: 0.25rem;
+  }
+  .nav-btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.25rem;
+  }
+  .login-btn {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.4rem 0.5rem;
+  }
+}

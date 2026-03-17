@@ -1,0 +1,47 @@
+<header class="header" (click)="closeMenus()">
+  <div class="header-inner">
+    <div class="logo" routerLink="/public/standings" style="cursor: pointer">SimBasket</div>
+    <nav class="nav">
+      @for (menu of menus; track menu.key) {
+        <div class="nav-item" [class.open]="isOpen(menu.key)">
+          <button class="nav-btn" (click)="toggleMenu(menu.key, $event)">
+            {{ menu.label }}
+            <svg class="chevron" width="10" height="6" viewBox="0 0 10 6">
+              <path
+                d="M1 1l4 4 4-4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                fill="none"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+
+          @if (isOpen(menu.key)) {
+            <div class="dropdown" (click)="$event.stopPropagation()">
+              @for (link of menu.links; track link.route) {
+                <a class="dropdown-link" (click)="navigateTo(link.route)">
+                  {{ link.label }}
+                </a>
+              }
+            </div>
+          }
+        </div>
+      }
+    </nav>
+    <button mat-icon-button [matMenuTriggerFor]="themeMenu" title="Zmień motyw">
+      <mat-icon>palette</mat-icon>
+    </button>
+    <mat-menu #themeMenu="matMenu">
+      @for (theme of themes; track theme.value) {
+        <button mat-menu-item (click)="setTheme(theme.value)">
+          <mat-icon>{{ theme.icon }}</mat-icon>
+          <span>{{ theme.label }}</span>
+        </button>
+      }
+    </mat-menu>
+    <div class="header-actions">
+      <a routerLink="/login" class="login-btn">Zaloguj się</a>
+    </div>
+  </div>
+</header>

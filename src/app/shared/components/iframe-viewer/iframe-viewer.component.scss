@@ -1,9 +1,18 @@
 .content-frame {
   width: 100%;
-  height: calc(100vh - 160px);
+  height: calc(100vh - 120px);
   border: 1px solid var(--border);
   border-radius: 4px;
   background: var(--surface);
   max-width: 100%;
   overflow: auto;
 }
+
+// .content-frame {
+//   width: 100%;
+//   height: calc(100vh - 120px);
+//   border: 1px solid var(--border);
+//   border-radius: 4px;
+//   background: var(--surface);
+//   max-width: 100%;
+// }

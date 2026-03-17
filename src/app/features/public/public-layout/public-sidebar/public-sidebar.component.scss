@@ -1,12 +1,19 @@
 .sidebar {
-  // width: 200px;
-  // min-width: 200px;
+  width: 200px;
+  min-width: 200px;
+  min-height: 100%;
   background-color: var(--bg-secondary);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   padding: 1rem 0;
   overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
 }
 
 .sidebar-section {
@@ -28,19 +35,12 @@
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
   padding: 0.6rem 1rem;
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
   transition: all 0.2s;
   cursor: pointer;
-
-  mat-icon {
-    font-size: 1.1rem;
-    width: 1.1rem;
-    height: 1.1rem;
-  }
 
   &:hover {
     background-color: var(--bg-card);

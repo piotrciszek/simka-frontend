@@ -28,6 +28,9 @@ export class IframeViewerComponent {
         const style = doc.createElement('style');
         style.textContent = 'body { zoom: 0.8; }';
         doc.head.appendChild(style);
+
+        // Dopasowanie wysokość do zawartości
+        iframe.style.height = doc.documentElement.scrollHeight + 'px';
       }
     } catch (e) {
       console.warn('Błąd:', e);
@@ -35,7 +38,7 @@ export class IframeViewerComponent {
   }
 }
 
-//copied from other website, needs some adjustments to work properly with dark mode and fix some color issues in tables, but it causes some weird bugs in player files, so for now it's better to leave it as is
+//copied from https://github.com/piotrciszek/simka-new-open, needs some adjustments to work properly with dark mode and fix some color issues in tables, but it causes some weird bugs in player files, so for now it's better to leave it as is
 // need to be reworked to support dark mode and fix some color issues in tables, but it causes some weird bugs in player files, so for now it's better to leave it as is
 // onIframeLoad(iframe: HTMLIFrameElement): void {
 //     try {

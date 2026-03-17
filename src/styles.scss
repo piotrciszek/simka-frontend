@@ -8,6 +8,7 @@
 
 html {
   height: 100%;
+  overflow: hidden;
   @include mat.theme(
     (
       color: (
@@ -27,6 +28,7 @@ body {
   font: var(--mat-sys-body-medium);
   margin: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 // ================================
@@ -92,17 +94,4 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: 'Press Start 2P', monospace;
-}
-
-mat-sidenav::-webkit-scrollbar {
-  width: 0;
-}
-
-/* ── Responsywny iframe ── */
-.content-frame {
-  width: 100%;
-  height: calc(100vh - 160px);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: #fff;
 }

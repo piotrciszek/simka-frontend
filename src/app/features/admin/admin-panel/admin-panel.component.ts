@@ -20,7 +20,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { UserAdminService, AdminUser, AdminTeam } from '../../../core/services/user-admin.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { TEAM_ORDER } from '../../../core/constrants/team-order';
+import { TEAM_ORDER } from '../../../core/constants/team-order';
 
 @Component({
   selector: 'app-admin-panel',

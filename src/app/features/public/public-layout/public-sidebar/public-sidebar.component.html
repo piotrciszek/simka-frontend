@@ -1,0 +1,12 @@
+<aside class="sidebar">
+  @if (currentMenu()) {
+    <div class="sidebar-section">
+      <span class="section-label">{{ currentMenu()!.label }}</span>
+      @for (link of currentMenu()!.links; track link.route) {
+        <a class="nav-item" [routerLink]="link.route" routerLinkActive="active">
+          {{ link.label }}
+        </a>
+      }
+    </div>
+  }
+</aside>

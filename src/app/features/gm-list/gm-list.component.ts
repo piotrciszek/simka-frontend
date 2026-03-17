@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GmService, GmEntry } from '../../core/services/gm.service';
-import { TEAM_ORDER } from '../../core/constrants/team-order';
+import { TEAM_ORDER } from '../../core/constants/team-order';
 
 @Component({
   selector: 'app-gm-list',

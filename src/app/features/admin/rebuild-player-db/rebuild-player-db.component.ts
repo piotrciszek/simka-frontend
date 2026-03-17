@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -43,7 +43,6 @@ interface CsvUpload {
     MatSnackBarModule,
     MatTableModule,
     DatePipe,
-    DecimalPipe,
   ],
   templateUrl: './rebuild-player-db.component.html',
   styleUrl: './rebuild-player-db.component.scss',
