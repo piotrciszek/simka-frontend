@@ -195,6 +195,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/csv-files/csv-files.component').then(m => m.CsvFilesComponent),
       },
+      {
+        path: 'pbp-files',
+        loadComponent: () =>
+          import('./features/pbp-files/pbp-files.component').then(m => m.PbpFilesComponent),
+      },
+      {
+        path: 'save-files',
+        loadComponent: () =>
+          import('./features/save-files/save-files.component').then(m => m.SaveFilesComponent),
+      },
       // ── ROSTER ──
       {
         path: 'team-rosters',

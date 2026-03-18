@@ -1,0 +1,78 @@
+.save-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.files-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: var(--bg-secondary);
+  }
+}
+
+.filename-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-icon {
+    color: var(--text-secondary);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
+
+.download-btn {
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: var(--accent-hover);
+  }
+}
+
+.loading,
+.empty {
+  color: var(--text-secondary);
+  padding: 1rem 0;
+}
+
+.alert-error {
+  background: rgba(244, 67, 54, 0.15);
+  color: var(--error);
+  border: 1px solid var(--error);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}

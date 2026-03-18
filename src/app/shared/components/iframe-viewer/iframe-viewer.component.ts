@@ -25,8 +25,9 @@ export class IframeViewerComponent {
         base.target = 'content';
         doc.head.appendChild(base);
 
+        const zoom = window.innerWidth < 500 ? 0.6 : 0.8;
         const style = doc.createElement('style');
-        style.textContent = 'body { zoom: 0.8; }';
+        style.textContent = `body { zoom: ${zoom}; }`;
         doc.head.appendChild(style);
 
         // Dopasowanie wysokość do zawartości

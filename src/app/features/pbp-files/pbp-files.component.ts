@@ -1,37 +1,34 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
-interface CsvFile {
+interface PbpFile {
   filename: string;
   size: number;
   modifiedAt: string;
-  isDirectory: boolean;
 }
 
 @Component({
-  selector: 'app-csv-files',
+  selector: 'app-pbp-files',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, DatePipe],
-  templateUrl: './csv-files.component.html',
-  styleUrl: './csv-files.component.scss',
+  imports: [CommonModule, MatCardModule, MatIconModule],
+  templateUrl: './pbp-files.component.html',
+  styleUrl: './pbp-files.component.scss',
 })
-export class CsvFilesComponent implements OnInit {
+export class PbpFilesComponent implements OnInit {
   private http = inject(HttpClient);
 
-  files = signal<CsvFile[]>([]);
+  files = signal<PbpFile[]>([]);
   loading = signal(true);
   error = signal('');
 
-  readonly baseUrl = `${environment.apiUrl}/csv`;
-  readonly apiUrl = environment.apiUrl;
+  readonly baseUrl = `${environment.apiUrl}/pbp`;
 
   ngOnInit(): void {
-    this.http.get<CsvFile[]>(`${environment.apiUrl}/csv/files`).subscribe({
+    this.http.get<PbpFile[]>(`${environment.apiUrl}/pbp/files`).subscribe({
       next: files => {
         this.files.set(files);
         this.loading.set(false);

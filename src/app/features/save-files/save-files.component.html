@@ -1,5 +1,5 @@
-<div class="csv-container">
-  <h1 class="page-title">Pliki CSV</h1>
+<div class="save-container">
+  <h1 class="page-title">Pliki Save</h1>
 
   @if (loading()) {
     <div class="loading">Ładowanie...</div>
@@ -10,7 +10,7 @@
   }
 
   @if (!loading() && files().length === 0) {
-    <p class="empty">Brak plików CSV</p>
+    <p class="empty">Brak plików Save</p>
   }
 
   @if (!loading() && files().length > 0) {
@@ -30,7 +30,7 @@
                 <td class="filename-cell">
                   <mat-icon>{{ file.isDirectory ? 'folder' : 'description' }}</mat-icon>
                   @if (file.isDirectory) {
-                    <a [href]="apiUrl + '/csv/' + file.filename" target="_blank">
+                    <a [href]="apiUrl + '/save/' + file.filename" target="_blank">
                       {{ file.filename }}
                     </a>
                   } @else {

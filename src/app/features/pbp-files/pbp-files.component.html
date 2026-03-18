@@ -1,5 +1,5 @@
-<div class="csv-container">
-  <h1 class="page-title">Pliki CSV</h1>
+<div class="pbp-container">
+  <h1 class="page-title">Pliki PBP</h1>
 
   @if (loading()) {
     <div class="loading">Ładowanie...</div>
@@ -10,7 +10,7 @@
   }
 
   @if (!loading() && files().length === 0) {
-    <p class="empty">Brak plików CSV</p>
+    <p class="empty">Brak plików PBP</p>
   }
 
   @if (!loading() && files().length > 0) {
@@ -28,22 +28,16 @@
             @for (file of files(); track file.filename) {
               <tr>
                 <td class="filename-cell">
-                  <mat-icon>{{ file.isDirectory ? 'folder' : 'description' }}</mat-icon>
-                  @if (file.isDirectory) {
-                    <a [href]="apiUrl + '/csv/' + file.filename" target="_blank">
-                      {{ file.filename }}
-                    </a>
-                  } @else {
+                  <div class="filename-cell-inner">
+                    <mat-icon>article</mat-icon>
                     {{ file.filename }}
-                  }
+                  </div>
                 </td>
                 <td>{{ file.modifiedAt | date: 'dd.MM.yy, HH:mm' }}</td>
                 <td>
-                  @if (!file.isDirectory) {
-                    <a [href]="apiUrl + '/save/' + file.filename" class="download-btn">
-                      <mat-icon>download</mat-icon>
-                    </a>
-                  }
+                  <a [href]="baseUrl + '/' + file.filename" target="_blank" class="open-btn">
+                    <mat-icon>open_in_new</mat-icon>
+                  </a>
                 </td>
               </tr>
             }
