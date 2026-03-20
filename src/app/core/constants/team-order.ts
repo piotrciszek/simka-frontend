@@ -14,7 +14,7 @@ export const TEAM_ORDER = [
   'Pacers',
   'Bucks',
   'Raptors',
-  'Maverics',
+  'Mavericks',
   'Nuggets',
   'Rockets',
   'Jazz',

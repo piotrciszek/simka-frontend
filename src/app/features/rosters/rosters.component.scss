@@ -1,0 +1,138 @@
+.rosters-container {
+  width: 650px;
+  min-width: 650px;
+  margin: 0 auto;
+  padding-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+.page-title {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.team-card {
+  margin-bottom: 1.5rem;
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.team-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.team-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.status-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.status-approved {
+    background: rgba(76, 175, 80, 0.2);
+    color: var(--success);
+  }
+
+  &.status-pending {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+  }
+
+  &.status-brak {
+    background: var(--border);
+    color: var(--text-secondary);
+  }
+}
+
+.gameplan {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.key-il {
+  margin-bottom: 0.75rem;
+}
+
+.key-row {
+  display: flex;
+  gap: 0rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.key-item {
+  min-width: 200px;
+  text-align: center;
+}
+
+.depth-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+
+  th {
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 0.4rem 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.4rem 0.75rem;
+    text-align: center;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.slot-label {
+  color: var(--accent);
+  font-weight: 600;
+  text-align: left !important;
+}
+
+.no-tactics {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.loading {
+  color: var(--text-secondary);
+}
+
+.alert-error {
+  background: rgba(244, 67, 54, 0.15);
+  color: var(--error);
+  border: 1px solid var(--error);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+}

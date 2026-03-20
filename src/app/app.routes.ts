@@ -186,6 +186,11 @@ export const routes: Routes = [
           import('./features/tactics/tactics.component').then(m => m.TacticsComponent),
       },
       {
+        path: 'rosters',
+        loadComponent: () =>
+          import('./features/rosters/rosters.component').then(m => m.RostersComponent),
+      },
+      {
         path: 'gm-list',
         loadComponent: () =>
           import('./features/gm-list/gm-list.component').then(m => m.GmListComponent),

@@ -1,0 +1,112 @@
+<div class="rosters-container">
+  <h1 class="page-title">Składy</h1>
+
+  @if (loading()) {
+    <div class="loading">Ładowanie...</div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (!loading()) {
+    @for (lineup of sortedLineups(); track lineup.teamId) {
+      <mat-card class="team-card">
+        <mat-card-content>
+          <div class="team-header">
+            @if (getLogoUrl(lineup.teamName)) {
+              <img [src]="getLogoUrl(lineup.teamName)" [alt]="lineup.teamName" class="team-logo" />
+            } @else {
+              <mat-icon class="team-icon">sports_basketball</mat-icon>
+            }
+            <h2 class="team-name">{{ lineup.teamName }}</h2>
+            <span class="status-badge status-{{ lineup.displayStatus }}">
+              {{
+                lineup.displayStatus === 'approved'
+                  ? 'Zatwierdzona'
+                  : lineup.displayStatus === 'pending'
+                    ? 'Pending'
+                    : 'Brak'
+              }}
+            </span>
+          </div>
+
+          @if (lineup.data) {
+            <div class="gameplan">
+              <span>
+                <b>Pace:</b>
+                {{ lineup.data.gamePlan.pace }}
+              </span>
+              <span>
+                <b>Focus:</b>
+                {{ lineup.data.gamePlan.offenseFocus }}
+              </span>
+              <span>
+                <b>Trap:</b>
+                {{ lineup.data.gamePlan.trapFrequency }}
+              </span>
+              <span>
+                <b>Press:</b>
+                {{ lineup.data.gamePlan.pressFrequency }}
+              </span>
+            </div>
+
+            <div class="key-il">
+              <div class="key-row">
+                @for (p of [0, 1, 2]; track p) {
+                  <span class="key-item">
+                    <b>Key #{{ p + 1 }}:</b>
+                    {{
+                      lineup.data.keyPlayers[p]
+                        ? lineup.data.keyPlayers[p].firstName +
+                          ' ' +
+                          lineup.data.keyPlayers[p].lastName
+                        : '—'
+                    }}
+                  </span>
+                }
+              </div>
+              <div class="key-row">
+                @for (p of [0, 1, 2]; track p) {
+                  <span class="key-item">
+                    <b>IL #{{ p + 1 }}:</b>
+                    {{
+                      lineup.data.injuredList[p]
+                        ? lineup.data.injuredList[p].firstName +
+                          ' ' +
+                          lineup.data.injuredList[p].lastName
+                        : 'BRAK'
+                    }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            <table class="depth-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  @for (pos of positions; track pos) {
+                    <th>{{ pos }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (slot of [0, 1, 2]; track slot) {
+                  <tr>
+                    <td class="slot-label">#{{ slot + 1 }}</td>
+                    @for (pos of positions; track pos) {
+                      <td>{{ getPlayer(lineup, pos, slot) }}</td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="no-tactics">Brak ustawionych taktyk</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+</div>
