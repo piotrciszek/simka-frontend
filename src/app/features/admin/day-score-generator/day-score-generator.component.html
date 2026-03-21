@@ -8,11 +8,23 @@
           <mat-label>Wybierz dzień</mat-label>
           <mat-select [value]="selectedDay()" (selectionChange)="selectedDay.set($event.value)">
             @for (day of days; track day) {
-              <mat-option [value]="day">Dzień {{ day }}</mat-option>
+              <mat-option [value]="day">{{ day }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
-
+        @if (isPlayoffs()) {
+          <mat-form-field appearance="outline">
+            <mat-label>Runda</mat-label>
+            <mat-select
+              [value]="selectedRound()"
+              (selectionChange)="selectedRound.set($event.value)"
+            >
+              @for (round of PLAYOFF_ROUNDS; track round.value) {
+                <mat-option [value]="round.value">{{ round.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
         <mat-form-field appearance="outline" class="injured-field">
           <mat-label>Kontuzjowani (opcjonalnie)</mat-label>
           <!-- <input matInput [formControl]="injuredPlayers" placeholder="np. [*]Gracz1 [*]Gracz2" /> -->
@@ -27,7 +39,7 @@
         <button
           mat-raised-button
           color="primary"
-          [disabled]="!selectedDay() || loading()"
+          [disabled]="!selectedDay() || loading() || (isPlayoffs() && !selectedRound())"
           (click)="generate()"
         >
           <mat-icon>auto_awesome</mat-icon>
