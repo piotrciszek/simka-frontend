@@ -135,8 +135,8 @@
                   (selectionChange)="updateKeyPlayer(i, $event.value)"
                   [compareWith]="comparePlayer"
                 >
-                  <mat-option [value]="null">-- wybierz --</mat-option>
-                  @for (p of availablePlayers; track p.id) {
+                  <mat-option [value]="null">-- Key #{{ i + 1 }} --</mat-option>
+                  @for (p of sortedPlayers(); track p.id) {
                     <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
                   }
                 </mat-select>
@@ -173,8 +173,8 @@
                   (selectionChange)="updateInjuredList(i, $event.value)"
                   [compareWith]="comparePlayer"
                 >
-                  <mat-option [value]="null">-- brak --</mat-option>
-                  @for (p of players(); track p.id) {
+                  <mat-option [value]="null">-- IL {{ i + 1 }} --</mat-option>
+                  @for (p of sortedPlayers(); track p.id) {
                     <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
                   }
                 </mat-select>
@@ -215,8 +215,10 @@
                         [compareWith]="comparePlayer"
                       >
                         <mat-option [value]="null">--</mat-option>
-                        @for (p of availablePlayers; track p.id) {
-                          <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                        @for (p of getPlayersForPosition(pos); track p.id) {
+                          <mat-option [value]="p">
+                            {{ p.firstName }} {{ p.lastName }} ({{ p.position }})
+                          </mat-option>
                         }
                       </mat-select>
                       @if (
@@ -251,9 +253,11 @@
                           (selectionChange)="updateDepthChart(pos, i, $event.value)"
                           [compareWith]="comparePlayer"
                         >
-                          <mat-option [value]="null">--</mat-option>
-                          @for (p of availablePlayers; track p.id) {
-                            <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                          <mat-option [value]="null">-- {{ pos }} #{{ i + 1 }} --</mat-option>
+                          @for (p of getPlayersForPosition(pos); track p.id) {
+                            <mat-option [value]="p">
+                              {{ p.firstName }} {{ p.lastName }} ({{ p.position }})
+                            </mat-option>
                           }
                         </mat-select>
                       </mat-form-field>

@@ -68,6 +68,14 @@ export class TacticsComponent implements OnInit {
   positions = ['C', 'PF', 'SF', 'SG', 'PG'];
   positionsMobile = ['PG', 'SG', 'SF', 'PF', 'C'];
 
+  readonly positionOrder: Record<string, string[]> = {
+    C: ['C', 'PF', 'SF', 'SG', 'PG'],
+    PF: ['PF', 'C', 'SF', 'SG', 'PG'],
+    SF: ['SF', 'SG', 'PF', 'PG', 'C'],
+    SG: ['SG', 'SF', 'PG', 'PF', 'C'],
+    PG: ['PG', 'SG', 'SF', 'PF', 'C'],
+  };
+
   gamePlan = signal<GamePlan>({
     pace: 'Normal',
     trapFrequency: 'Never',
@@ -155,12 +163,29 @@ export class TacticsComponent implements OnInit {
   hasMultipleTeams = computed(() => this.teams().length > 1);
   hasNoTeams = computed(() => this.teams().length === 0);
 
-  get availablePlayers(): Player[] {
+  sortedPlayers = computed(() => {
+    const order = ['C', 'PF', 'SF', 'SG', 'PG'];
+    return [...this.players()].sort((a, b) => {
+      const ai = order.indexOf(a.position);
+      const bi = order.indexOf(b.position);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+  });
+
+  getPlayersForPosition(pos: string): Player[] {
+    const order = this.positionOrder[pos] ?? this.positions;
     const injured = this.injuredListArray
       .getRawValue()
       .filter((p: Player | null) => p !== null)
       .map((p: Player) => `${p.firstName}_${p.lastName}`);
-    return this.players().filter(p => !injured.includes(`${p.firstName}_${p.lastName}`));
+
+    return [...this.players()]
+      .filter(p => !injured.includes(`${p.firstName}_${p.lastName}`))
+      .sort((a, b) => {
+        const ai = order.indexOf(a.position);
+        const bi = order.indexOf(b.position);
+        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      });
   }
 
   ngOnInit(): void {
@@ -367,7 +392,7 @@ export class TacticsComponent implements OnInit {
 
   updateILControls(): void {
     this.injuredListArray.controls.forEach((control, i) => {
-      if (this.ilDisabled || i >= this.requiredIL) {
+      if (this.ilDisabled() || i >= this.requiredIL()) {
         control.clearValidators();
         control.disable();
         control.setValue(null);
@@ -461,11 +486,7 @@ export class TacticsComponent implements OnInit {
     return array.at(index) as FormControl;
   }
 
-  get requiredIL(): number {
-    return Math.max(0, this.players().length - 12);
-  }
+  requiredIL = computed(() => Math.max(0, this.players().length - 12));
 
-  get ilDisabled(): boolean {
-    return this.requiredIL === 0;
-  }
+  ilDisabled = computed(() => this.requiredIL() === 0);
 }
