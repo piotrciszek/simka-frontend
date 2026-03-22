@@ -95,3 +95,10 @@ body {
   color: var(--text-primary);
   font-family: 'Press Start 2P', monospace;
 }
+
+/* added to fix issue with safari on iphone, same as transform in tactics.component.scss, I'm not sure which works */
+@supports (-webkit-touch-callout: none) {
+  .app-wrapper {
+    height: -webkit-fill-available;
+  }
+}

@@ -196,7 +196,7 @@
   justify-content: flex-end;
   padding: 1rem 0;
   @media (max-width: 400px) {
-    padding-right: 18rem;
+    justify-content: center;
   }
 }
 

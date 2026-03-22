@@ -8,6 +8,10 @@
   border-bottom: 2px solid var(--accent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 100;
+  /* added to fix issue with safari on iphone, same as @supports in styles.scss, I'm not sure which works */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
 }
 
 .navbar-brand {
