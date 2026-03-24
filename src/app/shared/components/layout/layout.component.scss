@@ -1,5 +1,6 @@
 .app-wrapper {
-  height: 100vh;
+  height: 100vh; /* fallback dla starszych przeglądarek */
+  height: 100dvh; /* dynamic viewport height — uwzględnia chowanie paska URL na iOS Safari */
   display: flex;
   flex-direction: column;
   background-color: var(--bg-primary);

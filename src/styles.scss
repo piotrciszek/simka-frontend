@@ -96,9 +96,29 @@ body {
   font-family: 'Press Start 2P', monospace;
 }
 
-/* added to fix issue with safari on iphone, same as transform in tactics.component.scss, I'm not sure which works */
-@supports (-webkit-touch-callout: none) {
-  .app-wrapper {
-    height: -webkit-fill-available;
+// ================================
+// AG-GRID — globalne style (poza enkapsulacją Angular)
+// ================================
+.ag-theme-material {
+  .ag-cell {
+    font-size: 10px;
+  }
+
+  .ag-header-cell-text {
+    font-size: 12px;
+  }
+
+  .row-added {
+    background-color: #f1f8e9 !important;
+  }
+
+  .row-removed {
+    background-color: #fff8f8 !important;
+    opacity: 0.75;
+  }
+
+  .row-changed {
+    background-color: #fffde7 !important;
   }
 }
+
