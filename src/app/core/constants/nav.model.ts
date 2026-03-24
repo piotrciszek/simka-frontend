@@ -34,6 +34,14 @@ export const NAV_MENUS: NavMenu[] = [
     ],
   },
   {
+    label: 'Playoffs',
+    key: 'playoffs',
+    links: [
+      { label: 'Play-offs', route: 'playoffs' },
+      { label: 'Play-off Leaders', route: 'playoff-leaders' },
+    ],
+  },
+  {
     label: 'History',
     key: 'history',
     links: [

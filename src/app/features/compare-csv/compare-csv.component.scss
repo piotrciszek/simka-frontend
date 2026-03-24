@@ -1,0 +1,52 @@
+@use 'ag-grid-community/styles/ag-grid.css';
+@use 'ag-grid-community/styles/ag-theme-material.css';
+
+.compare-container {
+  padding: 24px;
+
+  h2 {
+    margin-bottom: 24px;
+  }
+}
+
+.selectors {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+
+  mat-form-field {
+    min-width: 280px;
+  }
+}
+
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.quick-filter {
+  width: 300px;
+}
+
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.error {
+  color: #c62828;
+  margin-bottom: 16px;
+}
+
+ag-grid-angular {
+  width: 100%;
+}
+
+// Style wierszy grida i ag-Grid są w globalnym styles.scss

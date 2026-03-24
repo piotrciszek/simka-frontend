@@ -21,6 +21,10 @@
       <mat-icon>description</mat-icon>
       <span>Pliki CSV</span>
     </a>
+    <a routerLink="/csv-compare" routerLinkActive="active" class="nav-item">
+      <mat-icon>difference</mat-icon>
+      <span>Porównanie CSV</span>
+    </a>
     <a routerLink="/pbp-files" routerLinkActive="active" class="nav-item">
       <mat-icon>description</mat-icon>
       <span>Pliki PBP</span>
@@ -96,6 +100,15 @@
       <!-- <mat-icon>person</mat-icon> -->
       <span>Free Agents</span>
     </a>
+    @if (playoffService.playoffsAvailable()) {
+      <span class="section-label">Playoffs</span>
+      <a routerLink="/playoffs" routerLinkActive="active" class="nav-item">
+        <span>Play-offs</span>
+      </a>
+      <a routerLink="/playoff-leaders" routerLinkActive="active" class="nav-item">
+        <span>Play-off Leaders</span>
+      </a>
+    }
     <span class="section-label">History</span>
     <a routerLink="/historical-team-performance" routerLinkActive="active" class="nav-item">
       <!-- <mat-icon>person</mat-icon> -->

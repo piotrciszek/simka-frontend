@@ -83,6 +83,19 @@ export const routes: Routes = [
             m => m.FreeAgentsComponent,
           ),
       },
+      // ── PLAYOFFS ──
+      {
+        path: 'playoffs',
+        loadComponent: () =>
+          import('./features/season/playoffs/playoffs.component').then(m => m.PlayoffsComponent),
+      },
+      {
+        path: 'playoff-leaders',
+        loadComponent: () =>
+          import('./features/season/playoff-leaders/playoff-leaders.component').then(
+            m => m.PlayoffLeadersComponent,
+          ),
+      },
       // ── HISTORY ──
       {
         path: 'historical-team-performance',
@@ -141,13 +154,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'player-career-records',
-        loadComponent: () =>
-          import('./features/history/player-career-records/player-career-records.component').then(
-            m => m.PlayerCareerRecordsComponent,
-          ),
-      },
-      {
         path: 'past-picks',
         loadComponent: () =>
           import('./features/history/past-picks/past-picks.component').then(
@@ -199,6 +205,11 @@ export const routes: Routes = [
         path: 'csv-files',
         loadComponent: () =>
           import('./features/csv-files/csv-files.component').then(m => m.CsvFilesComponent),
+      },
+      {
+        path: 'csv-compare',
+        loadComponent: () =>
+          import('./features/compare-csv/compare-csv.component').then(m => m.CompareCsvComponent),
       },
       {
         path: 'pbp-files',
@@ -283,6 +294,19 @@ export const routes: Routes = [
             m => m.FreeAgentsComponent,
           ),
       },
+      // ── PLAYOFFS ──
+      {
+        path: 'playoffs',
+        loadComponent: () =>
+          import('./features/season/playoffs/playoffs.component').then(m => m.PlayoffsComponent),
+      },
+      {
+        path: 'playoff-leaders',
+        loadComponent: () =>
+          import('./features/season/playoff-leaders/playoff-leaders.component').then(
+            m => m.PlayoffLeadersComponent,
+          ),
+      },
       // ── HISTORY ──
       {
         path: 'historical-team-performance',
@@ -338,13 +362,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/history/hall-of-fame/hall-of-fame.component').then(
             m => m.HallOfFameComponent,
-          ),
-      },
-      {
-        path: 'player-career-records',
-        loadComponent: () =>
-          import('./features/history/player-career-records/player-career-records.component').then(
-            m => m.PlayerCareerRecordsComponent,
           ),
       },
       {

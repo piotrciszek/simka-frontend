@@ -1,0 +1,67 @@
+<div class="compare-container">
+  <h2>Porównaj CSV</h2>
+
+  <div class="selectors">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Stary CSV</mat-label>
+      <mat-select [value]="selectedOld()" (selectionChange)="selectedOld.set($event.value)">
+        @for (file of files(); track file.filename) {
+          <mat-option [value]="file.filename">{{ file.filename }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Nowy CSV</mat-label>
+      <mat-select [value]="selectedNew()" (selectionChange)="selectedNew.set($event.value)">
+        @for (file of files(); track file.filename) {
+          <mat-option [value]="file.filename">{{ file.filename }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" [disabled]="!canCompare()" (click)="compare()">
+      Porównaj
+    </button>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <div class="spinner-wrapper">
+      <mat-spinner diameter="40" />
+    </div>
+  }
+
+  @if (groups().length > 0) {
+    <div class="toolbar">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="quick-filter">
+        <mat-label>Szukaj gracza...</mat-label>
+        <input matInput (input)="onQuickFilter($event)" />
+      </mat-form-field>
+
+      <mat-button-toggle-group
+        [value]="sortMode()"
+        (change)="sortMode.set($event.value)"
+        aria-label="Tryb sortowania"
+      >
+        <mat-button-toggle value="value">Sortuj po wartości</mat-button-toggle>
+        <mat-button-toggle value="delta">Sortuj po zmianie</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <ag-grid-angular
+      class="ag-theme-material"
+      [rowData]="rowData()"
+      [columnDefs]="colDefs()"
+      [defaultColDef]="defaultColDef"
+      [getRowClass]="getRowClass"
+      [suppressRowClickSelection]="true"
+      [domLayout]="'normal'"
+      style="height: 600px"
+      (gridReady)="onGridReady($event)"
+    />
+  }
+</div>

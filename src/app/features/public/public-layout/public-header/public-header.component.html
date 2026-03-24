@@ -2,7 +2,7 @@
   <div class="header-inner">
     <div class="logo" routerLink="/public/standings" style="cursor: pointer">SimBasket</div>
     <nav class="nav">
-      @for (menu of menus; track menu.key) {
+      @for (menu of menus(); track menu.key) {
         <div class="nav-item" [class.open]="isOpen(menu.key)">
           <button class="nav-btn" (click)="toggleMenu(menu.key, $event)">
             {{ menu.label }}
@@ -41,7 +41,10 @@
       }
     </mat-menu>
     <div class="header-actions">
-      <a routerLink="/login" class="login-btn">Zaloguj się</a>
+      <a routerLink="/login" class="login-btn">
+        <span class="login-text">Zaloguj się</span>
+        <mat-icon class="login-icon">login</mat-icon>
+      </a>
     </div>
   </div>
 </header>
