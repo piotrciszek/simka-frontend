@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Tactics, TacticsData } from '../models/tactics.model';
@@ -8,9 +8,8 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class TacticsService {
+  private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
 
   getTacticsByTeam(teamId: number): Observable<Tactics> {
     return this.http.get<Tactics>(`${this.apiUrl}/tactics/team/${teamId}`);
