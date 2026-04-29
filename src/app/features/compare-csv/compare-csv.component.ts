@@ -8,13 +8,21 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { forkJoin } from 'rxjs';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, GridApi, GridReadyEvent, RowClassParams } from 'ag-grid-community';
+import {
+  ColDef,
+  GridApi,
+  GridReadyEvent,
+  RowClassParams,
+  ValueGetterParams,
+  ICellRendererParams,
+} from 'ag-grid-community';
 import { environment } from '../../../environments/environment';
 import {
   CsvCompareService,
   TeamGroup,
   PlayerDiff,
   SKILL_COLUMNS,
+  SkillKey,
 } from '../../core/services/csv-compare.service';
 
 interface CsvFile {
@@ -23,14 +31,15 @@ interface CsvFile {
   isDirectory: boolean;
 }
 
-interface GridRow {
+type SkillCell = { old: number | null; new: number | null; delta: number | null };
+
+type GridRow = {
   team: string;
   firstName: string;
   lastName: string;
   position: string;
   status: string;
-  [key: string]: any;
-}
+} & { [K in SkillKey]: SkillCell };
 
 @Component({
   selector: 'app-compare-csv',
@@ -113,11 +122,11 @@ sortMode = signal<'value' | 'delta'>('value');
         width: 70,
         filter: 'agNumberColumnFilter',
         // valueGetter decyduje po czym sortuje ag-Grid — nowa wartość lub delta
-        valueGetter: (params: any) =>
+        valueGetter: (params: ValueGetterParams<GridRow>) =>
           mode === 'value'
             ? (params.data?.[skill]?.new ?? params.data?.[skill]?.old ?? null)
             : (params.data?.[skill]?.delta ?? null),
-        cellRenderer: (params: any) => {
+        cellRenderer: (params: ICellRendererParams<GridRow>) => {
           const val = params.data?.[skill]?.new ?? params.data?.[skill]?.old ?? '';
           const delta = params.data?.[skill]?.delta;
           if (delta === null || delta === undefined || delta === 0) return `${val}`;
@@ -185,17 +194,14 @@ sortMode = signal<'value' | 'delta'>('value');
 
     for (const group of groups) {
       for (const player of group.players) {
-        const row: GridRow = {
+        rows.push({
           team: player.team || 'FA',
           firstName: player.firstName,
           lastName: player.lastName,
           position: player.position,
           status: player.status,
-        };
-        for (const skill of SKILL_COLUMNS) {
-          row[skill] = player.skills[skill];
-        }
-        rows.push(row);
+          ...player.skills,
+        });
       }
     }
 

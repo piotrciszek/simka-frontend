@@ -17,8 +17,8 @@ export class PublicSidebarComponent {
 
   currentMenu = toSignal(
     this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-      map((e: any) => e.urlAfterRedirects),
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map(e => e.urlAfterRedirects),
       startWith(this.router.url),
       map(url => {
         const route = url.replace('/html/', '').split('?')[0];

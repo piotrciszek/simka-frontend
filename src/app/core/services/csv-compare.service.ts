@@ -158,7 +158,7 @@ export class CsvCompareService {
       if (!oldP) status = 'added';
       else if (!newP) status = 'removed';
 
-      const skills: any = {};
+      const skills = {} as PlayerDiff['skills'];
       let hasChange = false;
 
       for (const skill of SKILL_COLUMNS) {

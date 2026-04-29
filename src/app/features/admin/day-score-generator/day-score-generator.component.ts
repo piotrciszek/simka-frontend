@@ -24,6 +24,26 @@ interface DayResult {
   games: Game[];
 }
 
+interface PlayoffPair {
+  team1: string;
+  team2: string;
+  wins1: string;
+  wins2: string;
+  seeds?: string;
+}
+
+interface PlayoffRound {
+  west: PlayoffPair[];
+  east: PlayoffPair[];
+}
+
+interface PlayoffsData {
+  round1: PlayoffRound;
+  round2: PlayoffRound;
+  confFinals: PlayoffRound;
+  finals: PlayoffPair[];
+}
+
 @Component({
   selector: 'app-day-score-generator',
   standalone: true,
@@ -74,7 +94,7 @@ export class DayScoreGeneratorComponent {
 
     if (this.isPlayoffs()) {
       forkJoin({
-        playoffs: this.http.get<any>(`${this.apiUrl}/boxes/playoffs`),
+        playoffs: this.http.get<PlayoffsData>(`${this.apiUrl}/boxes/playoffs`),
         result: this.http.get<DayResult>(`${this.apiUrl}/boxes/day/${this.selectedDay()}`),
       }).subscribe({
         next: ({ playoffs, result }) => {
@@ -157,7 +177,7 @@ export class DayScoreGeneratorComponent {
     return lines.join('\n');
   }
 
-  buildPlayoffsBBCode(result: DayResult, playoffs: any, round: string): string {
+  buildPlayoffsBBCode(result: DayResult, playoffs: PlayoffsData, round: string): string {
     const base = this.BASE_URL;
     const lines: string[] = [];
     const day = result.day;
@@ -170,7 +190,7 @@ export class DayScoreGeneratorComponent {
       finals: { west: 'Simbasket Finals', east: 'Simbasket Finals' },
     };
 
-    const buildConference = (pairs: any[], conf: string) => {
+    const buildConference = (pairs: PlayoffPair[], conf: string) => {
       if (!pairs?.length) return;
 
       const title =
@@ -222,7 +242,7 @@ export class DayScoreGeneratorComponent {
     if (round === 'finals') {
       buildConference(playoffs.finals, 'finals');
     } else {
-      const data = round === 'conference' ? playoffs.confFinals : playoffs[round];
+      const data = round === 'conference' ? playoffs.confFinals : playoffs[round as 'round1' | 'round2'];
       const westPairs = data?.west ?? [];
       buildConference(westPairs, 'west');
       buildConference(data?.east ?? [], 'east');
@@ -251,7 +271,7 @@ export class DayScoreGeneratorComponent {
     return lines.join('\n');
   }
 
-  getSeed = (teamName: string, round1Data: any): string => {
+  getSeed = (teamName: string, round1Data: PlayoffRound): string => {
     const allPairs = [...(round1Data?.west ?? []), ...(round1Data?.east ?? [])];
     for (const pair of allPairs) {
       const seeds = pair.seeds?.split('/') ?? ['', ''];

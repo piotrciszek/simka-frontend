@@ -36,13 +36,13 @@
           }}
         </span>
         <div class="tactics-meta">
-          @if (tactics()!.submittedAt) {
+          @if (tactics()!.status === 'pending' && tactics()!.submittedAt) {
             <span>Wysłano: {{ tactics()!.submittedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
           }
-          @if (tactics()!.approvedAt) {
+          @if (tactics()!.status === 'approved' && tactics()!.approvedAt) {
             <span>Zatwierdzona: {{ tactics()!.approvedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
           }
-          @if (tactics()!.approvedBy) {
+          @if (tactics()!.status === 'approved' && tactics()!.approvedBy) {
             <span>Przez: {{ tactics()!.approvedBy }}</span>
           }
         </div>

@@ -1,8 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Tactics, TacticsData } from '../models/tactics.model';
+import { Tactics, TacticsData, TacticsLogEntry } from '../models/tactics.model';
+
+interface OpenForReviewResponse {
+  message: string;
+  tactic: {
+    data_pending: TacticsData | string | null;
+  };
+}
 import { environment } from '../../../environments/environment';
+
+interface TacticsActionResponse {
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -15,27 +26,27 @@ export class TacticsService {
     return this.http.get<Tactics>(`${this.apiUrl}/tactics/team/${teamId}`);
   }
 
-  createTactics(teamId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/tactics/team/${teamId}`, {});
+  createTactics(teamId: number): Observable<TacticsActionResponse> {
+    return this.http.post<TacticsActionResponse>(`${this.apiUrl}/tactics/team/${teamId}`, {});
   }
 
-  saveDraft(tacticId: number, data: TacticsData): Observable<any> {
-    return this.http.put(`${this.apiUrl}/tactics/${tacticId}/draft`, { data });
+  saveDraft(tacticId: number, data: TacticsData): Observable<TacticsActionResponse> {
+    return this.http.put<TacticsActionResponse>(`${this.apiUrl}/tactics/${tacticId}/draft`, { data });
   }
 
-  submitTactics(tacticId: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/tactics/${tacticId}/submit`, {});
+  submitTactics(tacticId: number): Observable<TacticsActionResponse> {
+    return this.http.put<TacticsActionResponse>(`${this.apiUrl}/tactics/${tacticId}/submit`, {});
   }
 
-  openForReview(tacticId: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/tactics/${tacticId}/review`, {});
+  openForReview(tacticId: number): Observable<OpenForReviewResponse> {
+    return this.http.put<OpenForReviewResponse>(`${this.apiUrl}/tactics/${tacticId}/review`, {});
   }
 
-  approveTactics(tacticId: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/tactics/${tacticId}/approve`, {});
+  approveTactics(tacticId: number): Observable<TacticsActionResponse> {
+    return this.http.put<TacticsActionResponse>(`${this.apiUrl}/tactics/${tacticId}/approve`, {});
   }
 
-  getPendingTactics(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/tactics/pending`);
+  getPendingTactics(): Observable<TacticsLogEntry[]> {
+    return this.http.get<TacticsLogEntry[]>(`${this.apiUrl}/tactics/pending`);
   }
 }

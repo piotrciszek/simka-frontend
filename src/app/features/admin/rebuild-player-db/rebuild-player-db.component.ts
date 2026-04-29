@@ -27,6 +27,11 @@ interface CsvUpload {
   uploaded_by: string;
 }
 
+interface LoadFileResponse {
+  message: string;
+  playersCount: number;
+}
+
 @Component({
   selector: 'app-rebuild-player-db',
   standalone: true,
@@ -99,12 +104,12 @@ export class RebuildPlayerDbComponent implements OnInit {
     this.error.set('');
 
     this.http
-      .post(`${this.apiUrl}/csv/load-file`, {
+      .post<LoadFileResponse>(`${this.apiUrl}/csv/load-file`, {
         filename: this.selectedFile(),
         season: this.seasonControl.value,
       })
       .subscribe({
-        next: (res: any) => {
+        next: res => {
           this.loading.set(false);
           this.loadHistory();
           this.snackBar.open(`${res.message} — ${res.playersCount} graczy`, 'OK', {
