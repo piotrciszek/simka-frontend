@@ -189,7 +189,6 @@ export const routes: Routes = [
       },
       {
   path: 'advanced-stats',
-  canActivate: [advancedStatsGuard],
   loadComponent: () =>
     import('./features/advanced-stats/advanced-stats.component').then(
       m => m.AdvancedStatsComponent,
@@ -208,6 +207,13 @@ export const routes: Routes = [
 			  loadComponent: () =>
 			    import('./features/compare-stats/compare-stats.component')
 			      .then(m => m.CompareStatsComponent),
+			},
+						{
+			  path: 'scorers-ranking',
+			  canActivate: [advancedStatsGuard],
+			  loadComponent: () =>
+			    import('./features/scorers-ranking/scorers-ranking.component')
+			      .then(m => m.ScorersRankingComponent),
 			},
       {
         path: 'tactics',

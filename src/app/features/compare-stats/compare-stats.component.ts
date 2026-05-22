@@ -223,9 +223,9 @@ import { CsvDataService } from '../../services/csv-data.service';
 
 .better {
   background: rgba(255, 106, 0, 0.28);
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 700;
-  margin: 2px 40px;
+  margin: 0px 10px;
   padding: 4px 0;
 }
   `],
