@@ -255,6 +255,7 @@ export class CompareStatsComponent implements OnInit {
     'USG',
     'POSS',
     'PPP',
+    'PIE'
   ];
 
   constructor(public csvData: CsvDataService) {}

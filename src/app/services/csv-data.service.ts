@@ -68,6 +68,7 @@ export class CsvDataService {
         Name: row['Name'],
         Team: row['Team'],
         Position: row['Position'],
+        PIE: row['PIE'] || '0',
       };
 
       pgColumns.forEach((col) => {

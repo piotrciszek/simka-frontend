@@ -1,0 +1,103 @@
+.compare-page {
+  padding: 24px;
+}
+
+h1 {
+  color: #ff6a00;
+  margin-bottom: 20px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.selectors {
+  display: flex;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+mat-form-field {
+  width: 390px;
+}
+
+.compare-simple {
+  margin-top: 20px;
+  color: white;
+  max-width: 800px;
+}
+
+.players-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  padding: 6px 30px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.players-row div:last-child {
+  text-align: right;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 6px 0;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  min-height: 30px;
+  border-bottom: 1px solid #333;
+  font-size: 15px;
+}
+
+.stat-row div {
+  text-align: center;
+}
+
+.stat-name {
+  font-weight: 600;
+}
+
+.better {
+  background: rgba(255, 106, 0, 0.18);
+  border-radius: 4px;
+  font-weight: 600;
+  margin: 0 8px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+p {
+  color: #ddd;
+}
+
+.selectors {
+  display: flex;
+  gap: 14px;
+  margin: 16px 0;
+}
+
+mat-form-field {
+  width: 390px;
+}
+
+::ng-deep .mat-mdc-form-field {
+  color: #fff;
+}
+
+::ng-deep .mat-mdc-select-value {
+  color: #fff;
+}
+
+::ng-deep .mat-mdc-floating-label {
+  color: #bbb;
+}
