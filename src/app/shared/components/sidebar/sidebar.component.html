@@ -33,6 +33,10 @@
       <mat-icon>description</mat-icon>
       <span>Pliki Save</span>
     </a>
+    <a routerLink="/import-csv" routerLinkActive="active" class="nav-item">
+	  <mat-icon>upload_file</mat-icon>
+	  <span>Import CSV</span>
+	</a>
     @if (isAdminOrKomisz()) {
       <div class="sidebar-section">
         <span class="section-label">Admin's</span>
@@ -63,14 +67,6 @@
       <!-- <mat-icon>groups</mat-icon> -->
       <span>Team Rosters</span>
     </a>
-    <a routerLink="/advanced-stats" routerLinkActive="active" class="nav-item">
-	   <!-- <mat-icon>analytics</mat-icon> -->
-	  <span>Zaawansowane statystyki</span>
-	</a>
-	<a routerLink="/advanced-statsp" routerLinkActive="active" class="nav-item">
-	  <!-- <mat-icon>query_stats</mat-icon> -->
-	  <span>Zaawansowane statystyki P</span>
-	</a>
     <a routerLink="/team-statistics" routerLinkActive="active" class="nav-item">
       <!-- <mat-icon>bar_chart</mat-icon> -->
       <span>Team Statistics</span>
@@ -154,5 +150,17 @@
       <!-- <mat-icon>person</mat-icon> -->
       <span>Past #1 Overall Picks</span>
     </a>
+    <span class="section-label">Simkowe SYNERGY</span>
+    <a routerLink="/advanced-stats" routerLinkActive="active" class="nav-item">
+	<!-- <mat-icon>analytics</mat-icon> -->
+	  <span>Statystyki sumy</span>
+	</a>
+	<a routerLink="/advanced-statsp" routerLinkActive="active" class="nav-item">
+	  <!-- <mat-icon>query_stats</mat-icon> -->
+	  <span>Statystyki per game</span>
+	</a>
+	<a routerLink="/compare-stats" routerLinkActive="active" class="nav-item">
+	  <span>Porownaj statystyki graczy</span>
+	</a>
   </div>
 </nav>

@@ -202,6 +202,13 @@ export const routes: Routes = [
     import('./features/advanced-statsp/advanced-statsp.component')
       .then(m => m.AdvancedStatspComponent),
 	},
+				{
+			  path: 'compare-stats',
+			  canActivate: [advancedStatsGuard],
+			  loadComponent: () =>
+			    import('./features/compare-stats/compare-stats.component')
+			      .then(m => m.CompareStatsComponent),
+			},
       {
         path: 'tactics',
         loadComponent: () =>
@@ -237,6 +244,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/save-files/save-files.component').then(m => m.SaveFilesComponent),
       },
+      {
+	  path: 'import-csv',
+	  loadComponent: () =>
+	    import('./features/import-csv/import-csv.component')
+	      .then(m => m.ImportCsvComponent),
+	},
       // ── ROSTER ──
       {
         path: 'team-rosters',
