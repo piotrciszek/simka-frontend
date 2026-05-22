@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './core/guards/auth.guard';
 import { PublicLayoutComponent } from './features/public/public-layout/public-layout.component';
+import { advancedStatsGuard } from './guards/advanced-stats.guard';
 
 export const routes: Routes = [
   // --- NIEZALGOWANY ---
@@ -186,6 +187,21 @@ export const routes: Routes = [
         path: 'home',
         loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
       },
+      {
+  path: 'advanced-stats',
+  canActivate: [advancedStatsGuard],
+  loadComponent: () =>
+    import('./features/advanced-stats/advanced-stats.component').then(
+      m => m.AdvancedStatsComponent,
+    ),
+	},
+	{
+  path: 'advanced-statsp',
+  canActivate: [advancedStatsGuard],
+  loadComponent: () =>
+    import('./features/advanced-statsp/advanced-statsp.component')
+      .then(m => m.AdvancedStatspComponent),
+	},
       {
         path: 'tactics',
         loadComponent: () =>

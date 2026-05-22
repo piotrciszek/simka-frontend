@@ -23,7 +23,8 @@
     "@auth0/angular-jwt": "^5.2.0",
     "ag-grid-angular": "^35.1.0",
     "ag-grid-community": "^35.1.0",
-    "rxjs": "~7.8.0",
+    "papaparse": "^5.5.3",
+    "rxjs": "^7.8.2",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@angular/compiler-cli": "^21.2.0",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.5.0",
+    "@types/papaparse": "^5.5.2",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
