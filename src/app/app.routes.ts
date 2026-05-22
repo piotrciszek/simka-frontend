@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './core/guards/auth.guard';
 import { PublicLayoutComponent } from './features/public/public-layout/public-layout.component';
+import { advancedStatsGuard } from './guards/advanced-stats.guard';
 
 export const routes: Routes = [
   // --- NIEZALGOWANY ---
@@ -187,6 +188,34 @@ export const routes: Routes = [
         loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
       },
       {
+  path: 'advanced-stats',
+  loadComponent: () =>
+    import('./features/advanced-stats/advanced-stats.component').then(
+      m => m.AdvancedStatsComponent,
+    ),
+	},
+	{
+  path: 'advanced-statsp',
+  canActivate: [advancedStatsGuard],
+  loadComponent: () =>
+    import('./features/advanced-statsp/advanced-statsp.component')
+      .then(m => m.AdvancedStatspComponent),
+	},
+				{
+			  path: 'compare-stats',
+			  canActivate: [advancedStatsGuard],
+			  loadComponent: () =>
+			    import('./features/compare-stats/compare-stats.component')
+			      .then(m => m.CompareStatsComponent),
+			},
+						{
+			  path: 'scorers-ranking',
+			  canActivate: [advancedStatsGuard],
+			  loadComponent: () =>
+			    import('./features/scorers-ranking/scorers-ranking.component')
+			      .then(m => m.ScorersRankingComponent),
+			},
+      {
         path: 'tactics',
         loadComponent: () =>
           import('./features/tactics/tactics.component').then(m => m.TacticsComponent),
@@ -221,6 +250,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/save-files/save-files.component').then(m => m.SaveFilesComponent),
       },
+      {
+	  path: 'import-csv',
+	  loadComponent: () =>
+	    import('./features/import-csv/import-csv.component')
+	      .then(m => m.ImportCsvComponent),
+	},
       // ── ROSTER ──
       {
         path: 'team-rosters',
