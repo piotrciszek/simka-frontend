@@ -1,0 +1,127 @@
+<section class="compare-page">
+
+  <h1>Porównaj atrybuty</h1>
+
+  <div class="toolbar">
+
+    <input
+      #fileInput
+      hidden
+      type="file"
+      accept=".csv"
+      (change)="selectFile($event)"
+    />
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="fileInput.click()">
+
+      Przegl¹daj
+
+    </button>
+
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="loadCsv()"
+      [disabled]="!selectedFile">
+
+      Wczytaj
+
+    </button>
+
+  </div>
+
+  <p *ngIf="fileName">
+    Wybrany plik:
+    <strong>{{fileName}}</strong>
+  </p>
+
+<div class="selectors">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Zawodnik 1</mat-label>
+
+    <mat-select
+      [(ngModel)]="leftName"
+      (selectionChange)="selectPlayers()">
+
+      <mat-option
+        *ngFor="let p of attributesService.players"
+        [value]="p['Name']">
+        {{p['Name']}}
+      </mat-option>
+
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Zawodnik 2</mat-label>
+
+    <mat-select
+      [(ngModel)]="rightName"
+      (selectionChange)="selectPlayers()">
+
+      <mat-option
+        *ngFor="let p of attributesService.players"
+        [value]="p['Name']">
+        {{p['Name']}}
+      </mat-option>
+
+    </mat-select>
+  </mat-form-field>
+
+  </div>
+
+  <div
+    *ngIf="leftPlayer && rightPlayer"
+    class="compare-simple">
+
+    <div class="players-row">
+
+      <div>
+        {{leftPlayer['Name']}}
+      </div>
+
+      <div>
+        {{rightPlayer['Name']}}
+      </div>
+
+    </div>
+
+    <div class="section-title">
+
+      Attributes
+
+    </div>
+
+    <div
+      class="stat-row"
+      *ngFor="let attr of attributesService.attributes">
+
+      <div
+        [class.better]="isLeftBetter(attr)">
+
+        {{leftPlayer[attr]}}
+
+      </div>
+
+      <div class="stat-name">
+
+        {{attr}}
+
+      </div>
+
+      <div
+        [class.better]="isRightBetter(attr)">
+
+        {{rightPlayer[attr]}}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

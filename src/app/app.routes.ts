@@ -215,6 +215,18 @@ export const routes: Routes = [
 			    import('./features/scorers-ranking/scorers-ranking.component')
 			      .then(m => m.ScorersRankingComponent),
 			},
+								{
+					  path: 'compare-attributes',
+					  loadComponent: () =>
+					    import('./features/compare-attributes/compare-attributes.component')
+					      .then(m => m.CompareAttributesComponent),
+					},
+										{
+					  path: 'trade-machine',
+					  loadComponent: () =>
+					    import('./features/trade-machine/trade-machine.component')
+					      .then(m => m.TradeMachineComponent),
+					},
       {
         path: 'tactics',
         loadComponent: () =>

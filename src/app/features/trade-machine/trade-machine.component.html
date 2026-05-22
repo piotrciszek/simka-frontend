@@ -1,0 +1,99 @@
+<section class="trade-page">
+  <h1>Trade Machine</h1>
+
+  <p *ngIf="!teams.length" class="empty">
+    Najpierw wczytaj plik atrybutów w zak³adce Porównaj atrybuty.
+  </p>
+
+  <div *ngIf="teams.length" class="trade-grid">
+
+    <mat-card>
+      <h2>Team A</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Wybierz dru¿ynê</mat-label>
+        <mat-select [(ngModel)]="teamA" (selectionChange)="onTeamAChange()">
+          <mat-option *ngFor="let team of teams" [value]="team">
+            {{team}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="players-list">
+        <mat-checkbox
+          *ngFor="let player of playersA"
+          [checked]="isSelected(player, 'A')"
+          (change)="togglePlayer(player, 'A')">
+          {{player.Name}} | {{money(player.Salary1)}}
+        </mat-checkbox>
+      </div>
+    </mat-card>
+
+    <mat-card>
+      <h2>Team B</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Wybierz dru¿ynê</mat-label>
+        <mat-select [(ngModel)]="teamB" (selectionChange)="onTeamBChange()">
+          <mat-option *ngFor="let team of teams" [value]="team">
+            {{team}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="players-list">
+        <mat-checkbox
+          *ngFor="let player of playersB"
+          [checked]="isSelected(player, 'B')"
+          (change)="togglePlayer(player, 'B')">
+          {{player.Name}} | {{money(player.Salary1)}}
+        </mat-checkbox>
+      </div>
+    </mat-card>
+
+  </div>
+
+  <mat-card *ngIf="teams.length" class="result-card">
+    <h2>Wynik wymiany</h2>
+
+    <div class="result-grid">
+      <div>
+        <h3>Team A</h3>
+        <p>Salary OUT: <strong>{{money(salaryOutA())}}</strong></p>
+        <p>Salary IN: <strong>{{money(salaryInA())}}</strong></p>
+        <p>Difference: <strong>{{money(differenceA())}}</strong></p>
+        <p>
+					  Trade:
+					
+					  <span
+					    [class.trade-on]="tradeValidForB()"
+					    [class.trade-off]="!tradeValidForB()">
+					
+					    {{ tradeValidForB() ? 'ON' : 'OFF' }}
+					
+					  </span>
+					
+					</p>
+      </div>
+
+      <div>
+        <h3>Team B</h3>
+        <p>Salary OUT: <strong>{{money(salaryOutB())}}</strong></p>
+        <p>Salary IN: <strong>{{money(salaryInB())}}</strong></p>
+        <p>Difference: <strong>{{money(differenceB())}}</strong></p>
+        <p>
+						  Trade:
+						
+						  <span
+						    [class.trade-on]="tradeValidForA()"
+						    [class.trade-off]="!tradeValidForA()">
+						
+						    {{ tradeValidForA() ? 'ON' : 'OFF' }}
+						
+						  </span>
+						
+						</p>
+      </div>
+    </div>
+  </mat-card>
+</section>
