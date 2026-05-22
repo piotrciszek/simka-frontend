@@ -12,7 +12,7 @@ export const advancedStatsGuard: CanActivateFn = () => {
     'Podaj haslo do Zaawansowanych statystyk'
   );
 
-  if (password === 'simka123') {
+  if (password === 'alonzotofrajer') {
 
     localStorage.setItem(
       'advanced_stats_access',
