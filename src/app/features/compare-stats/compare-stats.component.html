@@ -1,0 +1,72 @@
+<section class="compare-page">
+  <h1>Porównaj graczy</h1>
+
+  @if (!players().length) {
+    <p class="empty">Ładowanie listy graczy...</p>
+  }
+
+  @if (players().length) {
+    <div class="selectors">
+      <select [(ngModel)]="leftName" (change)="selectPlayers()">
+        <option value="">Wybierz gracza</option>
+        @for (p of players(); track p.Name) {
+          <option [value]="p.Name">{{ p.Name }}</option>
+        }
+      </select>
+
+      <select [(ngModel)]="rightName" (change)="selectPlayers()">
+        <option value="">Wybierz gracza</option>
+        @for (p of players(); track p.Name) {
+          <option [value]="p.Name">{{ p.Name }}</option>
+        }
+      </select>
+    </div>
+  }
+
+  @if (comparison()) {
+    <div class="comparison-results">
+      <div class="players-header">
+        <div class="player-info">
+          <h2>{{ comparison()!.leftPlayer.Name }}</h2>
+          <p>{{ comparison()!.leftPlayer.Team }}</p>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="player-info">
+          <h2>{{ comparison()!.rightPlayer.Name }}</h2>
+          <p>{{ comparison()!.rightPlayer.Team }}</p>
+        </div>
+      </div>
+
+      <div class="stats-comparison">
+        <table>
+          <thead>
+            <tr>
+              <th>Statystyka</th>
+              <th>{{ comparison()!.leftPlayer.Name }}</th>
+              <th>{{ comparison()!.rightPlayer.Name }}</th>
+              <th>Różnica</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (stat of comparisonStats(); track stat.label) {
+              <tr>
+                <td class="stat-label">{{ stat.label }}</td>
+                <td [class.winner]="stat.leftWins">{{ stat.leftValue }}</td>
+                <td [class.winner]="stat.rightWins">{{ stat.rightValue }}</td>
+                <td class="difference">{{ stat.difference }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  @if (leftName && rightName && !comparison() && !isLoading()) {
+    <p class="error">Nie znaleziono jednego lub obu graczy w bazie danych.</p>
+  }
+
+  @if (isLoading()) {
+    <p class="loading">Ładowanie porównania...</p>
+  }
+</section>

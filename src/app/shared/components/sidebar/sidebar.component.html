@@ -33,10 +33,6 @@
       <mat-icon>description</mat-icon>
       <span>Pliki Save</span>
     </a>
-    <a routerLink="/import-csv" routerLinkActive="active" class="nav-item">
-	  <mat-icon>upload_file</mat-icon>
-	  <span>Import CSV</span>
-	</a>
     @if (isAdminOrKomisz()) {
       <div class="sidebar-section">
         <span class="section-label">Admin's</span>
@@ -51,6 +47,10 @@
         <a routerLink="/rebuild-player-db" routerLinkActive="active" class="nav-item">
           <mat-icon>manage_search</mat-icon>
           <span>Przebudowa db graczy</span>
+        </a>
+        <a routerLink="/generate-stats" routerLinkActive="active" class="nav-item">
+          <mat-icon>analytics</mat-icon>
+          <span>Generuj statystyki</span>
         </a>
         <a routerLink="/activity-log" routerLinkActive="active" class="nav-item">
           <mat-icon>people</mat-icon>
