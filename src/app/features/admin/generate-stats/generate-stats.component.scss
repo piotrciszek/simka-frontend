@@ -6,7 +6,7 @@
 
 .page-title {
   text-align: center;
-  color: #ff6a00;
+  color: var(--accent);
   margin-bottom: 30px;
 }
 
@@ -22,20 +22,20 @@
 }
 
 .alert-error {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #f44336;
-  border: 1px solid rgba(244, 67, 54, 0.3);
+  background-color: color-mix(in srgb, var(--error) 10%, transparent);
+  color: var(--error);
+  border: 1px solid color-mix(in srgb, var(--error) 30%, transparent);
 }
 
 .loading {
   text-align: center;
-  color: #999;
+  color: var(--text-secondary);
   padding: 20px;
 }
 
 .empty {
   text-align: center;
-  color: #999;
+  color: var(--text-secondary);
   font-style: italic;
   margin: 20px 0;
 }

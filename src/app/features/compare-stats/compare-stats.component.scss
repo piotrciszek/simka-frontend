@@ -2,12 +2,12 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  color: white;
+  color: var(--text-primary);
 }
 
 h1 {
   text-align: center;
-  color: #ff6a00;
+  color: var(--accent);
   margin-bottom: 30px;
 }
 
@@ -18,11 +18,11 @@ h1 {
 }
 
 .empty, .loading {
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .error {
-  color: #ff4444;
+  color: var(--error);
 }
 
 .selectors {
@@ -34,9 +34,9 @@ h1 {
 
 select {
   padding: 12px 16px;
-  background: #1a1a1a;
-  color: white;
-  border: 1px solid #333;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 16px;
   min-width: 250px;
@@ -44,46 +44,46 @@ select {
 
 select:focus {
   outline: none;
-  border-color: #ff6a00;
+  border-color: var(--accent);
 }
 
 .comparison-results {
-  background: #1a1a1a;
+  background: var(--bg-card);
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #333;
+  border: 1px solid var(--border);
 }
 
 .players-header {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   padding: 20px;
-  background: #1f1f1f;
-  border-bottom: 1px solid #333;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
 }
 
 .player-info {
-  flex: 1;
   text-align: center;
 }
 
 .player-info h2 {
-  color: #ff6a00;
+  color: var(--accent);
   margin: 0 0 5px 0;
   font-size: 20px;
 }
 
 .player-info p {
   margin: 0;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .vs-divider {
-  color: #ff6a00;
+  color: var(--accent);
   font-size: 24px;
   font-weight: bold;
-  padding: 0 30px;
+  text-align: center;
 }
 
 .stats-comparison {
@@ -93,39 +93,59 @@ select:focus {
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+table th,
+table td {
+  width: 33.333%;
 }
 
 th, td {
   padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid #2b2b2b;
+  border-bottom: 1px solid var(--border);
 }
 
 th {
-  background: #1f1f1f;
-  color: #ff6a00;
+  background: var(--bg-secondary);
+  color: var(--accent);
   font-weight: bold;
+  text-align: center;
 }
 
+/* Lewa i prawa kolumna - wartości statystyk */
+th:first-child,
+th:last-child,
+td:first-child,
+td:last-child {
+  text-align: center;
+  font-family: monospace;
+}
+
+/* Środkowa kolumna - nazwy statystyk */
+th:nth-child(2),
 .stat-label {
+  text-align: center;
   font-weight: 500;
-  color: #ccc;
+  color: var(--text-secondary);
 }
 
 .winner {
-  background-color: rgba(255, 106, 0, 0.1);
-  color: #ff6a00;
+  background-color: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
   font-weight: bold;
 }
 
-.difference {
+/* Center alignment for values */
+td:first-child,
+td:last-child {
+  text-align: center;
   font-family: monospace;
-  text-align: right;
-  color: #999;
 }
 
 tbody tr:hover {
-  background: #1e1e1e;
+  background: var(--bg-secondary);
+  opacity: 0.8;
 }
 
 @media (max-width: 768px) {

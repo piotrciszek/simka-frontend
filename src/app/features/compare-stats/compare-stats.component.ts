@@ -30,7 +30,6 @@ export class CompareStatsComponent {
       label: string;
       leftValue: string;
       rightValue: string;
-      difference: string;
       leftWins: boolean;
       rightWins: boolean;
     }>
@@ -99,17 +98,15 @@ export class CompareStatsComponent {
       const leftNum = parseFloat(leftValue) || 0;
       const rightNum = parseFloat(rightValue) || 0;
 
-      const difference = Math.abs(leftNum - rightNum).toFixed(2);
       const leftWins = leftNum > rightNum;
       const rightWins = rightNum > leftNum;
 
       return {
         label: stat.label,
         leftValue:
-          typeof leftValue === 'number' ? leftValue.toFixed(1) : leftValue?.toString() || '0',
+          typeof leftValue === 'number' ? leftValue.toFixed(2) : leftValue?.toString() || '0',
         rightValue:
-          typeof rightValue === 'number' ? rightValue.toFixed(1) : rightValue?.toString() || '0',
-        difference: difference,
+          typeof rightValue === 'number' ? rightValue.toFixed(2) : rightValue?.toString() || '0',
         leftWins,
         rightWins,
       };
