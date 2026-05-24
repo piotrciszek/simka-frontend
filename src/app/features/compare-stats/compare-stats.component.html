@@ -41,19 +41,17 @@
         <table>
           <thead>
             <tr>
+              <th></th>
               <th>Statystyka</th>
-              <th>{{ comparison()!.leftPlayer.Name }}</th>
-              <th>{{ comparison()!.rightPlayer.Name }}</th>
-              <th>Różnica</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             @for (stat of comparisonStats(); track stat.label) {
               <tr>
-                <td class="stat-label">{{ stat.label }}</td>
                 <td [class.winner]="stat.leftWins">{{ stat.leftValue }}</td>
+                <td class="stat-label">{{ stat.label }}</td>
                 <td [class.winner]="stat.rightWins">{{ stat.rightValue }}</td>
-                <td class="difference">{{ stat.difference }}</td>
               </tr>
             }
           </tbody>
