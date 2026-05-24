@@ -1,0 +1,153 @@
+.compare-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  color: #ff6a00;
+  margin-bottom: 30px;
+}
+
+.empty, .error, .loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.empty, .loading {
+  color: #999;
+}
+
+.error {
+  color: #ff4444;
+}
+
+.selectors {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+select {
+  padding: 12px 16px;
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 16px;
+  min-width: 250px;
+}
+
+select:focus {
+  outline: none;
+  border-color: #ff6a00;
+}
+
+.comparison-results {
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.players-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: #1f1f1f;
+  border-bottom: 1px solid #333;
+}
+
+.player-info {
+  flex: 1;
+  text-align: center;
+}
+
+.player-info h2 {
+  color: #ff6a00;
+  margin: 0 0 5px 0;
+  font-size: 20px;
+}
+
+.player-info p {
+  margin: 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.vs-divider {
+  color: #ff6a00;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 0 30px;
+}
+
+.stats-comparison {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #2b2b2b;
+}
+
+th {
+  background: #1f1f1f;
+  color: #ff6a00;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-weight: 500;
+  color: #ccc;
+}
+
+.winner {
+  background-color: rgba(255, 106, 0, 0.1);
+  color: #ff6a00;
+  font-weight: bold;
+}
+
+.difference {
+  font-family: monospace;
+  text-align: right;
+  color: #999;
+}
+
+tbody tr:hover {
+  background: #1e1e1e;
+}
+
+@media (max-width: 768px) {
+  .selectors {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .players-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .vs-divider {
+    padding: 10px 0;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+  }
+}

@@ -1,0 +1,85 @@
+.advanced-stats-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  color: #ff6a00;
+  margin-bottom: 30px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  font-size: 18px;
+  padding: 40px;
+}
+
+.table-wrapper {
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 700px;
+  border: 1px solid #333;
+}
+
+table {
+  width: 100%;
+  min-width: 1200px;
+  border-collapse: collapse;
+  background: #111;
+}
+
+th, td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #2b2b2b;
+  white-space: nowrap;
+}
+
+th {
+  background: #1f1f1f;
+  color: #ff6a00;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+tbody tr:hover {
+  background: #1e1e1e;
+}
+
+/* First column sticky (player name) */
+td:first-child,
+th:first-child {
+  position: sticky;
+  left: 0;
+  background: #111;
+  z-index: 5;
+}
+
+th:first-child {
+  background: #1f1f1f;
+  z-index: 15;
+}
+
+/* Numeric columns right-aligned */
+td:nth-child(n+4) {
+  text-align: right;
+  font-family: monospace;
+}
+
+@media (max-width: 768px) {
+  .advanced-stats-page {
+    padding: 10px;
+  }
+
+  th, td {
+    padding: 8px 6px;
+    font-size: 14px;
+  }
+}

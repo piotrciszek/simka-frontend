@@ -1,0 +1,52 @@
+<div class="generate-stats-container">
+  <h1 class="page-title">Generuj statystyki z CSV</h1>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  <!-- Wybór pliku CSV ze statystykami -->
+  <mat-card class="section-card">
+    <mat-card-header>
+      <mat-card-title>Generuj statystyki z serwera</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (loadingFiles()) {
+        <div class="loading">Ładowanie listy plików statystyk...</div>
+      } @else if (files().length === 0) {
+        <p class="empty">Brak plików CSV w folderze /uploads/stats/</p>
+      } @else {
+        <div class="load-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Wybierz plik CSV ze statystykami</mat-label>
+            <mat-select [value]="selectedFile()" (selectionChange)="onFileSelect($event.value)">
+              @for (file of files(); track file.filename) {
+                <mat-option [value]="file.filename">
+                  {{ file.filename }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Sezon (np. 2049)</mat-label>
+            <input matInput [formControl]="seasonControl" />
+            @if (seasonControl.touched && seasonControl.hasError('required')) {
+              <mat-error>Wymagane</mat-error>
+            }
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="primary"
+            [disabled]="!selectedFile() || loading()"
+            (click)="generateStats()"
+          >
+            <mat-icon>analytics</mat-icon>
+            {{ loading() ? 'Generowanie...' : 'Generuj statystyki' }}
+          </button>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

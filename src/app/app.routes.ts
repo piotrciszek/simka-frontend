@@ -251,11 +251,13 @@ export const routes: Routes = [
           import('./features/save-files/save-files.component').then(m => m.SaveFilesComponent),
       },
       {
-	  path: 'import-csv',
-	  loadComponent: () =>
-	    import('./features/import-csv/import-csv.component')
-	      .then(m => m.ImportCsvComponent),
-	},
+        path: 'generate-stats',
+        loadComponent: () =>
+          import('./features/admin/generate-stats/generate-stats.component').then(
+            m => m.GenerateStatsComponent,
+          ),
+        canActivate: [roleGuard(['admin', 'komisz'])],
+      },
       // ── ROSTER ──
       {
         path: 'team-rosters',
