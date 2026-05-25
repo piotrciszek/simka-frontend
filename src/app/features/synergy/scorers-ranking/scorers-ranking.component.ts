@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StatsService, type ScorerRanking } from '../../core/services/stats.service';
+import { StatsService, type ScorerRanking } from '../../../core/services/stats.service';
 
 @Component({
   selector: 'app-scorers-ranking',

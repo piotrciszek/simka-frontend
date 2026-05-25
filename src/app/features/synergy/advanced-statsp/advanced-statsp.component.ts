@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { StatsService, type PlayerStat } from '../../core/services/stats.service';
+import { StatsService, type PlayerStat } from '../../../core/services/stats.service';
 
 @Component({
   selector: 'app-advanced-statsp',
