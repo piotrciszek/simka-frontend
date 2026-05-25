@@ -70,7 +70,7 @@ export class AuthService {
     // Admin zawsze ma dostęp
     if (user.role === 'admin') return true;
 
-    // Sprawdź pole canAccessSynergy z bazy danych
-    return user.canAccessSynergy === true;
+    // Sprawdź pole canAccessSynergy z bazy danych (MySQL zwraca 0/1)
+    return !!user.canAccessSynergy;
   }
 }
