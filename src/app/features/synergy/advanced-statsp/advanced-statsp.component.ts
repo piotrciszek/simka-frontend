@@ -1,46 +1,72 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef } from 'ag-grid-community';
 import { StatsService, type PlayerStat } from '../../../core/services/stats.service';
 
 @Component({
   selector: 'app-advanced-statsp',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AgGridAngular],
   templateUrl: './advanced-statsp.component.html',
   styleUrl: './advanced-statsp.component.scss',
 })
 export class AdvancedStatspComponent {
   private statsService = inject(StatsService);
 
-  private allRows = signal<PlayerStat[]>([]);
-  private filteredRows = signal<PlayerStat[]>([]);
+  rows = signal<PlayerStat[]>([]);
 
-  rows = computed(() => (this.filteredRows().length ? this.filteredRows() : this.allRows()));
-  headers = computed(() => {
-    const firstRow = this.allRows()[0];
-    return firstRow ? Object.keys(firstRow) : [];
-  });
+  // Kolumny dla zaawansowanych statystyk per game (identyczne jak w sum)
+  readonly colDefs: ColDef[] = [
+    {
+      field: 'Name',
+      headerName: 'Gracz',
+      pinned: 'left',
+      width: 180,
+      filter: 'agTextColumnFilter',
+      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
+    },
+    { field: 'Position', headerName: 'Poz.', width: 70, filter: 'agTextColumnFilter' },
+    { field: 'Team', headerName: 'Drużyna', width: 100, filter: 'agTextColumnFilter' },
+    { field: 'Games', headerName: 'GP', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'Minutes', headerName: 'Min', width: 70, filter: 'agNumberColumnFilter' },
+    {
+      field: 'Points',
+      headerName: 'PTS',
+      width: 70,
+      filter: 'agNumberColumnFilter',
+      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
+    },
+    { field: 'FG', headerName: 'FG', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'FGA', headerName: 'FGA', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'FT', headerName: 'FT', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'FTA', headerName: 'FTA', width: 70, filter: 'agNumberColumnFilter' },
+    { field: '3P', headerName: '3P', width: 70, filter: 'agNumberColumnFilter' },
+    { field: '3PA', headerName: '3PA', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'Rebounds', headerName: 'REB', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'OREB', headerName: 'OREB', width: 80, filter: 'agNumberColumnFilter' },
+    { field: 'Assists', headerName: 'AST', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'Steals', headerName: 'STL', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'Blocks', headerName: 'BLK', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'Turnovers', headerName: 'TO', width: 70, filter: 'agNumberColumnFilter' },
+    { field: 'Fouls', headerName: 'PF', width: 70, filter: 'agNumberColumnFilter' },
+  ];
 
-  // Filter controls
-  filterColumn = '';
-  filterOperator = '>';
-  filterValue = '';
-  operators = signal(['>', '>=', '<', '<=', '=']);
-
-  // Sort controls
-  sortColumn = signal('');
-  sortDirection = signal<'asc' | 'desc'>('asc');
+  readonly defaultColDef: ColDef = {
+    sortable: true,
+    filter: true,
+    resizable: true,
+  };
 
   constructor() {
-    // Load data on component initialization
     this.loadAdvancedStats();
   }
 
   private loadAdvancedStats() {
     this.statsService.getAdvancedStats().subscribe({
       next: data => {
-        this.allRows.set(data);
+        this.rows.set(data);
       },
       error: error => {
         console.error('Błąd ładowania statystyk:', error);
@@ -48,84 +74,4 @@ export class AdvancedStatspComponent {
     });
   }
 
-  getCellValue(row: PlayerStat, header: string): any {
-    return (row as any)[header] ?? '';
-  }
-
-  sort(column: string) {
-    if (this.sortColumn() === column) {
-      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
-    } else {
-      this.sortColumn.set(column);
-      this.sortDirection.set('asc');
-    }
-
-    const currentRows = this.filteredRows().length ? [...this.filteredRows()] : [...this.allRows()];
-
-    const sortedRows = currentRows.sort((a, b) => {
-      const aVal = (a as any)[column];
-      const bVal = (b as any)[column];
-      const aNum = parseFloat(aVal);
-      const bNum = parseFloat(bVal);
-
-      if (!isNaN(aNum) && !isNaN(bNum)) {
-        return this.sortDirection() === 'asc' ? aNum - bNum : bNum - aNum;
-      }
-
-      return this.sortDirection() === 'asc'
-        ? String(aVal).localeCompare(String(bVal))
-        : String(bVal).localeCompare(String(aVal));
-    });
-
-    if (this.filteredRows().length) {
-      this.filteredRows.set(sortedRows);
-    } else {
-      this.allRows.set(sortedRows);
-    }
-  }
-
-  applyFilter() {
-    if (!this.filterColumn || this.filterValue === '') {
-      this.filteredRows.set([]);
-      return;
-    }
-
-    const filterNumber = Number(this.filterValue);
-
-    const filtered = this.allRows().filter(row => {
-      const value = (row as any)[this.filterColumn];
-      const rowNumber = Number(value);
-
-      if (isNaN(rowNumber) || isNaN(filterNumber)) {
-        if (this.filterOperator === '=') {
-          return String(value).toLowerCase() === String(this.filterValue).toLowerCase();
-        }
-        return false;
-      }
-
-      switch (this.filterOperator) {
-        case '>':
-          return rowNumber > filterNumber;
-        case '>=':
-          return rowNumber >= filterNumber;
-        case '<':
-          return rowNumber < filterNumber;
-        case '<=':
-          return rowNumber <= filterNumber;
-        case '=':
-          return rowNumber === filterNumber;
-        default:
-          return true;
-      }
-    });
-
-    this.filteredRows.set(filtered);
-  }
-
-  clearFilter() {
-    this.filterColumn = '';
-    this.filterOperator = '>';
-    this.filterValue = '';
-    this.filteredRows.set([]);
-  }
 }
