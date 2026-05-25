@@ -19,4 +19,8 @@ export class SidebarComponent {
   isAdminOrKomisz(): boolean {
     return this.authService.hasRole('admin', 'komisz');
   }
+
+  canAccessSynergy(): boolean {
+    return this.authService.canAccessSynergy();
+  }
 }
