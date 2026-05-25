@@ -42,7 +42,6 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('advanced_stats_access');
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
@@ -62,5 +61,16 @@ export class AuthService {
   hasRole(...roles: string[]): boolean {
     const user = this.getCurrentUser();
     return !!user && roles.includes(user.role);
+  }
+
+  canAccessSynergy(): boolean {
+    const user = this.getCurrentUser();
+    if (!user) return false;
+
+    // Admin zawsze ma dostęp
+    if (user.role === 'admin') return true;
+
+    // Sprawdź pole canAccessSynergy z bazy danych
+    return user.canAccessSynergy === true;
   }
 }
