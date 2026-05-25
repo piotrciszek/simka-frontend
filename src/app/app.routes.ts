@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './core/guards/auth.guard';
+import { synergyGuard } from './core/guards/synergy.guard';
 import { PublicLayoutComponent } from './features/public/public-layout/public-layout.component';
-import { advancedStatsGuard } from './guards/advanced-stats.guard';
 
 export const routes: Routes = [
   // --- NIEZALGOWANY ---
@@ -390,7 +390,7 @@ export const routes: Routes = [
       },
       {
         path: 'advanced-statsp',
-        canActivate: [advancedStatsGuard],
+        canActivate: [synergyGuard],
         loadComponent: () =>
           import('./features/synergy/advanced-statsp/advanced-statsp.component').then(
             m => m.AdvancedStatspComponent,
@@ -398,7 +398,7 @@ export const routes: Routes = [
       },
       {
         path: 'compare-stats',
-        canActivate: [advancedStatsGuard],
+        canActivate: [synergyGuard],
         loadComponent: () =>
           import('./features/synergy/compare-stats/compare-stats.component').then(
             m => m.CompareStatsComponent,
@@ -406,7 +406,7 @@ export const routes: Routes = [
       },
       {
         path: 'scorers-ranking',
-        canActivate: [advancedStatsGuard],
+        canActivate: [synergyGuard],
         loadComponent: () =>
           import('./features/synergy/scorers-ranking/scorers-ranking.component').then(
             m => m.ScorersRankingComponent,

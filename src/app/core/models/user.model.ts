@@ -7,6 +7,7 @@ export interface User {
   email?: string;
   isActive: boolean;
   mustChangePassword: boolean;
+  canAccessSynergy: boolean;
   createdAt: string;
 }
 
@@ -17,5 +18,6 @@ export interface AuthResponse {
     id: number;
     username: string;
     role: Role;
+    canAccessSynergy: boolean;
   };
 }
