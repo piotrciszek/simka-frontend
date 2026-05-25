@@ -3,26 +3,48 @@
   margin: 0 auto;
   padding: 20px;
   color: var(--text-primary);
+
+  > h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 30px;
+  }
 }
 
-h1 {
-  text-align: center;
-  color: var(--accent);
-  margin-bottom: 30px;
-}
-
-.empty, .error, .loading {
+.empty-state, .error, .loading {
   text-align: center;
   padding: 40px;
   font-size: 18px;
 }
 
-.empty, .loading {
+.empty-state, .loading {
   color: var(--text-secondary);
 }
 
 .error {
   color: var(--error);
+}
+
+/* Material Card styling */
+.section-card {
+  margin-bottom: 30px;
+
+  mat-card-header {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+
+  mat-card-title {
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+    text-align: center;
+  }
+
+  mat-card-content {
+    padding-top: 24px !important; /* Odstęp między tytułem a dropdownami */
+  }
 }
 
 .selectors {

@@ -1,26 +1,37 @@
 <section class="compare-page">
-  <h1>Porównaj graczy</h1>
+  <h2>Porównaj graczy</h2>
 
   @if (!players().length) {
-    <p class="empty">Ładowanie listy graczy...</p>
+    <p class="empty-state">Ładowanie listy graczy...</p>
   }
 
   @if (players().length) {
-    <div class="selectors">
-      <select [(ngModel)]="leftName" (change)="selectPlayers()">
-        <option value="">Wybierz gracza</option>
-        @for (p of players(); track p.Name) {
-          <option [value]="p.Name">{{ p.Name }}</option>
-        }
-      </select>
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Wybierz graczy do porównania</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="selectors">
+          <mat-form-field appearance="outline">
+            <mat-label>Gracz 1</mat-label>
+            <mat-select [value]="leftName" (selectionChange)="leftName = $event.value; selectPlayers()">
+              @for (p of players(); track p.Name) {
+                <mat-option [value]="p.Name">{{ p.Name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
-      <select [(ngModel)]="rightName" (change)="selectPlayers()">
-        <option value="">Wybierz gracza</option>
-        @for (p of players(); track p.Name) {
-          <option [value]="p.Name">{{ p.Name }}</option>
-        }
-      </select>
-    </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Gracz 2</mat-label>
+            <mat-select [value]="rightName" (selectionChange)="rightName = $event.value; selectPlayers()">
+              @for (p of players(); track p.Name) {
+                <mat-option [value]="p.Name">{{ p.Name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
   }
 
   @if (comparison()) {

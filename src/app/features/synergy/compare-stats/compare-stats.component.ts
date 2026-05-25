@@ -1,6 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import {
   StatsService,
   type PlayerListItem,
@@ -11,7 +14,7 @@ import {
 @Component({
   selector: 'app-compare-stats',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatSelectModule, MatFormFieldModule],
   templateUrl: './compare-stats.component.html',
   styleUrl: './compare-stats.component.scss',
 })
