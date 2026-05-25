@@ -4,11 +4,6 @@ import { Observable } from 'rxjs';
 import { Player } from '../models/player.model';
 import { environment } from '../../../environments/environment';
 
-interface UploadResponse {
-  message: string;
-  playersCount: number;
-}
-
 export interface CsvUpload {
   id: number;
   filename: string;
@@ -30,13 +25,6 @@ export class PlayerService {
       ? `${this.apiUrl}/csv/players?team=${encodeURIComponent(team)}`
       : `${this.apiUrl}/csv/players`;
     return this.http.get<Player[]>(url);
-  }
-
-  uploadCsv(file: File, season: string): Observable<UploadResponse> {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('season', season);
-    return this.http.post<UploadResponse>(`${this.apiUrl}/csv/upload`, formData);
   }
 
   getUploads(): Observable<CsvUpload[]> {
