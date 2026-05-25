@@ -6,7 +6,7 @@ import {
   type PlayerListItem,
   type PlayerStat,
   type PlayerComparison,
-} from '../../core/services/stats.service';
+} from '../../../core/services/stats.service';
 
 @Component({
   selector: 'app-compare-stats',

@@ -188,34 +188,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
       },
       {
-  path: 'advanced-stats',
-  loadComponent: () =>
-    import('./features/advanced-stats/advanced-stats.component').then(
-      m => m.AdvancedStatsComponent,
-    ),
-	},
-	{
-  path: 'advanced-statsp',
-  canActivate: [advancedStatsGuard],
-  loadComponent: () =>
-    import('./features/advanced-statsp/advanced-statsp.component')
-      .then(m => m.AdvancedStatspComponent),
-	},
-				{
-			  path: 'compare-stats',
-			  canActivate: [advancedStatsGuard],
-			  loadComponent: () =>
-			    import('./features/compare-stats/compare-stats.component')
-			      .then(m => m.CompareStatsComponent),
-			},
-						{
-			  path: 'scorers-ranking',
-			  canActivate: [advancedStatsGuard],
-			  loadComponent: () =>
-			    import('./features/scorers-ranking/scorers-ranking.component')
-			      .then(m => m.ScorersRankingComponent),
-			},
-      {
         path: 'tactics',
         loadComponent: () =>
           import('./features/tactics/tactics.component').then(m => m.TacticsComponent),
@@ -406,6 +378,38 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/history/past-picks/past-picks.component').then(
             m => m.PastPicksComponent,
+          ),
+      },
+      // ── SIMKOWE SYNERGY ──
+      {
+        path: 'advanced-stats',
+        loadComponent: () =>
+          import('./features/synergy/advanced-stats/advanced-stats.component').then(
+            m => m.AdvancedStatsComponent,
+          ),
+      },
+      {
+        path: 'advanced-statsp',
+        canActivate: [advancedStatsGuard],
+        loadComponent: () =>
+          import('./features/synergy/advanced-statsp/advanced-statsp.component').then(
+            m => m.AdvancedStatspComponent,
+          ),
+      },
+      {
+        path: 'compare-stats',
+        canActivate: [advancedStatsGuard],
+        loadComponent: () =>
+          import('./features/synergy/compare-stats/compare-stats.component').then(
+            m => m.CompareStatsComponent,
+          ),
+      },
+      {
+        path: 'scorers-ranking',
+        canActivate: [advancedStatsGuard],
+        loadComponent: () =>
+          import('./features/synergy/scorers-ranking/scorers-ranking.component').then(
+            m => m.ScorersRankingComponent,
           ),
       },
       // ── ADMIN ──
