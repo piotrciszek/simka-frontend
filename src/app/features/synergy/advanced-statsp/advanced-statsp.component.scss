@@ -1,90 +1,44 @@
+// ag-Grid CSS
+@use 'ag-grid-community/styles/ag-grid.css';
+@use 'ag-grid-community/styles/ag-theme-material.css';
+
 .advanced-stats-page {
-  padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
+  padding: 20px;
   color: var(--text-primary);
 }
 
-h1 {
+h2 {
   text-align: center;
   color: var(--accent);
-  margin-bottom: 24px;
+  margin-bottom: 30px;
 }
 
-.filter-bar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-  align-items: center;
-  justify-content: center;
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 18px;
+  padding: 40px;
 }
 
-select, input {
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 9px 12px;
-}
-
-button {
-  background: var(--accent);
-  color: var(--bg-primary);
-  border: none;
-  border-radius: 8px;
-  padding: 9px 14px;
-  cursor: pointer;
-}
-
-.table-wrapper {
-  margin-top: 20px;
-  max-height: 650px;
-  overflow: auto;
-  border: 1px solid var(--border);
-}
-
-table {
+/* ag-Grid wrapper */
+.grid-container {
   width: 100%;
-  min-width: 1200px;
-  border-collapse: collapse;
-  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-th, td {
-  padding: 14px 12px;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-  text-align: left;
+ag-grid-angular {
+  width: 100%;
 }
 
-th {
-  position: sticky;
-  top: 0;
-  background: var(--bg-card);
-  color: var(--accent);
-  cursor: pointer;
-  font-weight: bold;
+@media (max-width: 768px) {
+  .advanced-stats-page {
+    padding: 10px;
+  }
 }
 
-th.sorted {
-  background: var(--accent);
-  color: var(--bg-primary);
-  opacity: 0.9;
-}
-
-tbody tr:hover {
-  background: var(--bg-card);
-  opacity: 0.8;
-}
-
-td:first-child {
-  position: sticky;
-  left: 0;
-  background: var(--bg-secondary);
-  z-index: 3;
-}
-
-th:first-child {
-  background: var(--bg-card);
-  z-index: 4;
-}
+// Style wierszy grida i ag-Grid są w globalnym styles.scss

@@ -1,55 +1,22 @@
 <section class="advanced-stats-page">
-  <h1>Zaawansowane statystyki P</h1>
+  <h2>Statystyki - per game</h2>
 
   @if (!rows().length) {
-    <p>Ładowanie danych...</p>
+    <p class="empty-state">Ładowanie danych...</p>
   }
 
-  @if (headers().length) {
-    <div class="filter-bar">
-      <select [(ngModel)]="filterColumn">
-        <option value="">Wybierz atrybut</option>
-        @for (h of headers(); track h) {
-          <option [value]="h">{{h}}</option>
-        }
-      </select>
-
-      <select [(ngModel)]="filterOperator">
-        @for (op of operators(); track op) {
-          <option [value]="op">{{op}}</option>
-        }
-      </select>
-
-      <input [(ngModel)]="filterValue" placeholder="np. 5"/>
-      <button (click)="applyFilter()">Filtruj</button>
-      <button (click)="clearFilter()">Wyczyść</button>
-    </div>
-  }
-
-  @if (rows().length) {
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            @for (h of headers(); track h) {
-              <th (click)="sort(h)" [class.sorted]="sortColumn() === h">
-                {{h}} @if (sortColumn() === h) {
-                  <span>{{sortDirection() === 'asc' ? '↑' : '↓'}}</span>
-                }
-              </th>
-            }
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rows(); track row.Name || $index) {
-            <tr>
-              @for (h of headers(); track h) {
-                <td>{{getCellValue(row, h)}}</td>
-              }
-            </tr>
-          }
-        </tbody>
-      </table>
+  @if (rows().length > 0) {
+    <div class="grid-container">
+      <ag-grid-angular
+        class="ag-theme-material"
+        [rowData]="rows()"
+        [columnDefs]="colDefs"
+        [defaultColDef]="defaultColDef"
+        [domLayout]="'normal'"
+        [suppressMenuHide]="true"
+        [animateRows]="true"
+        style="height: 600px">
+      </ag-grid-angular>
     </div>
   }
 </section>

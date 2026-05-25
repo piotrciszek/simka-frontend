@@ -1,3 +1,7 @@
+// ag-Grid CSS
+@use 'ag-grid-community/styles/ag-grid.css';
+@use 'ag-grid-community/styles/ag-theme-material.css';
+
 .ranking-page {
   max-width: 1200px;
   margin: 0 auto;
@@ -5,94 +9,39 @@
   color: var(--text-primary);
 }
 
-h1 {
+h2 {
   text-align: center;
   color: var(--accent);
   margin-bottom: 30px;
 }
 
-.empty {
+.empty-state {
   text-align: center;
   color: var(--text-secondary);
   font-size: 18px;
   padding: 40px;
 }
 
-.table-wrapper {
-  background: var(--bg-card);
-  border-radius: 8px;
-  overflow: auto;
-  max-height: 600px;
+/* ag-Grid wrapper - dostosowany do szerokości kolumn */
+.grid-container-centered {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
   border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--bg-secondary);
-}
-
-th, td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-
-th {
-  background: var(--bg-card);
-  color: var(--accent);
-  font-weight: bold;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-/* Header alignment */
-th:nth-child(3),
-th:nth-child(4),
-th:nth-child(5) {
-  text-align: center;
-}
-
-th:nth-child(6) {
-  text-align: right;
-}
-
-tbody tr:hover {
-  background: var(--bg-card);
-  opacity: 0.8;
-}
-
-td:nth-child(1) {
-  font-weight: bold;
-  color: var(--accent);
-}
-
-td:nth-child(2) {
-  font-weight: 500;
-}
-
-/* Kolumny 3-5: do środka (TS%, EFG%, FGA) */
-td:nth-child(3),
-td:nth-child(4),
-td:nth-child(5) {
-  font-family: monospace;
-  text-align: center;
-}
-
-/* Ostatnia kolumna: do prawej (ShooterScore) */
-td:nth-child(6) {
-  font-family: monospace;
-  text-align: right;
+ag-grid-angular {
+  width: fit-content;
+  min-width: 700px; /* minimalna szerokość dla 6 kolumn */
 }
 
 @media (max-width: 768px) {
   .ranking-page {
     padding: 10px;
   }
-
-  th, td {
-    padding: 8px 10px;
-    font-size: 14px;
-  }
 }
+
+// Style wierszy grida i ag-Grid są w globalnym styles.scss

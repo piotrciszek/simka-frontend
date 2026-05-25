@@ -18,12 +18,25 @@ export class AdvancedStatsComponent {
 
   // Kolumny dla zaawansowanych statystyk
   readonly colDefs: ColDef[] = [
-    { field: 'Name', headerName: 'Gracz', pinned: 'left', width: 180, filter: 'agTextColumnFilter' },
+    {
+      field: 'Name',
+      headerName: 'Gracz',
+      pinned: 'left',
+      width: 180,
+      filter: 'agTextColumnFilter',
+      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
+    },
     { field: 'Position', headerName: 'Poz.', width: 70, filter: 'agTextColumnFilter' },
     { field: 'Team', headerName: 'Drużyna', width: 100, filter: 'agTextColumnFilter' },
     { field: 'Games', headerName: 'GP', width: 70, filter: 'agNumberColumnFilter' },
     { field: 'Minutes', headerName: 'Min', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Points', headerName: 'PTS', width: 70, filter: 'agNumberColumnFilter' },
+    {
+      field: 'Points',
+      headerName: 'PTS',
+      width: 70,
+      filter: 'agNumberColumnFilter',
+      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
+    },
     { field: 'FG', headerName: 'FG', width: 70, filter: 'agNumberColumnFilter' },
     { field: 'FGA', headerName: 'FGA', width: 70, filter: 'agNumberColumnFilter' },
     { field: 'FT', headerName: 'FT', width: 70, filter: 'agNumberColumnFilter' },
