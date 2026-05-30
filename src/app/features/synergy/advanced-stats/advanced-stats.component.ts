@@ -27,7 +27,7 @@ export class AdvancedStatsComponent {
       cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
     },
     { field: 'Position', headerName: 'Poz.', width: 70, filter: 'agTextColumnFilter' },
-    { field: 'Team', headerName: 'Drużyna', width: 100, filter: 'agTextColumnFilter' },
+    { field: 'Team', headerName: 'Team', width: 100, filter: 'agTextColumnFilter' },
     { field: 'Games', headerName: 'GP', width: 70, filter: 'agNumberColumnFilter' },
     { field: 'Minutes', headerName: 'Min', width: 70, filter: 'agNumberColumnFilter' },
     {

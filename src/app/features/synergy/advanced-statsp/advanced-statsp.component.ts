@@ -16,41 +16,52 @@ export class AdvancedStatspComponent {
   private statsService = inject(StatsService);
 
   rows = signal<PlayerStat[]>([]);
+  
+  private numberCol(field: string, headerName: string, width = 70): ColDef {
+  return {
+    field,
+    headerName,
+    width,
+    filter: 'agNumberColumnFilter',
+    valueGetter: params => Number(params.data?.[field]) || 0,
+    comparator: (a, b) => Number(a) - Number(b),
+  };
+}
 
   // Kolumny dla zaawansowanych statystyk per game (identyczne jak w sum)
   readonly colDefs: ColDef[] = [
-    {
-      field: 'Name',
-      headerName: 'Gracz',
-      pinned: 'left',
-      width: 180,
-      filter: 'agTextColumnFilter',
-      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
-    },
-    { field: 'Position', headerName: 'Poz.', width: 70, filter: 'agTextColumnFilter' },
-    { field: 'Team', headerName: 'Drużyna', width: 100, filter: 'agTextColumnFilter' },
-    { field: 'Games', headerName: 'GP', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Minutes', headerName: 'Min', width: 70, filter: 'agNumberColumnFilter' },
-    {
-      field: 'Points',
-      headerName: 'PTS',
-      width: 70,
-      filter: 'agNumberColumnFilter',
-      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
-    },
-    { field: 'FG', headerName: 'FG', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'FGA', headerName: 'FGA', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'FT', headerName: 'FT', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'FTA', headerName: 'FTA', width: 70, filter: 'agNumberColumnFilter' },
-    { field: '3P', headerName: '3P', width: 70, filter: 'agNumberColumnFilter' },
-    { field: '3PA', headerName: '3PA', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Rebounds', headerName: 'REB', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'OREB', headerName: 'OREB', width: 80, filter: 'agNumberColumnFilter' },
-    { field: 'Assists', headerName: 'AST', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Steals', headerName: 'STL', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Blocks', headerName: 'BLK', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Turnovers', headerName: 'TO', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Fouls', headerName: 'PF', width: 70, filter: 'agNumberColumnFilter' },
+  {
+    field: 'Name',
+    headerName: 'Gracz',
+    pinned: 'left',
+    width: 180,
+    filter: 'agTextColumnFilter',
+    cellRenderer: (params: any) =>
+      `<span style="font-weight:bold;">${params.value}</span>`
+  },
+  { field: 'Position', headerName: 'Poz.', width: 70, filter: 'agTextColumnFilter' },
+  { field: 'Team', headerName: 'Team', width: 100, filter: 'agTextColumnFilter' },
+
+  this.numberCol('Games', 'GP'),
+  this.numberCol('Minutes', 'Min'),
+  {
+    ...this.numberCol('Points', 'PTS'),
+    cellRenderer: (params: any) =>
+      `<span style="font-weight:bold;">${params.value}</span>`
+  },
+  this.numberCol('FG', 'FG'),
+  this.numberCol('FGA', 'FGA'),
+  this.numberCol('FT', 'FT'),
+  this.numberCol('FTA', 'FTA'),
+  this.numberCol('3P', '3P'),
+  this.numberCol('3PA', '3PA'),
+  this.numberCol('Rebounds', 'REB'),
+  this.numberCol('OREB', 'OREB', 80),
+  this.numberCol('Assists', 'AST'),
+  this.numberCol('Steals', 'STL'),
+  this.numberCol('Blocks', 'BLK'),
+  this.numberCol('Turnovers', 'TO'),
+  this.numberCol('Fouls', 'PF'),
   ];
 
   readonly defaultColDef: ColDef = {
