@@ -22,7 +22,7 @@
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-  align-items: flex-start;
+  margin-bottom: 48px;
 }
 
 .team-summary-card {
@@ -121,4 +121,14 @@ footer {
     width: 100%;
     min-width: unset;
   }
+
+.trade-text-field {
+  width: 100%;
+  margin-bottom: 64px;
+  display: block;
+}
+
+textarea {
+  font-family: monospace;
+}
 }

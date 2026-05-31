@@ -136,12 +136,12 @@
     </div>
   </mat-card>
   <div class="preview-actions">
-  <button
-    mat-raised-button
-    color="primary"
-    routerLink="/trade-machine/summary"
-  >
-    Show this trade
-  </button>
+	<button
+	  mat-raised-button
+	  color="primary"
+	  routerLink="/trade-machine/summary"
+	  [disabled]="!canShowSummary()">
+	  Show this trade
+	</button>
 </div>
 </section>

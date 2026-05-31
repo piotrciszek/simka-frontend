@@ -6,7 +6,7 @@
       Back
     </button>
   </div>
-
+  
   <div class="summary-grid">
     <article
       class="team-summary-card"
@@ -43,4 +43,19 @@
       </footer>
     </article>
   </div>
+  
+   <mat-form-field
+    appearance="outline"
+    class="trade-text-field"
+  >
+    <mat-label>Trade Summary Text</mat-label>
+
+    <textarea
+      matInput
+      rows="16"
+      readonly
+      [value]="tradeText()">
+    </textarea>
+  </mat-form-field>
+  
 </section>

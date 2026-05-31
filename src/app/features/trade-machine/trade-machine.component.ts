@@ -53,16 +53,37 @@ export class TradeMachineComponent {
   teamC = signal('');
   teamD = signal('');
 
-  teams = computed(() =>
-    Array.from(
-      new Set(this.players().map(player => player.Team).filter(Boolean)),
-    ).sort(),
+  readonly teams = computed(() =>
+  Array.from(
+    new Set(
+      this.players()
+        .map(player => player.Team)
+        .filter(team => team && team !== 'FA'),
+    ),
+  ).sort(),
   );
 
   playersA = computed(() => this.playersForTeam(this.teamA()));
   playersB = computed(() => this.playersForTeam(this.teamB()));
   playersC = computed(() => this.playersForTeam(this.teamC()));
   playersD = computed(() => this.playersForTeam(this.teamD()));
+  
+  readonly canShowSummary = computed(() => {
+  const selectedTeams = [
+    this.teamA(),
+    this.teamB(),
+    this.teamC(),
+    this.teamD(),
+  ].filter(Boolean);
+
+  if (!selectedTeams.length) {
+    return false;
+  }
+
+  return selectedTeams.every(team =>
+    this.tradeValid(team),
+  );
+  });
 
   constructor() {
     this.playerService.getPlayersFull().subscribe({
