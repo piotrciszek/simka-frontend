@@ -65,6 +65,13 @@ export interface StatsFilters {
   position?: string;
 }
 
+export interface TradePlayer {
+  Name: string;
+  Team: string;
+  Position: string;
+  Salary: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -137,4 +144,9 @@ export class StatsService {
       csvUploadId: csvUploadId || null,
     });
   }
+  getTradePlayers(): Observable<TradePlayer[]> {
+  return this.http.get<TradePlayer[]>(
+    `${this.apiUrl}/stats/trade-players`
+  );
+   }
 }

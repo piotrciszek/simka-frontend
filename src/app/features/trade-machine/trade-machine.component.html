@@ -1,0 +1,147 @@
+<section class="trade-page">
+  <h1>Trade Machine v1</h1>
+
+  <p *ngIf="!players().length" class="empty">
+    Ladowanie zawodnikow...
+  </p>
+
+  <div *ngIf="players().length" class="trade-grid">
+    <mat-card>
+      <h2>Team A</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Wybierz druzyne</mat-label>
+        <mat-select [ngModel]="teamA()" (selectionChange)="setTeamA($event.value)">
+          <mat-option *ngFor="let team of availableTeams(teamA())" [value]="team">
+            {{ team }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngTemplateOutlet="playersTpl; context: { players: playersA(), team: teamA() }" />
+    </mat-card>
+
+    <mat-card>
+      <h2>Team B</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Wybierz druzyne</mat-label>
+        <mat-select [ngModel]="teamB()" (selectionChange)="setTeamB($event.value)">
+          <mat-option *ngFor="let team of availableTeams(teamB())" [value]="team">
+            {{ team }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngTemplateOutlet="playersTpl; context: { players: playersB(), team: teamB() }" />
+    </mat-card>
+
+    <mat-card>
+      <h2>Team C</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Wybierz druzyne</mat-label>
+        <mat-select [ngModel]="teamC()" (selectionChange)="setTeamC($event.value)">
+          <mat-option *ngFor="let team of availableTeams(teamC())" [value]="team">
+            {{ team }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngTemplateOutlet="playersTpl; context: { players: playersC(), team: teamC() }" />
+    </mat-card>
+
+    <mat-card>
+      <h2>Team D</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Wybierz druzyne</mat-label>
+        <mat-select [ngModel]="teamD()" (selectionChange)="setTeamD($event.value)">
+          <mat-option *ngFor="let team of availableTeams(teamD())" [value]="team">
+            {{ team }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngTemplateOutlet="playersTpl; context: { players: playersD(), team: teamD() }" />
+    </mat-card>
+  </div>
+
+  <ng-template #playersTpl let-players="players" let-team="team">
+    <div class="players-list">
+      <div class="player-row" *ngFor="let player of players">
+        <div class="player-info">
+          <strong>{{ player.Name }}</strong>
+          <span>{{ money(player.Salary) }}</span>
+        </div>
+
+        <button mat-button [matMenuTriggerFor]="tradeMenu" [disabled]="!team">
+          Trade to
+        </button>
+
+        <mat-menu #tradeMenu="matMenu">
+          <button
+            mat-menu-item
+            *ngFor="let target of availableTradeTargets(team)"
+            (click)="movePlayer(player, team, target)"
+          >
+            {{ target }}
+          </button>
+
+          <button
+            mat-menu-item
+            *ngIf="playerMove(player)"
+            (click)="removeMove(player)"
+          >
+            Cofnij
+          </button>
+        </mat-menu>
+
+        <small *ngIf="playerMove(player)">
+          › {{ playerMove(player)?.toTeam }}
+        </small>
+      </div>
+    </div>
+  </ng-template>
+
+  <mat-card *ngIf="players().length" class="result-card">
+    <h2>Wynik wymiany</h2>
+
+    <div class="result-grid">
+      <div *ngFor="let team of [teamA(), teamB(), teamC(), teamD()]">
+        <ng-container *ngIf="team">
+          <h3>{{ team }}</h3>
+
+          <p>Total Salary Before: <strong>{{ money(teamSalary(team)) }}</strong></p>
+          <p>Salary OUT: <strong>{{ money(salaryOut(team)) }}</strong></p>
+          <p>Salary IN: <strong>{{ money(salaryIn(team)) }}</strong></p>
+          <p>Total Salary After: <strong>{{ money(salaryAfterTrade(team)) }}</strong></p>
+          <p>Difference: <strong>{{ money(difference(team)) }}</strong></p>
+          
+		  <p class="salary-adjustment">
+          {{ salaryAdjustment(team) }}
+          </p>
+
+          <p>
+            Trade:
+            <span
+              [class.trade-on]="tradeValid(team)"
+              [class.trade-off]="!tradeValid(team)"
+            >
+              {{ tradeValid(team) ? 'ON' : 'OFF' }}
+            </span>
+          </p>
+        </ng-container>
+      </div>
+    </div>
+  </mat-card>
+  <div class="preview-actions">
+  <button
+    mat-raised-button
+    color="primary"
+    routerLink="/trade-machine/summary"
+  >
+    Show this trade
+  </button>
+</div>
+</section>
