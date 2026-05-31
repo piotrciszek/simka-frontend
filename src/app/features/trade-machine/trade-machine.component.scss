@@ -101,6 +101,28 @@ strong {
   color: #facc15;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.minimum-form {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #111;
+}
+
+.minimum-form mat-form-field {
+  width: 260px;
+}
+
 @media (max-width: 1400px) {
   .trade-grid,
   .result-grid {

@@ -52,6 +52,24 @@ export class TradeMachineComponent {
   teamB = signal('');
   teamC = signal('');
   teamD = signal('');
+  
+    showMinimumForm = signal(false);
+	minimumTeam = signal('');
+	minimumSalary = signal<number | null>(null);
+	
+	readonly minimumContracts = [
+	  { label: 'Rookie - 332 817', value: 332817 },
+	  { label: '1 rok - 465 850', value: 465850 },
+	  { label: '2 lata - 540 850', value: 540850 },
+	  { label: '3 lata - 565 850', value: 565850 },
+	  { label: '4 lata - 590 850', value: 590850 },
+	  { label: '5 lat - 653 350', value: 653350 },
+	  { label: '6 lat - 715 850', value: 715850 },
+	  { label: '7 lat - 778 350', value: 778350 },
+	  { label: '8 lat - 840 850', value: 840850 },
+	  { label: '9 lat - 965 850', value: 965850 },
+	  { label: '10+ lat - 1 000 000', value: 1000000 },
+	];
 
   readonly teams = computed(() =>
   Array.from(
@@ -147,6 +165,37 @@ setTeamD(team: string): void {
   this.teamD.set(team);
   this.tradeMachineService.setTeam('D', team);
   this.removeMovesForTeam(team);
+}
+
+toggleMinimumForm(): void {
+  this.showMinimumForm.update(value => !value);
+}
+
+addMinimumPlayer(): void {
+  const team = this.minimumTeam();
+  const salary = this.minimumSalary();
+
+  if (!team || !salary) {
+    return;
+  }
+
+  const minimumPlayer: TradePlayer = {
+    Name: 'Minimum',
+    Team: team,
+    Position: 'MIN',
+    Salary: salary,
+  };
+
+  this.players.update(players => [
+    ...players,
+    minimumPlayer,
+  ]);
+
+  this.tradeMachineService.setPlayers(this.players());
+
+  this.minimumTeam.set('');
+  this.minimumSalary.set(null);
+  this.showMinimumForm.set(false);
 }
 
   movePlayer(player: TradePlayer, fromTeam: string, toTeam: string): void {

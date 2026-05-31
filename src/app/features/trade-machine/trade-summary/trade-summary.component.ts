@@ -30,13 +30,14 @@ export class TradeSummaryComponent {
 
   const lines: string[] = [];
 
-  for (let i = 0; i < teams.length; i++) {
-    for (let j = i + 1; j < teams.length; j++) {
-      lines.push(`${teams[i].team} - ${teams[j].team}`);
-    }
-  }
+		lines.push(
+		  teams
+		    .map(team => team.team)
+		    .join(' - ')
+		);
+		
+		lines.push('');
 
-  lines.push('');
 
   teams.forEach(team => {
     const incoming = this.tradeMachine.tradeMoves()

@@ -10,7 +10,7 @@
       <h2>Team A</h2>
 
       <mat-form-field appearance="outline">
-        <mat-label>Wybierz druzyne</mat-label>
+        <mat-label>Select a team</mat-label>
         <mat-select [ngModel]="teamA()" (selectionChange)="setTeamA($event.value)">
           <mat-option *ngFor="let team of availableTeams(teamA())" [value]="team">
             {{ team }}
@@ -25,7 +25,7 @@
       <h2>Team B</h2>
 
       <mat-form-field appearance="outline">
-        <mat-label>Wybierz druzyne</mat-label>
+        <mat-label>Select a team</mat-label>
         <mat-select [ngModel]="teamB()" (selectionChange)="setTeamB($event.value)">
           <mat-option *ngFor="let team of availableTeams(teamB())" [value]="team">
             {{ team }}
@@ -40,7 +40,7 @@
       <h2>Team C</h2>
 
       <mat-form-field appearance="outline">
-        <mat-label>Wybierz druzyne</mat-label>
+        <mat-label>Select a team</mat-label>
         <mat-select [ngModel]="teamC()" (selectionChange)="setTeamC($event.value)">
           <mat-option *ngFor="let team of availableTeams(teamC())" [value]="team">
             {{ team }}
@@ -55,7 +55,7 @@
       <h2>Team D</h2>
 
       <mat-form-field appearance="outline">
-        <mat-label>Wybierz druzyne</mat-label>
+        <mat-label>Select a team</mat-label>
         <mat-select [ngModel]="teamD()" (selectionChange)="setTeamD($event.value)">
           <mat-option *ngFor="let team of availableTeams(teamD())" [value]="team">
             {{ team }}
@@ -135,13 +135,83 @@
       </div>
     </div>
   </mat-card>
-  <div class="preview-actions">
-	<button
-	  mat-raised-button
-	  color="primary"
-	  routerLink="/trade-machine/summary"
-	  [disabled]="!canShowSummary()">
-	  Show this trade
-	</button>
+  <div class="action-buttons">
+  <button
+    mat-stroked-button
+    color="accent"
+    (click)="toggleMinimumForm()">
+    Add minimum
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    routerLink="/trade-machine/summary"
+    [disabled]="!canShowSummary()">
+    Show this trade
+  </button>
+</div>
+
+<div
+  class="minimum-form"
+  *ngIf="showMinimumForm()"
+>
+  <mat-form-field appearance="outline">
+    <mat-label>Team</mat-label>
+
+    <mat-select
+      [ngModel]="minimumTeam()"
+      (selectionChange)="minimumTeam.set($event.value)"
+    >
+      <mat-option value="">Select a team</mat-option>
+
+      <mat-option
+        *ngIf="teamA()"
+        [value]="teamA()">
+        Team A - {{ teamA() }}
+      </mat-option>
+
+      <mat-option
+        *ngIf="teamB()"
+        [value]="teamB()">
+        Team B - {{ teamB() }}
+      </mat-option>
+
+      <mat-option
+        *ngIf="teamC()"
+        [value]="teamC()">
+        Team C - {{ teamC() }}
+      </mat-option>
+
+      <mat-option
+        *ngIf="teamD()"
+        [value]="teamD()">
+        Team D - {{ teamD() }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Minimum</mat-label>
+
+    <mat-select
+      [ngModel]="minimumSalary()"
+      (selectionChange)="minimumSalary.set($event.value)"
+    >
+      <mat-option
+        *ngFor="let minimum of minimumContracts"
+        [value]="minimum.value">
+        {{ minimum.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="addMinimumPlayer()"
+    [disabled]="!minimumTeam() || !minimumSalary()">
+    Dodaj
+  </button>
 </div>
 </section>
