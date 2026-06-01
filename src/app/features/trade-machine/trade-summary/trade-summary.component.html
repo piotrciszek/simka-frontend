@@ -6,45 +6,43 @@
       Back
     </button>
   </div>
-  
+
   <div class="summary-grid">
-    <article
-      class="team-summary-card"
-      *ngFor="let team of teams()"
-    >
-      <header>
-        <h2>{{ team.team }}</h2>
-      </header>
+    @for (team of teams(); track team.team) {
+      <article class="team-summary-card">
+        <header>
+          <h2>{{ team.team }}</h2>
+        </header>
 
-      <div class="table-head">
-        <span>Player</span>
-        <span>Salary</span>
-      </div>
-
-      <div
-        class="player-row"
-        *ngFor="let player of team.players"
-      >
-        <div>
-          <strong>{{ player.Name }}</strong>
-          <small>{{ player.Position }}</small>
+        <div class="table-head">
+          <span>Player</span>
+          <span>Salary</span>
         </div>
 
-        <strong>{{ money(player.Salary) }}</strong>
-      </div>
+        @for (player of team.players; track player.Name) {
+          <div class="player-row">
+            <div>
+              <strong>{{ player.Name }}</strong>
+              <small>{{ player.Position }}</small>
+            </div>
 
-      <footer>
-        <strong>
-          Acquiring {{ team.players.length }}
-          {{ team.players.length === 1 ? 'Player' : 'Players' }}
-        </strong>
+            <strong>{{ money(player.Salary) }}</strong>
+          </div>
+        }
 
-        <strong>{{ money(team.salary) }}</strong>
-      </footer>
-    </article>
+        <footer>
+          <strong>
+            Acquiring {{ team.players.length }}
+            {{ team.players.length === 1 ? 'Player' : 'Players' }}
+          </strong>
+
+          <strong>{{ money(team.salary) }}</strong>
+        </footer>
+      </article>
+    }
   </div>
-  
-   <mat-form-field
+
+  <mat-form-field
     appearance="outline"
     class="trade-text-field"
   >
@@ -57,5 +55,4 @@
       [value]="tradeText()">
     </textarea>
   </mat-form-field>
-  
 </section>

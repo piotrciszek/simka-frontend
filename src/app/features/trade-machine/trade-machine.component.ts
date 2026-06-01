@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,8 +10,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 
 import { PlayerService } from '../../core/services/player.service';
-import { RouterLink } from '@angular/router';
 import { TradeMachineService } from '../../core/services/trade-machine.service';
+
+type TeamSlot = 'A' | 'B' | 'C' | 'D';
 
 interface TradePlayer {
   Name: string;
@@ -25,194 +27,230 @@ interface TradeMove {
   toTeam: string;
 }
 
+interface TeamSummary {
+  team: string;
+  salaryBefore: number;
+  salaryOut: number;
+  salaryIn: number;
+  salaryAfter: number;
+  difference: number;
+  salaryAdjustment: string;
+  tradeValid: boolean;
+}
+
 @Component({
   selector: 'app-trade-machine',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
     MatMenuModule,
     MatSelectModule,
-    RouterLink,
   ],
   templateUrl: './trade-machine.component.html',
   styleUrl: './trade-machine.component.scss',
 })
 export class TradeMachineComponent {
-  private playerService = inject(PlayerService);
-  private tradeMachineService = inject(TradeMachineService);
+  private readonly playerService = inject(PlayerService);
+  private readonly tradeMachineService = inject(TradeMachineService);
 
-  players = signal<TradePlayer[]>([]);
-  tradeMoves = signal<TradeMove[]>([]);
+  readonly players = signal<TradePlayer[]>([]);
+  readonly tradeMoves = signal<TradeMove[]>([]);
 
-  teamA = signal('');
-  teamB = signal('');
-  teamC = signal('');
-  teamD = signal('');
-  
-    showMinimumForm = signal(false);
-	minimumTeam = signal('');
-	minimumSalary = signal<number | null>(null);
-	
-	readonly minimumContracts = [
-	  { label: 'Rookie - 332 817', value: 332817 },
-	  { label: '1 rok - 465 850', value: 465850 },
-	  { label: '2 lata - 540 850', value: 540850 },
-	  { label: '3 lata - 565 850', value: 565850 },
-	  { label: '4 lata - 590 850', value: 590850 },
-	  { label: '5 lat - 653 350', value: 653350 },
-	  { label: '6 lat - 715 850', value: 715850 },
-	  { label: '7 lat - 778 350', value: 778350 },
-	  { label: '8 lat - 840 850', value: 840850 },
-	  { label: '9 lat - 965 850', value: 965850 },
-	  { label: '10+ lat - 1 000 000', value: 1000000 },
-	];
+  readonly teamA = signal('');
+  readonly teamB = signal('');
+  readonly teamC = signal('');
+  readonly teamD = signal('');
+
+  readonly showMinimumForm = signal(false);
+  readonly minimumTeam = signal('');
+  readonly minimumSalary = signal<number | null>(null);
+
+  readonly minimumContracts = [
+    { label: 'Rookie - 332 817', value: 332817 },
+    { label: '1 rok - 465 850', value: 465850 },
+    { label: '2 lata - 540 850', value: 540850 },
+    { label: '3 lata - 565 850', value: 565850 },
+    { label: '4 lata - 590 850', value: 590850 },
+    { label: '5 lat - 653 350', value: 653350 },
+    { label: '6 lat - 715 850', value: 715850 },
+    { label: '7 lat - 778 350', value: 778350 },
+    { label: '8 lat - 840 850', value: 840850 },
+    { label: '9 lat - 965 850', value: 965850 },
+    { label: '10+ lat - 1 000 000', value: 1000000 },
+  ];
 
   readonly teams = computed(() =>
-  Array.from(
-    new Set(
-      this.players()
-        .map(player => player.Team)
-        .filter(team => team && team !== 'FA'),
-    ),
-  ).sort(),
+    Array.from(
+      new Set(
+        this.players()
+          .map(player => player.Team)
+          .filter(team => team && team !== 'FA'),
+      ),
+    ).sort(),
   );
 
-  playersA = computed(() => this.playersForTeam(this.teamA()));
-  playersB = computed(() => this.playersForTeam(this.teamB()));
-  playersC = computed(() => this.playersForTeam(this.teamC()));
-  playersD = computed(() => this.playersForTeam(this.teamD()));
-  
+  readonly teamSlots = computed(() => [
+    {
+      slot: 'A' as TeamSlot,
+      label: 'Team A',
+      team: this.teamA(),
+      players: this.playersForTeam(this.teamA()),
+    },
+    {
+      slot: 'B' as TeamSlot,
+      label: 'Team B',
+      team: this.teamB(),
+      players: this.playersForTeam(this.teamB()),
+    },
+    {
+      slot: 'C' as TeamSlot,
+      label: 'Team C',
+      team: this.teamC(),
+      players: this.playersForTeam(this.teamC()),
+    },
+    {
+      slot: 'D' as TeamSlot,
+      label: 'Team D',
+      team: this.teamD(),
+      players: this.playersForTeam(this.teamD()),
+    },
+  ]);
+
+  readonly selectedTeams = computed(() =>
+    this.teamSlots()
+      .map(teamSlot => teamSlot.team)
+      .filter(Boolean),
+  );
+
+  readonly resultSummaries = computed<TeamSummary[]>(() =>
+    this.selectedTeams().map(team => {
+      const salaryBefore = this.teamSalary(team);
+      const salaryOut = this.salaryOut(team);
+      const salaryIn = this.salaryIn(team);
+      const salaryAfter = salaryBefore - salaryOut + salaryIn;
+      const difference = salaryIn - salaryOut;
+
+      return {
+        team,
+        salaryBefore,
+        salaryOut,
+        salaryIn,
+        salaryAfter,
+        difference,
+        salaryAdjustment: this.buildSalaryAdjustment(team, salaryOut, difference),
+        tradeValid: this.isTradeValid(team, salaryOut, salaryIn, salaryAfter, difference),
+      };
+    }),
+  );
+
   readonly canShowSummary = computed(() => {
-  const selectedTeams = [
-    this.teamA(),
-    this.teamB(),
-    this.teamC(),
-    this.teamD(),
-  ].filter(Boolean);
+    const resultSummaries = this.resultSummaries();
 
-  if (!selectedTeams.length) {
-    return false;
-  }
+    if (!resultSummaries.length) {
+      return false;
+    }
 
-  return selectedTeams.every(team =>
-    this.tradeValid(team),
-  );
+    return resultSummaries.every(summary => summary.tradeValid);
   });
 
   constructor() {
     this.playerService.getPlayersFull().subscribe({
       next: players => {
-      const tradePlayers = players.map(player => ({
-	  Name: `${player.firstName} ${player.lastName}`,
-	  Team: player.team,
-	  Position: player.position,
-	  Salary: Number(player.salary1) || 0,
-	  }));
-	
-	  this.players.set(tradePlayers);
-	  this.tradeMachineService.setPlayers(tradePlayers);
-              
+        const tradePlayers = players.map(player => ({
+          Name: `${player.firstName} ${player.lastName}`,
+          Team: player.team,
+          Position: player.position,
+          Salary: Number(player.salary1) || 0,
+        }));
+
+        this.players.set(tradePlayers);
+        this.tradeMachineService.setPlayers(tradePlayers);
       },
       error: error => {
-        console.error('Blad ladowania graczy do Trade Machine:', error);
+        console.error('BÅ‚Ä…d Å‚adowania graczy do Trade Machine:', error);
       },
     });
   }
 
   availableTeams(currentTeam: string): string[] {
-    const selectedTeams = [
-      this.teamA(),
-      this.teamB(),
-      this.teamC(),
-      this.teamD(),
-    ].filter(team => team && team !== currentTeam);
+    const selectedTeams = this.selectedTeams()
+      .filter(team => team && team !== currentTeam);
 
     return this.teams().filter(team => !selectedTeams.includes(team));
   }
 
   availableTradeTargets(currentTeam: string): string[] {
-    return [
-      this.teamA(),
-      this.teamB(),
-      this.teamC(),
-      this.teamD(),
-    ].filter(team => team && team !== currentTeam);
+    return this.selectedTeams()
+      .filter(team => team && team !== currentTeam);
   }
 
-setTeamA(team: string): void {
-  this.teamA.set(team);
-  this.tradeMachineService.setTeam('A', team);
-  this.removeMovesForTeam(team);
-}
+  setTeam(slot: TeamSlot, team: string): void {
+    if (slot === 'A') {
+      this.teamA.set(team);
+    }
 
-setTeamB(team: string): void {
-  this.teamB.set(team);
-  this.tradeMachineService.setTeam('B', team);
-  this.removeMovesForTeam(team);
-}
+    if (slot === 'B') {
+      this.teamB.set(team);
+    }
 
-setTeamC(team: string): void {
-  this.teamC.set(team);
-  this.tradeMachineService.setTeam('C', team);
-  this.removeMovesForTeam(team);
-}
+    if (slot === 'C') {
+      this.teamC.set(team);
+    }
 
-setTeamD(team: string): void {
-  this.teamD.set(team);
-  this.tradeMachineService.setTeam('D', team);
-  this.removeMovesForTeam(team);
-}
+    if (slot === 'D') {
+      this.teamD.set(team);
+    }
 
-toggleMinimumForm(): void {
-  this.showMinimumForm.update(value => !value);
-}
-
-addMinimumPlayer(): void {
-  const team = this.minimumTeam();
-  const salary = this.minimumSalary();
-
-  if (!team || !salary) {
-    return;
+    this.tradeMachineService.setTeam(slot, team);
+    this.removeMovesForTeam(team);
   }
 
-  const minimumPlayer: TradePlayer = {
-    Name: 'Minimum',
-    Team: team,
-    Position: 'MIN',
-    Salary: salary,
-  };
+  toggleMinimumForm(): void {
+    this.showMinimumForm.update(value => !value);
+  }
 
-  this.players.update(players => [
-    ...players,
-    minimumPlayer,
-  ]);
+  addMinimumPlayer(): void {
+    const team = this.minimumTeam();
+    const salary = this.minimumSalary();
 
-  this.tradeMachineService.setPlayers(this.players());
+    if (!team || !salary) {
+      return;
+    }
 
-  this.minimumTeam.set('');
-  this.minimumSalary.set(null);
-  this.showMinimumForm.set(false);
-}
+    const minimumPlayer: TradePlayer = {
+      Name: 'Minimum',
+      Team: team,
+      Position: 'MIN',
+      Salary: salary,
+    };
+
+    this.players.update(players => [
+      ...players,
+      minimumPlayer,
+    ]);
+
+    this.tradeMachineService.setPlayers(this.players());
+
+    this.minimumTeam.set('');
+    this.minimumSalary.set(null);
+    this.showMinimumForm.set(false);
+  }
 
   movePlayer(player: TradePlayer, fromTeam: string, toTeam: string): void {
-    this.tradeMoves.update(moves => {
-      const withoutPlayer = moves.filter(
-        move => move.player.Name !== player.Name,
-      );
+    this.tradeMoves.update(moves => [
+      ...moves.filter(move => move.player.Name !== player.Name),
+      {
+        player,
+        fromTeam,
+        toTeam,
+      },
+    ]);
 
-      return [
-        ...withoutPlayer,
-        {
-          player,
-          fromTeam,
-          toTeam,
-        },
-      ];
-    });
     this.tradeMachineService.movePlayer(player, fromTeam, toTeam);
   }
 
@@ -228,17 +266,24 @@ addMinimumPlayer(): void {
     );
   }
 
-  playersForTeam(team: string): TradePlayer[] {
+  money(value: number): string {
+    return value.toLocaleString('pl-PL', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  private playersForTeam(team: string): TradePlayer[] {
     return this.players()
       .filter(player => player.Team === team)
       .sort((a, b) => b.Salary - a.Salary);
   }
 
-  teamSalary(team: string): number {
+  private teamSalary(team: string): number {
     return this.sumSalary(this.playersForTeam(team));
   }
 
-  salaryOut(team: string): number {
+  private salaryOut(team: string): number {
     return this.sumSalary(
       this.tradeMoves()
         .filter(move => move.fromTeam === team)
@@ -246,7 +291,7 @@ addMinimumPlayer(): void {
     );
   }
 
-  salaryIn(team: string): number {
+  private salaryIn(team: string): number {
     return this.sumSalary(
       this.tradeMoves()
         .filter(move => move.toTeam === team)
@@ -254,71 +299,59 @@ addMinimumPlayer(): void {
     );
   }
 
-  salaryAfterTrade(team: string): number {
-    return this.teamSalary(team) - this.salaryOut(team) + this.salaryIn(team);
+  private buildSalaryAdjustment(
+    team: string,
+    salaryOut: number,
+    difference: number,
+  ): string {
+    if (!team || salaryOut <= 0 || difference === 0) {
+      return '0.00';
+    }
+
+    const allowedDifference = salaryOut * 0.15;
+    const absDifference = Math.abs(difference);
+
+    if (absDifference <= allowedDifference) {
+      return '0.00';
+    }
+
+    const adjustment = absDifference - allowedDifference;
+
+    if (difference > 0) {
+      return `CUT ${this.money(adjustment)}`;
+    }
+
+    return `ADD ${this.money(adjustment)}`;
   }
 
-  difference(team: string): number {
-    return this.salaryIn(team) - this.salaryOut(team);
-  }
-  
-  salaryAdjustment(team: string): string {
-  const out = this.salaryOut(team);
-  const salaryDifference = this.difference(team);
+  private isTradeValid(
+    team: string,
+    salaryOut: number,
+    salaryIn: number,
+    salaryAfter: number,
+    difference: number,
+  ): boolean {
+    if (!team) {
+      return false;
+    }
 
-  if (!team || out <= 0 || salaryDifference === 0) {
-    return '0';
-  }
+    if (salaryAfter > 80_000_000) {
+      return false;
+    }
 
-  const allowedDifference = out * 0.15;
-  const absDifference = Math.abs(salaryDifference);
+    if (salaryOut > 0 && salaryIn === 0) {
+      return true;
+    }
 
-  if (absDifference <= allowedDifference) {
-    return '0';
-  }
+    if (salaryIn > 0) {
+      const diffPercent = salaryOut > 0
+        ? Math.abs(difference) / salaryOut * 100
+        : 100;
 
-  const adjustment = absDifference - allowedDifference;
+      return diffPercent <= 15;
+    }
 
-  if (salaryDifference > 0) {
-    return `CUT ${this.money(adjustment)}`;
-  }
-
-  return `ADD ${this.money(adjustment)}`;
-  }
-
-  tradeValid(team: string): boolean {
-  const out = this.salaryOut(team);
-  const incoming = this.salaryIn(team);
-  const after = this.salaryAfterTrade(team);
-
-  if (!team) {
     return false;
-  }
-
-  if (after > 80_000_000) {
-    return false;
-  }
-
-  // Dru¿yna tylko oddaje salary i nic nie bierze.
-  // To jest OK w multiwayu.
-  if (out > 0 && incoming === 0) {
-    return true;
-  }
-
-  // Dru¿yna coœ dostaje, wiêc musi mieœciæ siê w +/- 15%.
-  if (incoming > 0) {
-    const diffPercent = out > 0
-      ? Math.abs(this.difference(team)) / out * 100
-      : 100;
-
-    return diffPercent <= 15;
-  }
-
-  return false;
-   }
-
-  money(value: number): string {
-    return value.toLocaleString('pl-PL');
   }
 
   private sumSalary(players: TradePlayer[]): number {
