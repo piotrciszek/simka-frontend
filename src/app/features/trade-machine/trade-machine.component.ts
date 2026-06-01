@@ -15,6 +15,7 @@ import { TradeMachineService } from '../../core/services/trade-machine.service';
 type TeamSlot = 'A' | 'B' | 'C' | 'D';
 
 interface TradePlayer {
+  id: string;
   Name: string;
   Team: string;
   Position: string;
@@ -161,7 +162,8 @@ export class TradeMachineComponent {
   constructor() {
     this.playerService.getPlayersFull().subscribe({
       next: players => {
-        const tradePlayers = players.map(player => ({
+        const tradePlayers = players.map((player, index) => ({
+          id: this.buildPlayerId(player.team, player.firstName, player.lastName, index),
           Name: `${player.firstName} ${player.lastName}`,
           Team: player.team,
           Position: player.position,
@@ -189,30 +191,51 @@ export class TradeMachineComponent {
       .filter(team => team && team !== currentTeam);
   }
 
-  setTeam(slot: TeamSlot, team: string): void {
-    if (slot === 'A') {
-      this.teamA.set(team);
-    }
-
-    if (slot === 'B') {
-      this.teamB.set(team);
-    }
-
-    if (slot === 'C') {
-      this.teamC.set(team);
-    }
-
-    if (slot === 'D') {
-      this.teamD.set(team);
-    }
-
-    this.tradeMachineService.setTeam(slot, team);
-    this.removeMovesForTeam(team);
+	setTeam(slot: TeamSlot, team: string): void {
+	  const previousTeam = this.teamBySlot(slot);
+	
+	  if (slot === 'A') {
+	    this.teamA.set(team);
+	  }
+	
+	  if (slot === 'B') {
+	    this.teamB.set(team);
+	  }
+	
+	  if (slot === 'C') {
+	    this.teamC.set(team);
+	  }
+	
+	  if (slot === 'D') {
+	    this.teamD.set(team);
+	  }
+	
+	  this.tradeMachineService.setTeam(slot, team);
+	
+	  if (previousTeam) {
+	    this.removeMovesForTeam(previousTeam);
+	  }
+	
+	  if (team) {
+	    this.removeMovesForTeam(team);
+	  }
+	}
+	
+  private teamBySlot(slot: TeamSlot): string {
+  if (slot === 'A') {
+    return this.teamA();
   }
 
-  toggleMinimumForm(): void {
-    this.showMinimumForm.update(value => !value);
+  if (slot === 'B') {
+    return this.teamB();
   }
+
+  if (slot === 'C') {
+    return this.teamC();
+  }
+
+  return this.teamD();
+  }	
 
   addMinimumPlayer(): void {
     const team = this.minimumTeam();
@@ -223,6 +246,7 @@ export class TradeMachineComponent {
     }
 
     const minimumPlayer: TradePlayer = {
+      id: this.buildMinimumPlayerId(team, salary),
       Name: 'Minimum',
       Team: team,
       Position: 'MIN',
@@ -243,7 +267,7 @@ export class TradeMachineComponent {
 
   movePlayer(player: TradePlayer, fromTeam: string, toTeam: string): void {
     this.tradeMoves.update(moves => [
-      ...moves.filter(move => move.player.Name !== player.Name),
+      ...moves.filter(move => move.player.id !== player.id),
       {
         player,
         fromTeam,
@@ -256,13 +280,15 @@ export class TradeMachineComponent {
 
   removeMove(player: TradePlayer): void {
     this.tradeMoves.update(moves =>
-      moves.filter(move => move.player.Name !== player.Name),
+      moves.filter(move => move.player.id !== player.id),
     );
+
+    this.tradeMachineService.removeMove(player);
   }
 
   playerMove(player: TradePlayer): TradeMove | undefined {
     return this.tradeMoves().find(
-      move => move.player.Name === player.Name,
+      move => move.player.id === player.id,
     );
   }
 
@@ -364,5 +390,21 @@ export class TradeMachineComponent {
         move => move.fromTeam !== team && move.toTeam !== team,
       ),
     );
+  }
+
+  private buildPlayerId(
+    team: string,
+    firstName: string,
+    lastName: string,
+    index: number,
+  ): string {
+    return [team, firstName, lastName, index]
+      .join('-')
+      .toLowerCase()
+      .replace(/\s+/g, '-');
+  }
+
+  private buildMinimumPlayerId(team: string, salary: number): string {
+    return `minimum-${team}-${salary}-${Date.now()}`;
   }
 }

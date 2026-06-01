@@ -29,7 +29,7 @@
           </mat-form-field>
 
           <div class="players-list">
-            @for (player of teamSlot.players; track player.Name) {
+            @for (player of teamSlot.players; track player.id) {
               <div class="player-row">
                 <div class="player-info">
                   <strong>{{ player.Name }}</strong>
