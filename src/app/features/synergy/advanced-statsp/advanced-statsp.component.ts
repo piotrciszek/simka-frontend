@@ -1,8 +1,8 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import { StatsService, type PlayerStat } from '../../../core/services/stats.service';
 
 @Component({
@@ -17,7 +17,20 @@ export class AdvancedStatspComponent {
 
   rows = signal<PlayerStat[]>([]);
 
-  // Kolumny dla zaawansowanych statystyk per game (identyczne jak w sum)
+  private numberCol(field: string, headerName: string, width = 70, decimals = 2): ColDef {
+    return {
+      field,
+      headerName,
+      width,
+      filter: 'agNumberColumnFilter',
+      valueGetter: params => Number(params.data?.[field]) || 0,
+      cellRenderer: (params: ICellRendererParams) => {
+        if (params.value == null) return '';
+        return Number(params.value).toFixed(decimals);
+      },
+    };
+  }
+
   readonly colDefs: ColDef[] = [
     {
       field: 'Name',
@@ -25,32 +38,45 @@ export class AdvancedStatspComponent {
       pinned: 'left',
       width: 180,
       filter: 'agTextColumnFilter',
-      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
+      cellRenderer: (params: ICellRendererParams) =>
+        `<span style="font-weight:bold;">${params.value}</span>`,
     },
-    { field: 'Position', headerName: 'Poz.', width: 70, filter: 'agTextColumnFilter' },
-    { field: 'Team', headerName: 'Drużyna', width: 100, filter: 'agTextColumnFilter' },
-    { field: 'Games', headerName: 'GP', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Minutes', headerName: 'Min', width: 70, filter: 'agNumberColumnFilter' },
     {
-      field: 'Points',
-      headerName: 'PTS',
+      field: 'Position',
+      headerName: 'Poz.',
       width: 70,
-      filter: 'agNumberColumnFilter',
-      cellRenderer: (params: any) => `<span style="font-weight: bold;">${params.value}</span>`
+      filter: 'agTextColumnFilter',
     },
-    { field: 'FG', headerName: 'FG', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'FGA', headerName: 'FGA', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'FT', headerName: 'FT', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'FTA', headerName: 'FTA', width: 70, filter: 'agNumberColumnFilter' },
-    { field: '3P', headerName: '3P', width: 70, filter: 'agNumberColumnFilter' },
-    { field: '3PA', headerName: '3PA', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Rebounds', headerName: 'REB', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'OREB', headerName: 'OREB', width: 80, filter: 'agNumberColumnFilter' },
-    { field: 'Assists', headerName: 'AST', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Steals', headerName: 'STL', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Blocks', headerName: 'BLK', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Turnovers', headerName: 'TO', width: 70, filter: 'agNumberColumnFilter' },
-    { field: 'Fouls', headerName: 'PF', width: 70, filter: 'agNumberColumnFilter' },
+    {
+      field: 'Team',
+      headerName: 'Team',
+      width: 100,
+      filter: 'agTextColumnFilter',
+    },
+
+    this.numberCol('Games', 'GP', 70, 0),
+    this.numberCol('Minutes', 'Min'),
+    {
+      ...this.numberCol('Points', 'PTS'),
+      cellRenderer: (params: ICellRendererParams) => {
+        if (params.value == null) return '';
+        const formatted = Number(params.value).toFixed(2);
+        return `<span style="font-weight:bold;">${formatted}</span>`;
+      },
+    },
+    this.numberCol('FG', 'FG'),
+    this.numberCol('FGA', 'FGA'),
+    this.numberCol('FT', 'FT'),
+    this.numberCol('FTA', 'FTA'),
+    this.numberCol('3P', '3P'),
+    this.numberCol('3PA', '3PA'),
+    this.numberCol('Rebounds', 'REB'),
+    this.numberCol('OREB', 'OREB', 80),
+    this.numberCol('Assists', 'AST'),
+    this.numberCol('Steals', 'STL'),
+    this.numberCol('Blocks', 'BLK'),
+    this.numberCol('Turnovers', 'TO'),
+    this.numberCol('Fouls', 'PF'),
   ];
 
   readonly defaultColDef: ColDef = {
@@ -63,7 +89,7 @@ export class AdvancedStatspComponent {
     this.loadAdvancedStats();
   }
 
-  private loadAdvancedStats() {
+  private loadAdvancedStats(): void {
     this.statsService.getAdvancedStats().subscribe({
       next: data => {
         this.rows.set(data);
@@ -73,5 +99,4 @@ export class AdvancedStatspComponent {
       },
     });
   }
-
 }

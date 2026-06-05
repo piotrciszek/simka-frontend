@@ -1,0 +1,177 @@
+<section class="trade-page">
+  <h1>Trade Machine v1</h1>
+
+  @if (!players().length) {
+    <p class="empty">
+      Ladowanie zawodnikow...
+    </p>
+  }
+
+  @if (players().length) {
+    <div class="trade-grid">
+      @for (teamSlot of teamSlots(); track teamSlot.slot) {
+        <mat-card>
+          <h2>{{ teamSlot.label }}</h2>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select a team</mat-label>
+
+            <mat-select
+              [ngModel]="teamSlot.team"
+              (selectionChange)="setTeam(teamSlot.slot, $event.value)"
+            >
+              @for (team of availableTeams(teamSlot.team); track team) {
+                <mat-option [value]="team">
+                  {{ team }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <div class="players-list">
+            @for (player of teamSlot.players; track player.id) {
+              <div class="player-row">
+                <div class="player-info">
+                  <strong>{{ player.Name }}</strong>
+                  <span>{{ money(player.Salary) }}</span>
+                </div>
+
+                <button
+                  mat-button
+                  [matMenuTriggerFor]="tradeMenu"
+                  [disabled]="!teamSlot.team"
+                >
+                  Trade to
+                </button>
+
+                <mat-menu #tradeMenu="matMenu">
+                  @for (target of availableTradeTargets(teamSlot.team); track target) {
+                    <button
+                      mat-menu-item
+                      (click)="movePlayer(player, teamSlot.team, target)"
+                    >
+                      {{ target }}
+                    </button>
+                  }
+
+                  @if (playerMove(player)) {
+                    <button
+                      mat-menu-item
+                      (click)="removeMove(player)"
+                    >
+                      Cofnij
+                    </button>
+                  }
+                </mat-menu>
+
+                @if (playerMove(player); as move) {
+                  <small>
+                    → {{ move.toTeam }}
+                  </small>
+                }
+              </div>
+            }
+          </div>
+        </mat-card>
+      }
+    </div>
+
+    <mat-card class="result-card">
+      <h2>Wynik wymiany</h2>
+
+      <div class="result-grid">
+        @for (summary of resultSummaries(); track summary.team) {
+          <div>
+            <h3>{{ summary.team }}</h3>
+
+            <p>Total Salary Before: <strong>{{ money(summary.salaryBefore) }}</strong></p>
+            <p>Salary OUT: <strong>{{ money(summary.salaryOut) }}</strong></p>
+            <p>Salary IN: <strong>{{ money(summary.salaryIn) }}</strong></p>
+            <p>Total Salary After: <strong>{{ money(summary.salaryAfter) }}</strong></p>
+            <p>Difference: <strong>{{ money(summary.difference) }}</strong></p>
+
+            <p class="salary-adjustment">
+              {{ summary.salaryAdjustment }}
+            </p>
+
+            <p>
+              Trade:
+              <span
+                [class.trade-on]="summary.tradeValid"
+                [class.trade-off]="!summary.tradeValid"
+              >
+                {{ summary.tradeValid ? 'ON' : 'OFF' }}
+              </span>
+            </p>
+          </div>
+        }
+      </div>
+    </mat-card>
+  }
+
+  <div class="action-buttons">
+    <button
+      mat-stroked-button
+      color="accent"
+      (click)="toggleMinimumForm()"
+    >
+      Add minimum
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      routerLink="/trade-machine/summary"
+      [disabled]="!canShowSummary()"
+    >
+      Show this trade
+    </button>
+  </div>
+
+  @if (showMinimumForm()) {
+    <div class="minimum-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Team</mat-label>
+
+        <mat-select
+          [ngModel]="minimumTeam()"
+          (selectionChange)="minimumTeam.set($event.value)"
+        >
+          <mat-option value="">Select a team</mat-option>
+
+          @for (teamSlot of teamSlots(); track teamSlot.slot) {
+            @if (teamSlot.team) {
+              <mat-option [value]="teamSlot.team">
+                {{ teamSlot.label }} - {{ teamSlot.team }}
+              </mat-option>
+            }
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Minimum</mat-label>
+
+        <mat-select
+          [ngModel]="minimumSalary()"
+          (selectionChange)="minimumSalary.set($event.value)"
+        >
+          @for (minimum of minimumContracts; track minimum.value) {
+            <mat-option [value]="minimum.value">
+              {{ minimum.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="addMinimumPlayer()"
+        [disabled]="!minimumTeam() || !minimumSalary()"
+      >
+        Dodaj
+      </button>
+    </div>
+  }
+</section>

@@ -1,0 +1,123 @@
+.summary-page {
+  padding: 24px;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+}
+
+.summary-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.team-summary-card {
+  flex: 1;
+  min-width: 320px;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+
+  header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+
+    h2 {
+      margin: 0;
+      color: var(--text-primary);
+      font-size: 18px;
+      font-weight: 700;
+    }
+  }
+}
+
+.table-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 10px 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+
+  strong {
+    color: var(--text-primary);
+  }
+
+  small {
+    display: block;
+    margin-top: 4px;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+}
+
+.player-row:last-child {
+  border-bottom: none;
+}
+
+.player-row strong:last-child {
+  color: var(--success);
+  font-weight: 700;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-weight: 700;
+  border-top: 1px solid var(--border);
+}
+
+.trade-text-field {
+  width: 100%;
+  display: block;
+}
+
+textarea {
+  font-family: monospace;
+}
+
+@media (max-width: 1400px) {
+  .team-summary-card {
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  .summary-grid {
+    flex-direction: column;
+  }
+
+  .team-summary-card {
+    width: 100%;
+    min-width: unset;
+  }
+}

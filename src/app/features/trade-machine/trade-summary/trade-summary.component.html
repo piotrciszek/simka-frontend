@@ -1,0 +1,58 @@
+<section class="summary-page">
+  <div class="summary-header">
+    <h1>Trade Summary</h1>
+
+    <button mat-button routerLink="/trade-machine">
+      Back
+    </button>
+  </div>
+
+  <div class="summary-grid">
+    @for (team of teams(); track team.team) {
+      <article class="team-summary-card">
+        <header>
+          <h2>{{ team.team }}</h2>
+        </header>
+
+        <div class="table-head">
+          <span>Player</span>
+          <span>Salary</span>
+        </div>
+
+        @for (player of team.players; track player.Name) {
+          <div class="player-row">
+            <div>
+              <strong>{{ player.Name }}</strong>
+              <small>{{ player.Position }}</small>
+            </div>
+
+            <strong>{{ money(player.Salary) }}</strong>
+          </div>
+        }
+
+        <footer>
+          <strong>
+            Acquiring {{ team.players.length }}
+            {{ team.players.length === 1 ? 'Player' : 'Players' }}
+          </strong>
+
+          <strong>{{ money(team.salary) }}</strong>
+        </footer>
+      </article>
+    }
+  </div>
+
+  <mat-form-field
+    appearance="outline"
+    class="trade-text-field"
+  >
+    <mat-label>Trade Summary Text</mat-label>
+
+    <textarea
+      matInput
+      rows="16"
+      readonly
+      [value]="tradeText()">
+    </textarea>
+  </mat-form-field>
+</section>

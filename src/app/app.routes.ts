@@ -412,6 +412,21 @@ export const routes: Routes = [
             m => m.ScorersRankingComponent,
           ),
       },
+      {
+        path: 'trade-machine',
+        canActivate: [synergyGuard],
+        loadComponent: () =>
+          import('./features/trade-machine/trade-machine.component').then(
+            m => m.TradeMachineComponent,
+          ),
+      },
+      {
+      path: 'trade-machine/summary',
+      canActivate: [synergyGuard],
+      loadComponent: () =>
+      import('./features/trade-machine/trade-summary/trade-summary.component')
+      .then(m => m.TradeSummaryComponent),
+       },
       // ── ADMIN ──
       {
         path: 'tactics-log',

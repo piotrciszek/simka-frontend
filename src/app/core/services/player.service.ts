@@ -13,6 +13,21 @@ export interface CsvUpload {
   uploaded_by: string;
 }
 
+export interface PlayerFull {
+  id: number;
+  firstName: string;
+  lastName: string;
+  position: string;
+  team: string;
+  salary1: number;
+  salary2: number;
+  salary3: number;
+  salary4: number;
+  salary5: number;
+  salary6: number;
+  salary7: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -29,5 +44,15 @@ export class PlayerService {
 
   getUploads(): Observable<CsvUpload[]> {
     return this.http.get<CsvUpload[]>(`${this.apiUrl}/csv/uploads`);
+  }
+  getPlayersFull() {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/csv/players-full`
+  );
+  }
+  getTeamSalary(team: string) {
+  return this.http.get<{ team: string; salary: number }>(
+    `${this.apiUrl}/csv/team-salary/${encodeURIComponent(team)}`
+  );
   }
 }

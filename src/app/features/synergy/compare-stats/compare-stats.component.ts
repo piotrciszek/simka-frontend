@@ -81,17 +81,17 @@ export class CompareStatsComponent {
     const right = comparison.rightPlayer;
 
     const stats = [
-      { key: 'Points', label: 'Punkty' },
-      { key: 'Rebounds', label: 'Zbiórki' },
-      { key: 'Assists', label: 'Asysty' },
+      { key: 'Points', label: 'Points' },
+      { key: 'Rebounds', label: 'Rebounds' },
+      { key: 'Assists', label: 'Assist' },
       { key: 'FG%', label: 'FG%' },
       { key: '3P%', label: '3P%' },
       { key: 'FT%', label: 'FT%' },
       { key: 'TS%', label: 'TS%' },
       { key: 'eFG%', label: 'eFG%' },
-      { key: 'EFF', label: 'Efektywność' },
+      { key: 'EFF', label: 'EFF' },
       { key: 'AST/TO', label: 'AST/TO' },
-      { key: 'USG', label: 'Użycie %' },
+      { key: 'USG', label: 'USG %' },
       { key: 'PIE', label: 'PIE' },
     ];
 
