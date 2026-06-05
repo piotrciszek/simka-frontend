@@ -216,9 +216,6 @@ export class TradeMachineComponent {
     return this.teamSignals[slot]();
   }
 
-  toggleMinimumForm(): void {
-    this.showMinimumForm.update(value => !value);
-  }
   addMinimumPlayer(): void {
     const team = this.minimumTeam();
     const salary = this.minimumSalary();
