@@ -17,27 +17,16 @@ export class AdvancedStatspComponent {
 
   rows = signal<PlayerStat[]>([]);
 
-  private numberCol(
-    field: string,
-    headerName: string,
-    width = 70,
-    decimals = 2,
-  ): ColDef {
+  private numberCol(field: string, headerName: string, width = 70, decimals = 2): ColDef {
     return {
       field,
       headerName,
       width,
       filter: 'agNumberColumnFilter',
       valueGetter: params => Number(params.data?.[field]) || 0,
-      comparator: (a, b) => Number(a) - Number(b),
       cellRenderer: (params: ICellRendererParams) => {
-        if (params.value == null) {
-          return '';
-        }
-
-        const formatted = Number(params.value).toFixed(decimals);
-
-        return `<span style="font-weight:bold;">${formatted}</span>`;
+        if (params.value == null) return '';
+        return Number(params.value).toFixed(decimals);
       },
     };
   }
@@ -65,9 +54,16 @@ export class AdvancedStatspComponent {
       filter: 'agTextColumnFilter',
     },
 
-    this.numberCol('Games', 'GP'),
+    this.numberCol('Games', 'GP', 70, 0),
     this.numberCol('Minutes', 'Min'),
-    this.numberCol('Points', 'PTS'),
+    {
+      ...this.numberCol('Points', 'PTS'),
+      cellRenderer: (params: ICellRendererParams) => {
+        if (params.value == null) return '';
+        const formatted = Number(params.value).toFixed(2);
+        return `<span style="font-weight:bold;">${formatted}</span>`;
+      },
+    },
     this.numberCol('FG', 'FG'),
     this.numberCol('FGA', 'FGA'),
     this.numberCol('FT', 'FT'),

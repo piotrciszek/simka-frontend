@@ -1,17 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-
-export interface TradePlayer {
-  Name: string;
-  Team: string;
-  Position: string;
-  Salary: number;
-}
-
-export interface TradeMove {
-  player: TradePlayer;
-  fromTeam: string;
-  toTeam: string;
-}
+import { TradePlayer, TradeMove, TeamSlot } from '../models/trade.model';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +31,7 @@ export class TradeMachineService {
     this.players.set(players);
   }
 
-  setTeam(slot: 'A' | 'B' | 'C' | 'D', team: string): void {
+  setTeam(slot: TeamSlot, team: string): void {
     if (slot === 'A') this.teamA.set(team);
     if (slot === 'B') this.teamB.set(team);
     if (slot === 'C') this.teamC.set(team);

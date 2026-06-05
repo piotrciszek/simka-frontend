@@ -1,4 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, retry, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -8,36 +11,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { PlayerService } from '../../core/services/player.service';
 import { TradeMachineService } from '../../core/services/trade-machine.service';
-
-type TeamSlot = 'A' | 'B' | 'C' | 'D';
-
-interface TradePlayer {
-  id: string;
-  Name: string;
-  Team: string;
-  Position: string;
-  Salary: number;
-}
-
-interface TradeMove {
-  player: TradePlayer;
-  fromTeam: string;
-  toTeam: string;
-}
-
-interface TeamSummary {
-  team: string;
-  salaryBefore: number;
-  salaryOut: number;
-  salaryIn: number;
-  salaryAfter: number;
-  difference: number;
-  salaryAdjustment: string;
-  tradeValid: boolean;
-}
+import { TradePlayer, TradeMove, TeamSummary, TeamSlot } from '../../core/models/trade.model';
 
 @Component({
   selector: 'app-trade-machine',
@@ -51,6 +29,7 @@ interface TeamSummary {
     MatFormFieldModule,
     MatMenuModule,
     MatSelectModule,
+    MatSnackBarModule,
   ],
   templateUrl: './trade-machine.component.html',
   styleUrl: './trade-machine.component.scss',
@@ -58,6 +37,11 @@ interface TeamSummary {
 export class TradeMachineComponent {
   private readonly playerService = inject(PlayerService);
   private readonly tradeMachineService = inject(TradeMachineService);
+  private readonly snackBar = inject(MatSnackBar);
+
+  // Constants dla trade validation
+  private readonly SALARY_CAP = 80_000_000;
+  private readonly TRADE_TOLERANCE_PERCENT = 15;
 
   readonly players = signal<TradePlayer[]>([]);
   readonly tradeMoves = signal<TradeMove[]>([]);
@@ -70,6 +54,13 @@ export class TradeMachineComponent {
   readonly showMinimumForm = signal(false);
   readonly minimumTeam = signal('');
   readonly minimumSalary = signal<number | null>(null);
+
+  private readonly teamSignals = {
+    A: this.teamA,
+    B: this.teamB,
+    C: this.teamC,
+    D: this.teamD,
+  } as const;
 
   readonly minimumContracts = [
     { label: 'Rookie - 332 817', value: 332817 },
@@ -160,107 +151,91 @@ export class TradeMachineComponent {
   });
 
   constructor() {
-    this.playerService.getPlayersFull().subscribe({
-      next: players => {
-        const tradePlayers = players.map((player, index) => ({
-          id: this.buildPlayerId(player.team, player.firstName, player.lastName, index),
-          Name: `${player.firstName} ${player.lastName}`,
-          Team: player.team,
-          Position: player.position,
-          Salary: Number(player.salary1) || 0,
-        }));
+    this.playerService
+      .getPlayersFull()
+      .pipe(
+        takeUntilDestroyed(),
+        retry({ count: 2, delay: 1000 }),
+        catchError(error => {
+          console.error('Błąd ładowania graczy do Trade Machine:', error);
+          this.snackBar.open(
+            'Błąd ładowania danych zawodników. Spróbuj odświeżyć stronę.',
+            'Zamknij',
+            {
+              duration: 5000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+            },
+          );
+          return of([]);
+        }),
+      )
+      .subscribe({
+        next: players => {
+          const tradePlayers = players.map((player, index) => ({
+            id: this.buildPlayerId(player.team, player.firstName, player.lastName, index),
+            Name: `${player.firstName} ${player.lastName}`,
+            Team: player.team,
+            Position: player.position,
+            Salary: Number(player.salary1) || 0,
+          }));
 
-        this.players.set(tradePlayers);
-        this.tradeMachineService.setPlayers(tradePlayers);
-      },
-      error: error => {
-        console.error('Błąd ładowania graczy do Trade Machine:', error);
-      },
-    });
+          this.players.set(tradePlayers);
+          this.tradeMachineService.setPlayers(tradePlayers);
+        },
+      });
   }
 
   availableTeams(currentTeam: string): string[] {
-    const selectedTeams = this.selectedTeams()
-      .filter(team => team && team !== currentTeam);
+    const selectedTeams = this.selectedTeams().filter(team => team && team !== currentTeam);
 
     return this.teams().filter(team => !selectedTeams.includes(team));
   }
 
   availableTradeTargets(currentTeam: string): string[] {
-    return this.selectedTeams()
-      .filter(team => team && team !== currentTeam);
+    return this.selectedTeams().filter(team => team && team !== currentTeam);
   }
 
-	setTeam(slot: TeamSlot, team: string): void {
-	  const previousTeam = this.teamBySlot(slot);
-	
-	  if (slot === 'A') {
-	    this.teamA.set(team);
-	  }
-	
-	  if (slot === 'B') {
-	    this.teamB.set(team);
-	  }
-	
-	  if (slot === 'C') {
-	    this.teamC.set(team);
-	  }
-	
-	  if (slot === 'D') {
-	    this.teamD.set(team);
-	  }
-	
-	  this.tradeMachineService.setTeam(slot, team);
-	
-	  if (previousTeam) {
-	    this.removeMovesForTeam(previousTeam);
-	  }
-	
-	  if (team) {
-	    this.removeMovesForTeam(team);
-	  }
-	}
-	
+  setTeam(slot: TeamSlot, team: string): void {
+    const previousTeam = this.teamBySlot(slot);
+
+    this.teamSignals[slot].set(team);
+
+    this.tradeMachineService.setTeam(slot, team);
+
+    if (previousTeam) {
+      this.removeMovesForTeam(previousTeam);
+    }
+
+    if (team) {
+      this.removeMovesForTeam(team);
+    }
+  }
+
   private teamBySlot(slot: TeamSlot): string {
-  if (slot === 'A') {
-    return this.teamA();
+    return this.teamSignals[slot]();
   }
-
-  if (slot === 'B') {
-    return this.teamB();
-  }
-
-  if (slot === 'C') {
-    return this.teamC();
-  }
-
-  return this.teamD();
-  }	
 
   toggleMinimumForm(): void {
-  this.showMinimumForm.update(value => !value);
-}
-    
+    this.showMinimumForm.update(value => !value);
+  }
   addMinimumPlayer(): void {
     const team = this.minimumTeam();
     const salary = this.minimumSalary();
 
-    if (!team || !salary) {
+    if (!this.isValidMinimumInput(team, salary)) {
       return;
     }
 
     const minimumPlayer: TradePlayer = {
-      id: this.buildMinimumPlayerId(team, salary),
+      id: this.buildMinimumPlayerId(team, salary!),
       Name: 'Minimum',
       Team: team,
       Position: 'MIN',
-      Salary: salary,
+      Salary: salary!,
     };
 
-    this.players.update(players => [
-      ...players,
-      minimumPlayer,
-    ]);
+    this.players.update(players => [...players, minimumPlayer]);
 
     this.tradeMachineService.setPlayers(this.players());
 
@@ -283,17 +258,13 @@ export class TradeMachineComponent {
   }
 
   removeMove(player: TradePlayer): void {
-    this.tradeMoves.update(moves =>
-      moves.filter(move => move.player.id !== player.id),
-    );
+    this.tradeMoves.update(moves => moves.filter(move => move.player.id !== player.id));
 
     this.tradeMachineService.removeMove(player);
   }
 
   playerMove(player: TradePlayer): TradeMove | undefined {
-    return this.tradeMoves().find(
-      move => move.player.id === player.id,
-    );
+    return this.tradeMoves().find(move => move.player.id === player.id);
   }
 
   money(value: number): string {
@@ -301,6 +272,32 @@ export class TradeMachineComponent {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
+  }
+
+  toggleMinimumForm(): void {
+    this.showMinimumForm.update(value => !value);
+  }
+
+  private isValidMinimumInput(team: string, salary: number | null): boolean {
+    if (!team) {
+      this.snackBar.open('Wybierz drużynę dla minimum contract', 'Zamknij', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return false;
+    }
+
+    if (!salary || salary <= 0) {
+      this.snackBar.open('Wybierz prawidłowe wynagrodzenie', 'Zamknij', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return false;
+    }
+
+    return true;
   }
 
   private playersForTeam(team: string): TradePlayer[] {
@@ -329,16 +326,12 @@ export class TradeMachineComponent {
     );
   }
 
-  private buildSalaryAdjustment(
-    team: string,
-    salaryOut: number,
-    difference: number,
-  ): string {
+  private buildSalaryAdjustment(team: string, salaryOut: number, difference: number): string {
     if (!team || salaryOut <= 0 || difference === 0) {
       return '0.00';
     }
 
-    const allowedDifference = salaryOut * 0.15;
+    const allowedDifference = salaryOut * (this.TRADE_TOLERANCE_PERCENT / 100);
     const absDifference = Math.abs(difference);
 
     if (absDifference <= allowedDifference) {
@@ -365,7 +358,7 @@ export class TradeMachineComponent {
       return false;
     }
 
-    if (salaryAfter > 80_000_000) {
+    if (salaryAfter > this.SALARY_CAP) {
       return false;
     }
 
@@ -374,11 +367,9 @@ export class TradeMachineComponent {
     }
 
     if (salaryIn > 0) {
-      const diffPercent = salaryOut > 0
-        ? Math.abs(difference) / salaryOut * 100
-        : 100;
+      const diffPercent = salaryOut > 0 ? (Math.abs(difference) / salaryOut) * 100 : 100;
 
-      return diffPercent <= 15;
+      return diffPercent <= this.TRADE_TOLERANCE_PERCENT;
     }
 
     return false;
@@ -390,22 +381,12 @@ export class TradeMachineComponent {
 
   private removeMovesForTeam(team: string): void {
     this.tradeMoves.update(moves =>
-      moves.filter(
-        move => move.fromTeam !== team && move.toTeam !== team,
-      ),
+      moves.filter(move => move.fromTeam !== team && move.toTeam !== team),
     );
   }
 
-  private buildPlayerId(
-    team: string,
-    firstName: string,
-    lastName: string,
-    index: number,
-  ): string {
-    return [team, firstName, lastName, index]
-      .join('-')
-      .toLowerCase()
-      .replace(/\s+/g, '-');
+  private buildPlayerId(team: string, firstName: string, lastName: string, index: number): string {
+    return [team, firstName, lastName, index].join('-').toLowerCase().replace(/\s+/g, '-');
   }
 
   private buildMinimumPlayerId(team: string, salary: number): string {
