@@ -9,6 +9,7 @@ import {
   QuickFilterModule,
   RowStyleModule,
   ValidationModule,
+  TooltipModule,
 } from 'ag-grid-community';
 
 bootstrapApplication(AppComponent, appConfig).catch(err => console.error(err));
@@ -21,4 +22,5 @@ ModuleRegistry.registerModules([
   QuickFilterModule,        // quickFilterText (wyszukiwarka)
   RowStyleModule,           // getRowClass
   ValidationModule,         // ostrzeżenia w trybie dev
+  TooltipModule,            // headerTooltip w kolumnach
 ]);
