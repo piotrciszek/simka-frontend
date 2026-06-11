@@ -25,6 +25,10 @@
       <mat-icon>difference</mat-icon>
       <span>Porównanie CSV</span>
     </a>
+    <a routerLink="/compare-attributes" routerLinkActive="active" class="nav-item">
+      <mat-icon>compare</mat-icon>
+      <span>Porównaj atrybuty graczy</span>
+    </a>
     <a routerLink="/pbp-files" routerLinkActive="active" class="nav-item">
       <mat-icon>description</mat-icon>
       <span>Pliki PBP</span>
@@ -153,7 +157,7 @@
     @if (canAccessSynergy()) {
       <span class="section-label">Simkowe SYNERGY</span>
       <a routerLink="/advanced-stats" routerLinkActive="active" class="nav-item">
-      <!-- <mat-icon>analytics</mat-icon> -->
+        <!-- <mat-icon>analytics</mat-icon> -->
         <span>Statystyki sumy</span>
       </a>
       <a routerLink="/advanced-statsp" routerLinkActive="active" class="nav-item">

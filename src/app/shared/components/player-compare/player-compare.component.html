@@ -1,5 +1,5 @@
 <section class="compare-page">
-  <h2>Porównaj graczy</h2>
+  <h2>{{ config().pageTitle }}</h2>
 
   @if (!players().length) {
     <p class="empty-state">Ładowanie listy graczy...</p>
@@ -38,13 +38,13 @@
     <div class="comparison-results">
       <div class="players-header">
         <div class="player-info">
-          <h2>{{ comparison()!.leftPlayer.Name }}</h2>
-          <p>{{ comparison()!.leftPlayer.Team }}</p>
+          <h2>{{ getPlayerName(comparison()!.leftPlayer) }}</h2>
+          <p>{{ getPlayerTeam(comparison()!.leftPlayer) }}</p>
         </div>
         <div class="vs-divider">VS</div>
         <div class="player-info">
-          <h2>{{ comparison()!.rightPlayer.Name }}</h2>
-          <p>{{ comparison()!.rightPlayer.Team }}</p>
+          <h2>{{ getPlayerName(comparison()!.rightPlayer) }}</h2>
+          <p>{{ getPlayerTeam(comparison()!.rightPlayer) }}</p>
         </div>
       </div>
 
@@ -53,16 +53,16 @@
           <thead>
             <tr>
               <th></th>
-              <th>Statystyka</th>
+              <th>{{ config().tableHeader }}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            @for (stat of comparisonStats(); track stat.label) {
+            @for (item of comparisonItems(); track item.label) {
               <tr>
-                <td [class.winner]="stat.leftWins">{{ stat.leftValue }}</td>
-                <td class="stat-label">{{ stat.label }}</td>
-                <td [class.winner]="stat.rightWins">{{ stat.rightValue }}</td>
+                <td [class.winner]="item.leftWins">{{ item.leftValue }}</td>
+                <td class="stat-label">{{ item.label }}</td>
+                <td [class.winner]="item.rightWins">{{ item.rightValue }}</td>
               </tr>
             }
           </tbody>

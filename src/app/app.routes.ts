@@ -213,6 +213,11 @@ export const routes: Routes = [
           import('./features/compare-csv/compare-csv.component').then(m => m.CompareCsvComponent),
       },
       {
+        path: 'compare-attributes',
+        loadComponent: () =>
+          import('./features/compare-attributes/compare-attributes.component').then(m => m.CompareAttributesComponent),
+      },
+      {
         path: 'pbp-files',
         loadComponent: () =>
           import('./features/pbp-files/pbp-files.component').then(m => m.PbpFilesComponent),
