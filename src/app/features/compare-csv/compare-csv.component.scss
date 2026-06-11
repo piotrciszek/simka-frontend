@@ -28,6 +28,14 @@
   gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 8px;
+  justify-content: space-between;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .quick-filter {
