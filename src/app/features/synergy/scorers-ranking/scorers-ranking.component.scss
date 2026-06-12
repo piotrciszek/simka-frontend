@@ -29,13 +29,13 @@ h2 {
   margin: 0 auto;
   border: 1px solid var(--border);
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 ag-grid-angular {
   width: fit-content;
-  min-width: 700px; /* minimalna szerokość dla 6 kolumn */
+  min-width: 640px; /* minimalna szerokość dla 6 kolumn */
 }
 
 @media (max-width: 768px) {
