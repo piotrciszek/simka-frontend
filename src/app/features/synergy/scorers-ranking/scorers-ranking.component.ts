@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import { StatsService, type ScorerRanking } from '../../../core/services/stats.service';
 
 @Component({
@@ -16,13 +16,38 @@ export class ScorersRankingComponent {
 
   players = signal<ScorerRanking[]>([]);
 
+  private numberCol(field: string, headerName: string, width = 70, decimals = 2): ColDef {
+    return {
+      field,
+      headerName,
+      width,
+      filter: 'agNumberColumnFilter',
+      valueGetter: params => Number(params.data?.[field]) || 0,
+      cellRenderer: (params: ICellRendererParams) => {
+        if (params.value == null) return '';
+        return Number(params.value).toFixed(decimals);
+      },
+    };
+  }
+
   // Kolumny dla rankingu strzelców
   readonly colDefs: ColDef[] = [
-    { field: 'name', headerName: 'Gracz', width: 180, filter: 'agTextColumnFilter', pinned: 'left' },
-    { field: 'ts', headerName: 'TS%', width: 100, filter: 'agNumberColumnFilter' },
-    { field: 'efg', headerName: 'EFG%', width: 100, filter: 'agNumberColumnFilter' },
-    { field: 'fga', headerName: 'FGA', width: 100, filter: 'agNumberColumnFilter' },
-    { field: 'shooterScore', headerName: 'ShooterScore', width: 140, filter: 'agNumberColumnFilter' },
+    {
+      field: 'rank',
+      headerName: 'Rank',
+      width: 70,
+      filter: 'agNumberColumnFilter',
+    },
+    {
+      field: 'name',
+      headerName: 'Gracz',
+      width: 160,
+      filter: 'agTextColumnFilter',
+    },
+    this.numberCol('ts', 'TS%', 95, 1),
+    this.numberCol('efg', 'EFG%', 98, 1),
+    this.numberCol('fga', 'FGA', 95, 1),
+    this.numberCol('shooterScore', 'ShooterScore', 140, 3),
   ];
 
   readonly defaultColDef: ColDef = {
