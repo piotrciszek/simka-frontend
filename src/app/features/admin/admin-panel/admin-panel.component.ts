@@ -60,10 +60,12 @@ export class AdminPanelComponent implements OnInit {
   resetUsername = signal('');
   resetLoading = signal(false);
   resetError = signal('');
+  showResetPassword = signal(false);
 
   showCreateDialog = signal(false);
   createLoading = signal(false);
   createError = signal('');
+  showCreatePassword = signal(false);
 
   roles = ['admin', 'komisz', 'user'];
   displayedColumns = ['team', 'username', 'role', 'status', 'actions'];
@@ -289,5 +291,13 @@ export class AdminPanelComponent implements OnInit {
         t.owner_username === null ||
         this.users().find(u => u.id === currentUserId)?.teamName === t.name,
     );
+  }
+
+  toggleCreatePasswordVisibility(): void {
+    this.showCreatePassword.set(!this.showCreatePassword());
+  }
+
+  toggleResetPasswordVisibility(): void {
+    this.showResetPassword.set(!this.showResetPassword());
   }
 }

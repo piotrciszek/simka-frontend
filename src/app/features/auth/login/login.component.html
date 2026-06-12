@@ -21,15 +21,25 @@
 
     <div class="form-group">
       <label for="password">Hasło</label>
-      <input
-        id="password"
-        type="password"
-        [value]="password()"
-        (input)="password.set($any($event.target).value)"
-        placeholder="Wpisz hasło"
-        [disabled]="loading()"
-        (keyup.enter)="onSubmit()"
-      />
+      <div class="password-field">
+        <input
+          id="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)"
+          placeholder="Wpisz hasło"
+          [disabled]="loading()"
+          (keyup.enter)="onSubmit()"
+        />
+        <button
+          type="button"
+          class="password-toggle"
+          (click)="togglePasswordVisibility()"
+          [disabled]="loading()"
+        >
+          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
     </div>
 
     <button (click)="onSubmit()" [disabled]="loading()">

@@ -142,7 +142,20 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Hasło</mat-label>
-        <input matInput type="password" [formControl]="$any(createForm.get('password'))" />
+        <input
+          matInput
+          [type]="showCreatePassword() ? 'text' : 'password'"
+          [formControl]="$any(createForm.get('password'))"
+        />
+        <button
+          matSuffix
+          mat-icon-button
+          type="button"
+          (click)="toggleCreatePasswordVisibility()"
+          [attr.aria-label]="'Pokaż hasło'"
+        >
+          <mat-icon>{{ showCreatePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
         @if (
           createForm.get('password')?.touched && createForm.get('password')?.hasError('minlength')
         ) {
@@ -191,7 +204,20 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nowe hasło</mat-label>
-        <input matInput type="password" [formControl]="$any(resetForm.get('newPassword'))" />
+        <input
+          matInput
+          [type]="showResetPassword() ? 'text' : 'password'"
+          [formControl]="$any(resetForm.get('newPassword'))"
+        />
+        <button
+          matSuffix
+          mat-icon-button
+          type="button"
+          (click)="toggleResetPasswordVisibility()"
+          [attr.aria-label]="'Pokaż hasło'"
+        >
+          <mat-icon>{{ showResetPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
         @if (
           resetForm.get('newPassword')?.touched &&
           resetForm.get('newPassword')?.hasError('minlength')
