@@ -39,7 +39,9 @@ type GridRow = {
   team: string;
   firstName: string;
   lastName: string;
+  age: number;
   position: string;
+  experience: number;
   status: string;
 } & { [K in SkillKey]: SkillCell };
 
@@ -81,7 +83,7 @@ export class CompareCsvComponent implements OnInit {
     () => this.selectedOld() && this.selectedNew() && this.selectedOld() !== this.selectedNew(),
   );
 
-sortMode = signal<'value' | 'delta'>('value');
+  sortMode = signal<'value' | 'delta'>('value');
 
   readonly colDefs = computed<ColDef[]>(() => {
     const mode = this.sortMode();
@@ -90,8 +92,6 @@ sortMode = signal<'value' | 'delta'>('value');
         field: 'firstName',
         headerName: 'Imię',
         headerTooltip: 'Imię',
-        pinned: 'left',
-        lockPinned: true,
         width: 90,
         filter: 'agTextColumnFilter',
       },
@@ -99,26 +99,34 @@ sortMode = signal<'value' | 'delta'>('value');
         field: 'lastName',
         headerName: 'Nazwisko',
         headerTooltip: 'Nazwisko',
-        pinned: 'left',
-        lockPinned: true,
         width: 100,
         filter: 'agTextColumnFilter',
+      },
+      {
+        field: 'age',
+        headerName: 'Wiek',
+        headerTooltip: 'Wiek',
+        width: 70,
+        filter: 'agNumberColumnFilter',
       },
       {
         field: 'position',
         headerName: 'Poz.',
         headerTooltip: 'Pozycja',
-        pinned: 'left',
-        lockPinned: true,
-        width: 50,
+        width: 70,
         filter: 'agTextColumnFilter',
+      },
+      {
+        field: 'experience',
+        headerName: 'Exp.',
+        headerTooltip: 'Doświadczenie',
+        width: 70,
+        filter: 'agNumberColumnFilter',
       },
       {
         field: 'team',
         headerName: 'Drużyna',
         headerTooltip: 'Drużyna',
-        pinned: 'left',
-        lockPinned: true,
         width: 80,
         filter: 'agTextColumnFilter',
       },
@@ -126,7 +134,7 @@ sortMode = signal<'value' | 'delta'>('value');
         field: skill,
         headerName: skill,
         headerTooltip: skill,
-        width: 70,
+        width: 80,
         filter: 'agNumberColumnFilter',
         // valueGetter decyduje po czym sortuje ag-Grid — nowa wartość lub delta
         valueGetter: (params: ValueGetterParams<GridRow>) =>
@@ -211,7 +219,9 @@ sortMode = signal<'value' | 'delta'>('value');
           team: player.team || 'FA',
           firstName: player.firstName,
           lastName: player.lastName,
+          age: player.age,
           position: player.position,
+          experience: player.experience,
           status: player.status,
           ...player.skills,
         });
@@ -260,7 +270,6 @@ sortMode = signal<'value' | 'delta'>('value');
       // Generuj i pobierz plik
       const filename = `CAMP_COMPARE.xlsx`;
       XLSX.writeFile(workbook, filename);
-
     } catch (error) {
       console.error('Błąd eksportu do Excel:', error);
       this.error.set('Błąd podczas eksportu do Excel');
@@ -271,57 +280,70 @@ sortMode = signal<'value' | 'delta'>('value');
     const players = Array.from(dataMap.values());
 
     // Sortowanie: team -> lastName -> firstName
-    return players.sort((a, b) => {
-      const teamA = a.team || 'FA';
-      const teamB = b.team || 'FA';
+    return players
+      .sort((a, b) => {
+        const teamA = a.team || 'FA';
+        const teamB = b.team || 'FA';
 
-      if (teamA !== teamB) return teamA.localeCompare(teamB);
-      if (a.lastName !== b.lastName) return a.lastName.localeCompare(b.lastName);
-      return a.firstName.localeCompare(b.firstName);
-    }).map(player => {
-      // Oblicz Overall jako suma atrybutów (bez Potential)
-      const overall = (player.InsideScoring || 0) + (player.Jumpshot || 0) + (player['3P'] || 0) +
-                     (player.Handling || 0) + (player.Passing || 0) + (player.Quickness || 0) +
-                     (player.PostD || 0) + (player.PerimeterD || 0) + (player.DriveD || 0) +
-                     (player.Stealing || 0) + (player.Blocking || 0) + (player.Oreb || 0) +
-                     (player.Dreb || 0) + (player.Jumping || 0) + (player.Strength || 0);
+        if (teamA !== teamB) return teamA.localeCompare(teamB);
+        if (a.lastName !== b.lastName) return a.lastName.localeCompare(b.lastName);
+        return a.firstName.localeCompare(b.firstName);
+      })
+      .map(player => {
+        // Oblicz Overall jako suma atrybutów (bez Potential)
+        const overall =
+          (player.InsideScoring || 0) +
+          (player.Jumpshot || 0) +
+          (player['3P'] || 0) +
+          (player.Handling || 0) +
+          (player.Passing || 0) +
+          (player.Quickness || 0) +
+          (player.PostD || 0) +
+          (player.PerimeterD || 0) +
+          (player.DriveD || 0) +
+          (player.Stealing || 0) +
+          (player.Blocking || 0) +
+          (player.Oreb || 0) +
+          (player.Dreb || 0) +
+          (player.Jumping || 0) +
+          (player.Strength || 0);
 
-      return {
-        FirstName: player.firstName || '',
-        LastName: player.lastName || '',
-        Height: player.Height || 0,
-        Weight: player.Weight || 0,
-        Age: player.Age || 0,
-        Position: player.position || '',
-        College: player.College || '',
-        Experience: player.Experience || 0,
-        Team: player.team || 'FA',
-        InsideScoring: player.InsideScoring || 0,
-        Jumpshot: player.Jumpshot || 0,
-        '3P': player['3P'] || 0,
-        Handling: player.Handling || 0,
-        Passing: player.Passing || 0,
-        Quickness: player.Quickness || 0,
-        PostD: player.PostD || 0,
-        PerimeterD: player.PerimeterD || 0,
-        DriveD: player.DriveD || 0,
-        Stealing: player.Stealing || 0,
-        Blocking: player.Blocking || 0,
-        Oreb: player.Oreb || 0,
-        Dreb: player.Dreb || 0,
-        Jumping: player.Jumping || 0,
-        Strength: player.Strength || 0,
-        Potential: player.Potential || 0,
-        Overall: overall,
-        Salary1: player.Salary1 || 0,
-        Salary2: player.Salary2 || 0,
-        Salary3: player.Salary3 || 0,
-        Salary4: player.Salary4 || 0,
-        Salary5: player.Salary5 || 0,
-        Salary6: player.Salary6 || 0,
-        Salary7: player.Salary7 || 0,
-      };
-    });
+        return {
+          FirstName: player.firstName || '',
+          LastName: player.lastName || '',
+          Height: player.Height || 0,
+          Weight: player.Weight || 0,
+          Age: player.Age || 0,
+          Position: player.position || '',
+          College: player.College || '',
+          Experience: player.Experience || 0,
+          Team: player.team || 'FA',
+          InsideScoring: player.InsideScoring || 0,
+          Jumpshot: player.Jumpshot || 0,
+          '3P': player['3P'] || 0,
+          Handling: player.Handling || 0,
+          Passing: player.Passing || 0,
+          Quickness: player.Quickness || 0,
+          PostD: player.PostD || 0,
+          PerimeterD: player.PerimeterD || 0,
+          DriveD: player.DriveD || 0,
+          Stealing: player.Stealing || 0,
+          Blocking: player.Blocking || 0,
+          Oreb: player.Oreb || 0,
+          Dreb: player.Dreb || 0,
+          Jumping: player.Jumping || 0,
+          Strength: player.Strength || 0,
+          Potential: player.Potential || 0,
+          Overall: overall,
+          Salary1: player.Salary1 || 0,
+          Salary2: player.Salary2 || 0,
+          Salary3: player.Salary3 || 0,
+          Salary4: player.Salary4 || 0,
+          Salary5: player.Salary5 || 0,
+          Salary6: player.Salary6 || 0,
+          Salary7: player.Salary7 || 0,
+        };
+      });
   }
 
   private prepareComparisonData(): any[] {
@@ -447,20 +469,20 @@ sortMode = signal<'value' | 'delta'>('value');
             worksheet[cellRef].s = {
               fill: {
                 patternType: 'solid',
-                fgColor: { rgb: 'E0E0E0' } // Ciemniejszy szary
-              }
+                fgColor: { rgb: 'E0E0E0' }, // Ciemniejszy szary
+              },
             };
           });
         }
       });
-
     }
 
     return worksheet;
   }
 
-
-  readonly canExport = computed(() => this.groups().length > 0 && this.fullOldData.size > 0 && this.fullNewData.size > 0);
+  readonly canExport = computed(
+    () => this.groups().length > 0 && this.fullOldData.size > 0 && this.fullNewData.size > 0,
+  );
 
   private fetchFullCsv(filename: string): Observable<Map<string, any>> {
     return this.http
@@ -485,10 +507,37 @@ sortMode = signal<'value' | 'delta'>('value');
       headers.forEach((h, idx) => {
         const value = cols[idx]?.trim() ?? '';
         // Konwertuj liczby dla kolumn numerycznych
-        if (['Height', 'Weight', 'Age', 'Experience', 'InsideScoring', 'Jumpshot', '3P',
-             'Handling', 'Passing', 'Quickness', 'PostD', 'PerimeterD', 'DriveD',
-             'Stealing', 'Blocking', 'Oreb', 'Dreb', 'Jumping', 'Strength', 'Potential',
-             'Salary1', 'Salary2', 'Salary3', 'Salary4', 'Salary5', 'Salary6', 'Salary7'].includes(h)) {
+        if (
+          [
+            'Height',
+            'Weight',
+            'Age',
+            'Experience',
+            'InsideScoring',
+            'Jumpshot',
+            '3P',
+            'Handling',
+            'Passing',
+            'Quickness',
+            'PostD',
+            'PerimeterD',
+            'DriveD',
+            'Stealing',
+            'Blocking',
+            'Oreb',
+            'Dreb',
+            'Jumping',
+            'Strength',
+            'Potential',
+            'Salary1',
+            'Salary2',
+            'Salary3',
+            'Salary4',
+            'Salary5',
+            'Salary6',
+            'Salary7',
+          ].includes(h)
+        ) {
           row[h] = +value || 0;
         } else {
           row[h] = value;

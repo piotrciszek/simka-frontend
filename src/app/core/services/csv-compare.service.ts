@@ -8,6 +8,8 @@ export interface PlayerSkills {
   lastName: string;
   team: string;
   position: string;
+  Age: number;
+  Experience: number;
   InsideScoring: number;
   Jumpshot: number;
   '3P': number;
@@ -61,6 +63,8 @@ export interface PlayerDiff {
   lastName: string;
   team: string;
   position: string;
+  age: number;
+  experience: number;
   status: 'same' | 'changed' | 'added' | 'removed';
   skills: {
     [K in SkillKey]: {
@@ -103,6 +107,8 @@ export class CsvCompareService {
         lastName: row['LastName'],
         team: row['Team'],
         position: row['Position'],
+        Age: +row['Age'] || 0,
+        Experience: +row['Experience'] || 0,
         InsideScoring: +row['InsideScoring'],
         Jumpshot: +row['Jumpshot'],
         '3P': +row['3P'],
@@ -177,6 +183,8 @@ export class CsvCompareService {
         lastName: player.lastName,
         team: player.team,
         position: player.position,
+        age: player.Age || 0,
+        experience: player.Experience || 0,
         status,
         skills,
       });
