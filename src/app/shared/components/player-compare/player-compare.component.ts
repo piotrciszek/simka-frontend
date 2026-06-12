@@ -65,7 +65,7 @@ export class PlayerCompareComponent {
     const config = this.config();
 
     if (config.type === 'attributes') {
-      this.playerService.getPlayersFull().subscribe({
+      this.playerService.getPlayersAttributes().subscribe({
         next: data => {
           // Konwertuj dane z endpointa na format kompatybilny z dropdownami
           const playersList = data.map((p: any) => ({
@@ -109,7 +109,7 @@ export class PlayerCompareComponent {
   }
 
   private compareAttributes(player1Name: string, player2Name: string) {
-    this.playerService.getPlayersFull().subscribe({
+    this.playerService.getPlayersAttributes().subscribe({
       next: data => {
         // Znajdź graczy w danych
         const leftPlayer = data.find((p: any) => `${p.firstName} ${p.lastName}` === player1Name);

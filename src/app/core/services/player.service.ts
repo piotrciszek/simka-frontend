@@ -46,6 +46,12 @@ export class PlayerService {
     return this.http.get<CsvUpload[]>(`${this.apiUrl}/csv/uploads`);
   }
   getPlayersFull() {
+    return this.http.get<PlayerFull[]>(
+      `${this.apiUrl}/csv/players-full`
+    );
+  }
+
+  getPlayersAttributes() {
     return this.http.get<any[]>(
       `${this.apiUrl}/csv/players-full?fields=attributes`
     );
