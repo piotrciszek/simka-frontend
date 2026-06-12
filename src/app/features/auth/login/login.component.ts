@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -20,6 +22,7 @@ export class LoginComponent {
   password = signal('');
   error = signal('');
   loading = signal(false);
+  showPassword = signal(false);
 
   onSubmit(): void {
     if (!this.username() || !this.password()) {
@@ -43,5 +46,9 @@ export class LoginComponent {
         this.loading.set(false);
       },
     });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword.set(!this.showPassword());
   }
 }

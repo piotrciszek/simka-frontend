@@ -346,10 +346,16 @@ sortMode = signal<'value' | 'delta'>('value');
       });
 
       for (const player of sortedPlayers) {
+        // Pobierz dane gracza z fullNewData lub fullOldData dla Age/Experience
+        const playerKey = `${player.firstName} ${player.lastName}`;
+        const playerData = this.fullNewData.get(playerKey) || this.fullOldData.get(playerKey);
+
         const row: any = {
           FirstName: player.firstName,
           LastName: player.lastName,
+          Age: playerData?.Age || 0,
           Position: player.position,
+          Experience: playerData?.Experience || 0,
           Team: player.team || 'FA',
         };
 

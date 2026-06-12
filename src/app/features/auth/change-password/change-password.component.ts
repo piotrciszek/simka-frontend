@@ -1,12 +1,14 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
 })
@@ -20,6 +22,10 @@ export class ChangePasswordComponent {
   error = signal('');
   success = signal('');
   loading = signal(false);
+
+  showCurrentPassword = signal(false);
+  showNewPassword = signal(false);
+  showConfirmPassword = signal(false);
 
   onSubmit(): void {
     if (!this.currentPassword() || !this.newPassword() || !this.confirmPassword()) {
@@ -50,5 +56,17 @@ export class ChangePasswordComponent {
         this.loading.set(false);
       },
     });
+  }
+
+  toggleCurrentPasswordVisibility(): void {
+    this.showCurrentPassword.set(!this.showCurrentPassword());
+  }
+
+  toggleNewPasswordVisibility(): void {
+    this.showNewPassword.set(!this.showNewPassword());
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword.set(!this.showConfirmPassword());
   }
 }

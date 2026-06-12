@@ -96,6 +96,45 @@
   }
 }
 
+.password-field {
+  position: relative;
+
+  input {
+    padding-right: 50px;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #ffc800;
+    cursor: pointer;
+    padding: 4px;
+    width: auto;
+    height: auto;
+    font-size: 1rem;
+
+    &:hover:not(:disabled) {
+      background: transparent;
+      color: #ff5000;
+      box-shadow: none;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
 button {
   width: 100%;
   padding: 0.85rem;
