@@ -18,7 +18,6 @@ export class ScorersRankingComponent {
 
   // Kolumny dla rankingu strzelców
   readonly colDefs: ColDef[] = [
-    { field: 'rank', headerName: 'Rank', width: 70, filter: 'agNumberColumnFilter', pinned: 'left' },
     { field: 'name', headerName: 'Gracz', width: 180, filter: 'agTextColumnFilter', pinned: 'left' },
     { field: 'ts', headerName: 'TS%', width: 100, filter: 'agNumberColumnFilter' },
     { field: 'efg', headerName: 'EFG%', width: 100, filter: 'agNumberColumnFilter' },
