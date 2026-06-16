@@ -1,0 +1,38 @@
+.standings-table-card {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.standings-table-card h2 {
+  margin-bottom: var(--space-4);
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.standings-table th,
+.standings-table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  text-align: right;
+}
+
+.standings-table th:nth-child(2),
+.standings-table td:nth-child(2) {
+  text-align: left;
+}
+
+.standings-table__team {
+  font-weight: var(--font-weight-semibold);
+}
+
+.standings-table__separator td {
+  padding: 0;
+  height: var(--space-2);
+  border-bottom: 2px solid var(--color-border-strong);
+}

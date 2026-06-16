@@ -1,0 +1,25 @@
+<section class="standings">
+  <header class="standings__header">
+    <h1>Standings</h1>
+  </header>
+
+  @if (loading()) {
+    <p class="standings__state">Ładowanie tabeli...</p>
+  } @else if (error()) {
+    <p class="standings__state standings__state--error">{{ error() }}</p>
+  } @else if (!hasData()) {
+    <p class="standings__state">Brak danych standings.</p>
+  } @else {
+    <div class="standings__grid">
+      <app-standings-table
+        title="Eastern Conference"
+        [rows]="easternConference()"
+      />
+
+      <app-standings-table
+        title="Western Conference"
+        [rows]="westernConference()"
+      />
+    </div>
+  }
+</section>
