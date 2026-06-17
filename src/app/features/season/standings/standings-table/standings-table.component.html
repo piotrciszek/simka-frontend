@@ -4,20 +4,21 @@
   <table class="standings-table">
     <thead>
       <tr>
-        <th>#</th>
-        <th>Team</th>
+        <th></th>
+        <th></th>
         <th>W</th>
         <th>L</th>
         <th>WIN%</th>
         <th>L10</th>
         <th>HOME</th>
+        <th>AWAY</th>
         <th>GB</th>
       </tr>
     </thead>
 
     <tbody>
       @for (row of rows(); track row.team_code; let index = $index) {
-        @if (index === 8) {
+        @if (showTopEightSeparator() && index === 8) {
           <tr class="standings-table__separator">
             <td colspan="8"></td>
           </tr>
@@ -25,13 +26,26 @@
 
         <tr>
           <td>{{ index + 1 }}</td>
-<td class="standings-table__team">{{ row.team_name }}</td>
-<td>{{ row.wins }}</td>
-<td>{{ row.losses }}</td>
-<td>{{ row.win_pct }}</td>
-<td>{{ row.last10 }}</td>
-<td>{{ row.home_record }}</td>
-<td>{{ row.games_back }}</td>
+
+          <td class="standings-table__team">
+            <div class="standings-table__team-content">
+              <img
+                class="standings-table__logo"
+                [src]="getLogoUrl(row.team_code)"
+                alt=""
+              />
+
+              <span>{{ row.team_name }}</span>
+            </div>
+          </td>
+
+          <td>{{ row.wins }}</td>
+          <td>{{ row.losses }}</td>
+          <td>{{ row.win_pct }}</td>
+          <td>{{ row.last10 }}</td>
+          <td>{{ row.home_record }}</td>
+          <td>{{ getAwayRecord(row) }}</td>
+          <td>{{ getGamesBack(index, row.games_back) }}</td>
         </tr>
       }
     </tbody>

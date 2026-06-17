@@ -3,23 +3,76 @@
     <h1>Standings</h1>
   </header>
 
-  @if (loading()) {
-    <p class="standings__state">≈Åadowanie tabeli...</p>
-  } @else if (error()) {
-    <p class="standings__state standings__state--error">{{ error() }}</p>
-  } @else if (!hasData()) {
+  <nav class="standings__tabs" aria-label="Standings view">
+    <button
+      class="standings__tab"
+      [class.standings__tab--active]="selectedView() === 'conference'"
+      type="button"
+      (click)="selectView('conference')"
+    >
+      Conference
+    </button>
+
+    <button
+      class="standings__tab"
+      [class.standings__tab--active]="selectedView() === 'league'"
+      type="button"
+      (click)="selectView('league')"
+    >
+      League
+    </button>
+
+    <button
+      class="standings__tab"
+      [class.standings__tab--active]="selectedView() === 'division'"
+      type="button"
+      (click)="selectView('division')"
+    >
+      Division
+    </button>
+  </nav>
+
+  @if (standingsService.loading()) {
+    <p class="standings__state">£adowanie tabeli...</p>
+  } @else if (standingsService.error()) {
+    <p class="standings__state standings__state--error">
+      {{ standingsService.error() }}
+    </p>
+  } @else if (!standingsService.hasData()) {
     <p class="standings__state">Brak danych standings.</p>
   } @else {
-    <div class="standings__grid">
-      <app-standings-table
-        title="Eastern Conference"
-        [rows]="easternConference()"
-      />
+    <div class="standings__list">
+      @if (selectedView() === 'conference') {
+@if (selectedView() === 'conference') {
+  <app-standings-table
+    title="Western Conference"
+    [rows]="standingsService.westernConference()"
+    [showTopEightSeparator]="true"
+  />
 
-      <app-standings-table
-        title="Western Conference"
-        [rows]="westernConference()"
-      />
+  <app-standings-table
+    title="Eastern Conference"
+    [rows]="standingsService.easternConference()"
+    [showTopEightSeparator]="true"
+  />
+}
+      }
+
+      @if (selectedView() === 'league') {
+        <app-standings-table
+          title="League Standings"
+          [rows]="standingsService.leagueStandings()"
+        />
+      }
+
+      @if (selectedView() === 'division') {
+        @for (division of standingsService.divisionStandings(); track division.title) {
+          <app-standings-table
+            [title]="division.title"
+            [rows]="division.rows"
+          />
+        }
+      }
     </div>
   }
 </section>
