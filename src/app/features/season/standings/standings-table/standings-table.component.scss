@@ -1,0 +1,73 @@
+.standings-table-card {
+  width: 100%;
+}
+
+.standings-table-card h2 {
+  margin-bottom: var(--space-4);
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.standings-table th,
+.standings-table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.standings-table th {
+  font-weight: var(--font-weight-semibold);
+}
+
+.standings-table th:first-child,
+.standings-table td:first-child {
+  width: 48px;
+  text-align: right;
+}
+
+.standings-table th:nth-child(2),
+.standings-table td:nth-child(2) {
+  width: auto;
+  text-align: left;
+}
+
+.standings-table th:nth-child(n + 3),
+.standings-table td:nth-child(n + 3) {
+  width: 56px;
+  text-align: center;
+}
+
+.standings-table__team {
+  width: 100%;
+}
+
+.standings-table__team-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.standings-table__team-content span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.standings-table__logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex: 0 0 28px;
+}
+
+.standings-table__separator td {
+  padding: 0;
+  height: 8px;
+  border-top: 1px dashed var(--color-border);
+  border-bottom: none;
+}

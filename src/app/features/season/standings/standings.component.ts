@@ -1,12 +1,26 @@
-import { Component } from '@angular/core';
-import { IframeViewerComponent } from '../../../shared/components/iframe-viewer/iframe-viewer.component';
-import { environment } from '../../../../environments/environment';
+import { Component, inject, signal } from '@angular/core';
+import { StandingsTableComponent } from './standings-table/standings-table.component';
+import { StandingsService } from './standings.service';
+
+type StandingsView = 'conference' | 'league' | 'division';
 
 @Component({
   selector: 'app-standings',
-  imports: [IframeViewerComponent],
-  template: `
-    <app-iframe-viewer src="${environment.apiUrl}/uploads/html/divstand.htm" />
-  `,
+  standalone: true,
+  imports: [StandingsTableComponent],
+  templateUrl: './standings.component.html',
+  styleUrl: './standings.component.scss',
 })
-export class StandingsComponent {}
+export class StandingsComponent {
+  readonly standingsService = inject(StandingsService);
+
+  readonly selectedView = signal<StandingsView>('conference');
+
+  constructor() {
+    this.standingsService.loadStandings();
+  }
+
+  selectView(view: StandingsView): void {
+    this.selectedView.set(view);
+  }
+}
