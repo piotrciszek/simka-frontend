@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 // Types matching backend API responses
@@ -144,9 +144,47 @@ export class StatsService {
       csvUploadId: csvUploadId || null,
     });
   }
-  getTradePlayers(): Observable<TradePlayer[]> {
-  return this.http.get<TradePlayer[]>(
-    `${this.apiUrl}/stats/trade-players`
+  getPer36Stats(filters?: StatsFilters): Observable<PlayerStat[]> {
+  return this.getAdvancedStats(filters).pipe(
+    map(players =>
+      players.map(player => this.mapPlayerToPer36(player)),
+    ),
   );
-   }
+}
+
+getTradePlayers(): Observable<TradePlayer[]> {
+  return this.http.get<TradePlayer[]>(
+    `${this.apiUrl}/stats/trade-players`,
+  );
+}
+
+private mapPlayerToPer36(player: PlayerStat): PlayerStat {
+  const minutes = Number(player.Minutes) || 0;
+
+  if (minutes <= 0) {
+    return player;
+  }
+
+  return {
+    ...player,
+    FG: this.toPer36(player.FG, minutes),
+    FGA: this.toPer36(player.FGA, minutes),
+    FT: this.toPer36(player.FT, minutes),
+    FTA: this.toPer36(player.FTA, minutes),
+    '3P': this.toPer36(player['3P'], minutes),
+    '3PA': this.toPer36(player['3PA'], minutes),
+    Rebounds: this.toPer36(player.Rebounds, minutes),
+    OREB: this.toPer36(player.OREB, minutes),
+    Assists: this.toPer36(player.Assists, minutes),
+    Steals: this.toPer36(player.Steals, minutes),
+    Blocks: this.toPer36(player.Blocks, minutes),
+    Turnovers: this.toPer36(player.Turnovers, minutes),
+    Fouls: this.toPer36(player.Fouls, minutes),
+    Points: this.toPer36(player.Points, minutes),
+  };
+}
+
+private toPer36(value: number, minutes: number): number {
+  return (value / minutes) * 36;
+}
 }

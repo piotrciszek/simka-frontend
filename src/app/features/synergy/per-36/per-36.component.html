@@ -1,0 +1,23 @@
+<section class="advanced-stats-page">
+  <h2>Statystyki - per 36</h2>
+
+  @if (!rows().length) {
+    <p class="empty-state">Ładowanie danych...</p>
+  }
+
+  @if (rows().length > 0) {
+    <div class="grid-container">
+      <ag-grid-angular
+        class="ag-theme-material"
+        [rowData]="rows()"
+        [columnDefs]="colDefs"
+        [defaultColDef]="defaultColDef"
+        [domLayout]="'normal'"
+        [suppressMenuHide]="true"
+        [animateRows]="true"
+        style="height: 600px"
+      >
+      </ag-grid-angular>
+    </div>
+  }
+</section>

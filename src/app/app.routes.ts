@@ -418,6 +418,13 @@ export const routes: Routes = [
           ),
       },
       {
+	  path: 'per-36',
+	  canActivate: [synergyGuard],
+	  loadComponent: () =>
+	    import('./features/synergy/per-36/per-36.component')
+	      .then(m => m.Per36Component),
+	  },
+      {
         path: 'trade-machine',
         canActivate: [synergyGuard],
         loadComponent: () =>
