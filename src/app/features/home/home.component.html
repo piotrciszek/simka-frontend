@@ -3,7 +3,6 @@
     <h1>Aktualności</h1>
     @if (isAdminOrKomisz()) {
       <button mat-raised-button (click)="showForm.set(!showForm())">
-        <mat-icon>{{ showForm() ? 'close' : 'add' }}</mat-icon>
         {{ showForm() ? 'Anuluj' : 'Dodaj news' }}
       </button>
     }

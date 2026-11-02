@@ -42,7 +42,6 @@
           [disabled]="!selectedDay() || loading() || (isPlayoffs() && !selectedRound())"
           (click)="generate()"
         >
-          <mat-icon>auto_awesome</mat-icon>
           {{ loading() ? 'Generowanie...' : 'Generuj' }}
         </button>
       </div>

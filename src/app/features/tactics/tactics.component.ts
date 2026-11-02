@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, inject, signal, OnInit, computed, effect } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   FormsModule,
@@ -6,7 +6,6 @@ import {
   FormArray,
   FormControl,
   FormGroup,
-  Validators,
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
@@ -83,71 +82,248 @@ export class TacticsComponent implements OnInit {
     offenseFocus: 'Balanced',
   });
 
-  // Wymagany gracz (nie null)
-  playerRequired = (control: AbstractControl): ValidationErrors | null => {
-    return control.value === null ? { required: true } : null;
-  };
+  // ── HELPER METHODS ──
 
-  // Brak powtórzeń w FormArray
-  noDuplicates = (control: AbstractControl): ValidationErrors | null => {
+  private isOnIL(player: Player): boolean {
+    return this.injuredListArray.controls.some(control => {
+      const ilPlayer = control.value;
+      return ilPlayer &&
+             ilPlayer.firstName === player.firstName &&
+             ilPlayer.lastName === player.lastName;
+    });
+  }
+
+  private removeFromOtherForms(player: Player): void {
+    // Usuń z Key Players
+    this.keyPlayersArray.controls.forEach(control => {
+      if (control.value &&
+          control.value.firstName === player.firstName &&
+          control.value.lastName === player.lastName) {
+        control.setValue(null);
+      }
+    });
+
+    // Usuń z Depth Chart (wszystkie pozycje i poziomy)
+    this.positions.forEach(pos => {
+      this.depthChartArray(pos).controls.forEach(control => {
+        if (control.value &&
+            control.value.firstName === player.firstName &&
+            control.value.lastName === player.lastName) {
+          control.setValue(null);
+        }
+      });
+    });
+  }
+
+  private getPlayerKey(player: Player): string {
+    return `${player.firstName}_${player.lastName}`;
+  }
+
+  private updateILSignal(): void {
+    const ilPlayers = this.injuredListArray.controls
+      .map(c => c.value)
+      .filter((p): p is Player => p !== null);
+    this.ilPlayersSignal.set([...ilPlayers]);
+  }
+
+  // ── COMPUTED SIGNALS ──
+
+  availableForKeyPlayers = computed(() => {
+    // Wymuszamy reactywność przez odczyt ilPlayersSignal
+    const ilPlayers = this.ilPlayersSignal();
+    return this.players().filter(p =>
+      !ilPlayers.some(ilPlayer =>
+        ilPlayer.firstName === p.firstName &&
+        ilPlayer.lastName === p.lastName
+      )
+    );
+  });
+
+  availableForDepthChart = computed(() => {
+    // Wymuszamy reactywność przez odczyt ilPlayersSignal
+    const ilPlayers = this.ilPlayersSignal();
+    return this.players().filter(p =>
+      !ilPlayers.some(ilPlayer =>
+        ilPlayer.firstName === p.firstName &&
+        ilPlayer.lastName === p.lastName
+      )
+    );
+  });
+
+  // ── WALIDATORY ──
+
+  ilNoDuplicates = (control: AbstractControl): ValidationErrors | null => {
     const array = control as FormArray;
-    const values = array.controls
-      .filter(c => !c.disabled && c.value !== null)
-      .map(c => `${c.value.firstName}_${c.value.lastName}`);
-    return values.length !== new Set(values).size ? { duplicates: true } : null;
+    const players = array.controls
+      .map(c => c.value)
+      .filter((p): p is Player => p !== null);
+
+    const duplicates: { index: number; player: Player; duplicateIndexes: number[] }[] = [];
+
+    players.forEach((player, i) => {
+      const otherIndexes = players
+        .map((p, idx) => ({ player: p, index: idx }))
+        .filter(({ player: p, index: idx }) =>
+          idx !== i &&
+          p.firstName === player.firstName &&
+          p.lastName === player.lastName
+        )
+        .map(({ index }) => index);
+
+      if (otherIndexes.length > 0) {
+        duplicates.push({
+          index: i,
+          player,
+          duplicateIndexes: otherIndexes
+        });
+      }
+    });
+
+    return duplicates.length > 0 ? {
+      ilDuplicates: {
+        message: 'Gracz nie może być na IL więcej niż raz',
+        duplicates
+      }
+    } : null;
   };
 
-  // Starter (#1) nie może się powtarzać między pozycjami
   noStarterDuplicates = (control: AbstractControl): ValidationErrors | null => {
-    const group = control as FormGroup;
-    const starters = ['C', 'PF', 'SF', 'SG', 'PG']
-      .map(pos => (group.get(pos) as FormArray)?.at(0)?.value)
-      .filter(v => v !== null)
-      .map(v => `${v.firstName}_${v.lastName}`);
-    return starters.length !== new Set(starters).size ? { starterDuplicates: true } : null;
+    const depthChartGroup = control as FormGroup;
+    const starters = this.positions.map(pos => ({
+      position: pos,
+      player: (depthChartGroup.get(pos) as FormArray)?.at(0)?.value
+    })).filter(({ player }) => player !== null);
+
+    const conflicts: { position: string; player: Player; conflictPositions: string[] }[] = [];
+
+    starters.forEach(({ position, player }) => {
+      const conflictPositions = starters
+        .filter(({ position: pos, player: p }) =>
+          pos !== position &&
+          p.firstName === player.firstName &&
+          p.lastName === player.lastName
+        )
+        .map(({ position: pos }) => pos);
+
+      if (conflictPositions.length > 0) {
+        conflicts.push({
+          position,
+          player,
+          conflictPositions
+        });
+      }
+    });
+
+    return conflicts.length > 0 ? {
+      starterDuplicates: {
+        message: 'Gracz może być starterem tylko na jednej pozycji',
+        conflicts
+      }
+    } : null;
+  };
+
+  playerRequired = (control: AbstractControl): ValidationErrors | null => {
+    return control.value === null ? {
+      required: {
+        message: 'Wybierz gracza'
+      }
+    } : null;
+  };
+
+  keyPlayersNoDuplicates = (control: AbstractControl): ValidationErrors | null => {
+    const array = control as FormArray;
+    const players = array.controls
+      .map(c => c.value)
+      .filter((p): p is Player => p !== null);
+
+    const duplicates: { index: number; player: Player; duplicateIndexes: number[] }[] = [];
+
+    players.forEach((player, i) => {
+      const otherIndexes = players
+        .map((p, idx) => ({ player: p, index: idx }))
+        .filter(({ player: p, index: idx }) =>
+          idx !== i &&
+          p.firstName === player.firstName &&
+          p.lastName === player.lastName
+        )
+        .map(({ index }) => index);
+
+      if (otherIndexes.length > 0) {
+        duplicates.push({
+          index: i,
+          player,
+          duplicateIndexes: otherIndexes
+        });
+      }
+    });
+
+    return duplicates.length > 0 ? {
+      keyPlayersDuplicates: {
+        message: 'Gracz nie może być wybrany więcej niż raz w Key Players',
+        duplicates
+      }
+    } : null;
+  };
+
+  // Walidator dla pozycji w Depth Chart - gracz nie może być #1 i #2 na tej samej pozycji
+  depthChartPositionNoDuplicates = (control: AbstractControl): ValidationErrors | null => {
+    const array = control as FormArray;
+    const starter = array.at(0)?.value; // #1
+    const backup1 = array.at(1)?.value; // #2
+
+    // Sprawdź czy #1 i #2 to ten sam gracz
+    if (starter && backup1 &&
+        starter.firstName === backup1.firstName &&
+        starter.lastName === backup1.lastName) {
+      return {
+        samePlayerStarterBackup: {
+          message: `Gracz nie może być jednocześnie #1 i #2 na tej samej pozycji`,
+          player: starter
+        }
+      };
+    }
+
+    return null;
   };
 
   form = new FormGroup({
-    keyPlayers: new FormArray(
-      [
-        new FormControl<Player | null>(null, this.playerRequired),
-        new FormControl<Player | null>(null, this.playerRequired),
-        new FormControl<Player | null>(null, this.playerRequired),
-      ],
-      {},
-    ),
+    keyPlayers: new FormArray([
+      new FormControl<Player | null>(null, this.playerRequired),
+      new FormControl<Player | null>(null, this.playerRequired),
+      new FormControl<Player | null>(null, this.playerRequired),
+    ], this.keyPlayersNoDuplicates),
     injuredList: new FormArray([
       new FormControl<Player | null>(null),
       new FormControl<Player | null>(null),
       new FormControl<Player | null>(null),
-    ]),
+    ], this.ilNoDuplicates),
     depthChart: new FormGroup({
       C: new FormArray([
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
-      ]),
+      ], this.depthChartPositionNoDuplicates),
       PF: new FormArray([
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
-      ]),
+      ], this.depthChartPositionNoDuplicates),
       SF: new FormArray([
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
-      ]),
+      ], this.depthChartPositionNoDuplicates),
       SG: new FormArray([
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
-      ]),
+      ], this.depthChartPositionNoDuplicates),
       PG: new FormArray([
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
         new FormControl<Player | null>(null, this.playerRequired),
-      ]),
-    }),
+      ], this.depthChartPositionNoDuplicates),
+    }, this.noStarterDuplicates),
   });
 
   get keyPlayersArray(): FormArray {
@@ -174,18 +350,20 @@ export class TacticsComponent implements OnInit {
 
   getPlayersForPosition(pos: string): Player[] {
     const order = this.positionOrder[pos] ?? this.positions;
-    const injured = this.injuredListArray
-      .getRawValue()
-      .filter((p: Player | null) => p !== null)
-      .map((p: Player) => `${p.firstName}_${p.lastName}`);
+    return [...this.availableForDepthChart()].sort((a, b) => {
+      const ai = order.indexOf(a.position);
+      const bi = order.indexOf(b.position);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+  }
 
-    return [...this.players()]
-      .filter(p => !injured.includes(`${p.firstName}_${p.lastName}`))
-      .sort((a, b) => {
-        const ai = order.indexOf(a.position);
-        const bi = order.indexOf(b.position);
-        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-      });
+  getPlayersForKeyPlayers(): Player[] {
+    return [...this.availableForKeyPlayers()].sort((a, b) => {
+      const order = ['C', 'PF', 'SF', 'SG', 'PG'];
+      const ai = order.indexOf(a.position);
+      const bi = order.indexOf(b.position);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
   }
 
   ngOnInit(): void {
@@ -249,35 +427,19 @@ export class TacticsComponent implements OnInit {
     this.gamePlan.set(data.gamePlan);
     const il = [...data.injuredList, null, null, null].slice(0, 3);
     il.forEach((player, i) => {
-      const control = this.injuredListArray.at(i);
-      if (control.disabled) return;
       const exists = player
         ? this.players().find(
             p => p.firstName === player.firstName && p.lastName === player.lastName,
           )
         : null;
-      control.setValue(exists || null);
+      this.injuredListArray.at(i).setValue(exists || null);
     });
 
-    // Przelicz duplikaty IL po wypełnieniu
-    const values = this.injuredListArray.controls.map(c => c.value);
-    this.injuredListArray.controls.forEach((control, i) => {
-      const val = control.value;
-      if (val === null) return;
-      const isDuplicate = values.some(
-        (v, vi) => vi !== i && v?.firstName === val.firstName && v?.lastName === val.lastName,
-      );
-      if (isDuplicate) {
-        control.setErrors({ ...control.errors, duplicates: true });
-      }
-    });
+    // Wymusz aktualizację IL signal po wypełnieniu
+    this.updateILSignal();
   }
 
   fillFormKeyPlayers(data: TacticsData): void {
-    const injuredNames = this.injuredListArray.controls
-      .filter(c => !c.disabled && c.value !== null)
-      .map(c => `${c.value.firstName}_${c.value.lastName}`);
-
     const kp = [...data.keyPlayers, null, null, null].slice(0, 3);
     kp.forEach((player, i) => {
       const exists = player
@@ -285,23 +447,7 @@ export class TacticsComponent implements OnInit {
             p => p.firstName === player.firstName && p.lastName === player.lastName,
           )
         : null;
-      const isInjured = exists
-        ? injuredNames.includes(`${exists.firstName}_${exists.lastName}`)
-        : false;
-      this.keyPlayersArray.at(i).setValue(exists && !isInjured ? exists : null);
-    });
-
-    // Przelicz duplikaty po wypełnieniu
-    const values = this.keyPlayersArray.controls.map(c => c.value);
-    this.keyPlayersArray.controls.forEach((control, i) => {
-      const val = control.value;
-      if (val === null) return;
-      const isDuplicate = values.some(
-        (v, vi) => vi !== i && v?.firstName === val.firstName && v?.lastName === val.lastName,
-      );
-      if (isDuplicate) {
-        control.setErrors({ ...control.errors, duplicates: true });
-      }
+      this.keyPlayersArray.at(i).setValue(exists || null);
     });
   }
 
@@ -320,20 +466,6 @@ export class TacticsComponent implements OnInit {
           .setValue(exists || null);
       });
     }
-
-    // Przelicz duplikaty starterów po wypełnieniu
-    const starters = this.positions.map(pos => this.depthChartArray(pos).at(0).value);
-    this.positions.forEach((pos, pi) => {
-      const control = this.depthChartArray(pos).at(0);
-      const val = control.value;
-      if (val === null) return;
-      const isDuplicate = starters.some(
-        (v, vi) => vi !== pi && v?.firstName === val.firstName && v?.lastName === val.lastName,
-      );
-      if (isDuplicate) {
-        control.setErrors({ ...control.errors, starterDuplicates: true });
-      }
-    });
   }
 
   updateGamePlan(field: keyof GamePlan, value: string): void {
@@ -344,50 +476,41 @@ export class TacticsComponent implements OnInit {
     this.keyPlayersArray.at(index).setValue(player);
     this.keyPlayersArray.updateValueAndValidity();
 
-    // Ręczne ustawienie błędu duplikatu na kontrolkach
-    const values = this.keyPlayersArray.controls.map(c => c.value);
-    this.keyPlayersArray.controls.forEach((control, i) => {
-      const val = control.value;
-      if (val === null) return;
-      const isDuplicate = values.some(
-        (v, vi) => vi !== i && v?.firstName === val.firstName && v?.lastName === val.lastName,
-      );
-      if (isDuplicate) {
-        control.setErrors({ ...control.errors, duplicates: true });
-      } else {
-        const errors = { ...control.errors };
-        delete errors['duplicates'];
-        control.setErrors(Object.keys(errors).length ? errors : null);
-      }
+    // Propaguj błędy duplikatów na kontrolki żeby podświetlić pola
+    // Wywołujemy asynchronicznie żeby walidatory FormArray się wykonały
+    setTimeout(() => {
+      this.propagateArrayErrorsToControls(this.keyPlayersArray);
     });
   }
+
   updateInjuredList(index: number, player: Player | null): void {
+    const previousPlayer = this.injuredListArray.at(index).value;
+
+    // Ustaw nową wartość
     this.injuredListArray.at(index).setValue(player);
+
+    // Wymusz aktualizację IL signal dla reactywności
+    this.updateILSignal();
+
+    // Jeśli dodano gracza na IL - usuń go z innych formularzy
+    if (player !== null) {
+      this.removeFromOtherForms(player);
+    }
+
+    // Przeliczy walidację IL (duplikaty)
     this.injuredListArray.updateValueAndValidity();
 
-    // Wyczyść Key Players i Depth Chart jeśli gracz trafił na IL
-    if (player !== null) {
-      this.keyPlayersArray.controls.forEach(c => {
-        if (
-          c.value &&
-          c.value.firstName === player.firstName &&
-          c.value.lastName === player.lastName
-        ) {
-          c.setValue(null);
-        }
-      });
-      this.positions.forEach(pos => {
-        this.depthChartArray(pos).controls.forEach(c => {
-          if (
-            c.value &&
-            c.value.firstName === player.firstName &&
-            c.value.lastName === player.lastName
-          ) {
-            c.setValue(null);
-          }
-        });
-      });
-    }
+    // Propaguj błędy duplikatów na kontrolki żeby podświetlić pola (asynchronicznie)
+    setTimeout(() => {
+      this.propagateArrayErrorsToControls(this.injuredListArray);
+    });
+
+    // Przeliczy walidację innych formularzy jeśli potrzeba
+    this.keyPlayersArray.updateValueAndValidity();
+    setTimeout(() => {
+      this.propagateArrayErrorsToControls(this.keyPlayersArray);
+    });
+    (this.form.get('depthChart') as FormGroup).updateValueAndValidity();
   }
 
   updateILControls(): void {
@@ -397,7 +520,7 @@ export class TacticsComponent implements OnInit {
         control.disable();
         control.setValue(null);
       } else {
-        control.setValidators(this.playerRequired);
+        control.setValidators([this.playerRequired]);
         control.enable();
         control.updateValueAndValidity();
       }
@@ -406,6 +529,16 @@ export class TacticsComponent implements OnInit {
 
   updateDepthChart(position: string, index: number, player: Player | null): void {
     this.depthChartArray(position).at(index).setValue(player);
+
+    // Przeliczy walidację pozycji (starter+backup validation)
+    this.depthChartArray(position).updateValueAndValidity();
+
+    // Propaguj błędy na kontrolki żeby podświetlić pola (asynchronicznie)
+    setTimeout(() => {
+      this.propagateArrayErrorsToControls(this.depthChartArray(position));
+    });
+
+    // Jeśli to starter (index 0), przeliczy walidację całego depth chart (starter duplicates)
     if (index === 0) {
       (this.form.get('depthChart') as FormGroup).updateValueAndValidity();
     }
@@ -441,8 +574,34 @@ export class TacticsComponent implements OnInit {
   }
 
   submitTactics(): void {
+    // Oznacz wszystkie pola jako touched żeby pokazać błędy
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
+
+    // Dodatkowe oznaczenie dla FormArray - czasem markAllAsTouched nie wystarczy
+    this.keyPlayersArray.markAsTouched();
+    this.injuredListArray.markAsTouched();
+    (this.form.get('depthChart') as FormGroup).markAsTouched();
+
+    // Oznacz wszystkie kontrolki w FormArrays
+    this.keyPlayersArray.controls.forEach(c => c.markAsTouched());
+    this.injuredListArray.controls.forEach(c => c.markAsTouched());
+    this.positions.forEach(pos => {
+      this.depthChartArray(pos).markAsTouched();
+      this.depthChartArray(pos).controls.forEach(c => c.markAsTouched());
+    });
+
+    // Propaguj błędy z FormArray na kontrolki żeby podświetlić wszystkie błędne pola
+    this.propagateArrayErrorsToControls(this.keyPlayersArray);
+    this.propagateArrayErrorsToControls(this.injuredListArray);
+    this.positions.forEach(pos => {
+      this.propagateArrayErrorsToControls(this.depthChartArray(pos));
+    });
+
+    // Sprawdź czy formularz jest valid
+    if (this.form.invalid) {
+      this.error.set('Popraw błędy w formularzu przed wysłaniem');
+      return;
+    }
 
     if (!this.tactics()) return;
     this.submitting.set(true);
@@ -486,7 +645,158 @@ export class TacticsComponent implements OnInit {
     return array.at(index) as FormControl;
   }
 
+  // ── ERROR HANDLING ──
+
+  getErrorMessage(control: AbstractControl): string {
+    if (!control.errors) return '';
+
+    // Required error
+    if (control.errors['required']) {
+      return control.errors['required'].message || 'Pole wymagane';
+    }
+
+    // Key Players duplicates
+    if (control.errors['keyPlayersDuplicates']) {
+      return control.errors['keyPlayersDuplicates'].message || 'Duplikaty w Key Players';
+    }
+
+    // IL duplicates
+    if (control.errors['ilDuplicates']) {
+      return control.errors['ilDuplicates'].message || 'Duplikaty na liście kontuzjowanych';
+    }
+
+    // Starter duplicates
+    if (control.errors['starterDuplicates']) {
+      const error = control.errors['starterDuplicates'];
+      return error.message || 'Duplikaty w starterach';
+    }
+
+    // Same player starter+backup na tej samej pozycji
+    if (control.errors['samePlayerStarterBackup']) {
+      const error = control.errors['samePlayerStarterBackup'];
+      return error.message || 'Gracz nie może być jednocześnie #1 i #2';
+    }
+
+    // Błędy propagowane z FormArray na kontrolki
+    if (control.errors['duplicateInArray']) {
+      return control.errors['duplicateInArray'].message || 'Duplikat w formularzu';
+    }
+
+    if (control.errors['samePlayerBackup']) {
+      return control.errors['samePlayerBackup'].message || 'Nie może być swoim zastępcą';
+    }
+
+    return 'Nieznany błąd walidacji';
+  }
+
+  hasFormErrors(): boolean {
+    return this.form.invalid && this.form.touched;
+  }
+
+  // Sprawdź czy FormArray jest kompletnie valid (array + wszystkie ENABLED kontrolki)
+  isFormArrayFullyValid(formArray: FormArray): boolean {
+    const enabledControls = formArray.controls.filter(control => control.enabled);
+
+    if (enabledControls.length === 0) {
+      return true;
+    }
+
+    return formArray.valid && enabledControls.every(control => control.valid);
+  }
+
+  // Zbierz wszystkie błędy z FormArray (array + ENABLED kontrolki)
+  getFormArrayErrors(formArray: FormArray): string[] {
+    const errors: string[] = [];
+
+    // Błędy z poziomu FormArray (duplikaty)
+    if (formArray.errors) {
+      errors.push(this.getErrorMessage(formArray));
+    }
+
+    // Błędy z poszczególnych kontrolek (tylko enabled)
+    formArray.controls.forEach((control, index) => {
+      if (control.enabled && control.errors) {
+        errors.push(`Pozycja #${index + 1}: ${this.getErrorMessage(control)}`);
+      }
+    });
+
+    return errors;
+  }
+
+  // Propaguj błędy z FormArray na konkretne kontrolki żeby podświetlić pola
+  propagateArrayErrorsToControls(formArray: FormArray): void {
+    // KROK 1: Wyczyść stare błędy propagowane z tego FormArray
+    formArray.controls.forEach(control => {
+      if (control.errors) {
+        const cleanedErrors = { ...control.errors };
+        delete cleanedErrors['duplicateInArray'];
+        delete cleanedErrors['samePlayerBackup'];
+
+        // Jeśli nie ma innych błędów, ustaw null
+        const hasOtherErrors = Object.keys(cleanedErrors).length > 0;
+        control.setErrors(hasOtherErrors ? cleanedErrors : null);
+      }
+    });
+
+    // KROK 2: Dodaj nowe błędy jeśli istnieją
+
+    // Key Players duplikaty
+    if (formArray.errors?.['keyPlayersDuplicates']) {
+      const duplicates = formArray.errors['keyPlayersDuplicates'].duplicates;
+      duplicates.forEach((dup: any) => {
+        const control = formArray.at(dup.index);
+        const currentErrors = control.errors || {};
+        control.setErrors({
+          ...currentErrors,
+          duplicateInArray: { message: 'Gracz już wybrany w Key Players' }
+        });
+      });
+    }
+
+    // IL duplikaty
+    if (formArray.errors?.['ilDuplicates']) {
+      const duplicates = formArray.errors['ilDuplicates'].duplicates;
+      duplicates.forEach((dup: any) => {
+        const control = formArray.at(dup.index);
+        const currentErrors = control.errors || {};
+        control.setErrors({
+          ...currentErrors,
+          duplicateInArray: { message: 'Gracz już wybrany na IL' }
+        });
+      });
+    }
+
+    // Depth Chart pozycja duplikaty (#1 i #2)
+    if (formArray.errors?.['samePlayerStarterBackup']) {
+      const control1 = formArray.at(0); // #1
+      const control2 = formArray.at(1); // #2
+
+      // Dodaj błąd do obu kontrolek
+      [control1, control2].forEach(control => {
+        const currentErrors = control.errors || {};
+        control.setErrors({
+          ...currentErrors,
+          samePlayerBackup: { message: 'Nie może być swoim zastępcą' }
+        });
+      });
+    }
+  }
+
   requiredIL = computed(() => Math.max(0, this.players().length - 12));
 
   ilDisabled = computed(() => this.requiredIL() === 0);
+
+  // Signal do śledzenia zmian IL dla reactywności
+  private ilPlayersSignal = signal<Player[]>([]);
+
+  constructor() {
+    // Effect do śledzenia zmian w IL i wymuszania reactywności
+    effect(() => {
+      const ilPlayers = this.injuredListArray.controls
+        .map(c => c.value)
+        .filter((p): p is Player => p !== null);
+
+      this.ilPlayersSignal.set(ilPlayers);
+    });
+  }
 }

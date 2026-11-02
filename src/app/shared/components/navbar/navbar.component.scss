@@ -28,13 +28,36 @@
   align-items: center;
   gap: 0.5rem;
 
+  .theme-trigger,
   .user-info {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    color: var(--text-primary);
     font-size: 0.9rem;
     padding: 0 0.5rem;
+    white-space: nowrap;
+    --mat-button-text-label-text-color: var(--text-primary);
+    --mat-button-text-state-layer-color: var(--accent);
+    --mat-button-text-ripple-color: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  .theme-trigger {
+    min-width: 0;
+    padding-right: 0;
+
+    > mat-icon {
+      margin: 0;
+    }
+  }
+
+  .menu-indicator {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+
+  .user-info {
+    color: var(--text-primary);
   }
 
   .role-badge {
@@ -45,6 +68,15 @@
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar-actions .theme-trigger {
+    width: 40px;
+    min-width: 40px;
+    padding: 0;
+    justify-content: center;
   }
 }
 

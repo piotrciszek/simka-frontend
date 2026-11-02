@@ -12,7 +12,7 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: mat.$cyan-palette,
+        primary: mat.$orange-palette,
         tertiary: mat.$orange-palette,
       ),
       typography: Roboto,
@@ -39,6 +39,17 @@ body {
   --mat-sys-surface: #121212;
   --mat-sys-on-surface: #ffffff;
   --mat-dialog-container-color: #383838;
+  --mat-select-panel-background-color: var(--bg-card);
+  --mat-option-label-text-color: var(--text-primary);
+  --mat-option-selected-state-label-text-color: var(--text-primary);
+  --mat-option-hover-state-layer-color: rgba(255, 255, 255, 0.06);
+  --mat-option-focus-state-layer-color: rgba(255, 255, 255, 0.1);
+  --mat-option-selected-state-layer-color: rgba(255, 255, 255, 0.12);
+  --mat-menu-container-color: var(--bg-card);
+  --mat-menu-item-label-text-color: var(--text-primary);
+  --mat-menu-item-icon-color: var(--text-secondary);
+  --mat-menu-item-hover-state-layer-color: rgba(255, 255, 255, 0.06);
+  --mat-menu-item-focus-state-layer-color: rgba(255, 255, 255, 0.1);
 
   --bg-primary: #121212;
   --bg-secondary: #1e1e1e;
@@ -50,6 +61,26 @@ body {
   --error: #f44336;
   --success: #4caf50;
 
+  --mat-sys-surface: var(--bg-card);
+  --mat-sys-on-surface: var(--text-primary);
+  --mat-sys-on-surface-variant: var(--text-secondary);
+  --mat-sys-surface-dim: var(--bg-primary);
+  --mat-sys-surface-bright: var(--bg-card);
+  --mat-sys-surface-container-lowest: var(--bg-card);
+  --mat-sys-surface-container-low: var(--bg-card);
+  --mat-sys-surface-container: var(--bg-card);
+  --mat-sys-surface-container-high: var(--bg-card);
+  --mat-sys-surface-container-highest: var(--bg-card);
+  --mat-sys-surface-variant: var(--bg-card);
+  --mat-sys-outline: var(--border);
+  --mat-sys-outline-variant: var(--border);
+  --mat-card-elevated-container-color: var(--bg-card);
+  --mat-card-filled-container-color: var(--bg-card);
+  --mat-card-outlined-container-color: var(--bg-card);
+  --mat-card-outlined-outline-color: var(--border);
+  --mat-table-background-color: var(--bg-card);
+  --mat-dialog-container-color: var(--bg-card);
+
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
@@ -59,6 +90,17 @@ body {
 // ================================
 .theme-light {
   color-scheme: light;
+  --mat-select-panel-background-color: var(--bg-card);
+  --mat-option-label-text-color: var(--text-primary);
+  --mat-option-selected-state-label-text-color: var(--text-primary);
+  --mat-option-hover-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-option-focus-state-layer-color: rgba(0, 0, 0, 0.08);
+  --mat-option-selected-state-layer-color: rgba(0, 0, 0, 0.08);
+  --mat-menu-container-color: var(--bg-card);
+  --mat-menu-item-label-text-color: var(--text-primary);
+  --mat-menu-item-icon-color: var(--text-secondary);
+  --mat-menu-item-hover-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-menu-item-focus-state-layer-color: rgba(0, 0, 0, 0.08);
   --bg-primary: #f5f5f5;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
@@ -68,6 +110,26 @@ body {
   --border: #e0e0e0;
   --error: #f44336;
   --success: #4caf50;
+
+  --mat-sys-surface: var(--bg-card);
+  --mat-sys-on-surface: var(--text-primary);
+  --mat-sys-on-surface-variant: var(--text-secondary);
+  --mat-sys-surface-dim: var(--bg-primary);
+  --mat-sys-surface-bright: var(--bg-card);
+  --mat-sys-surface-container-lowest: var(--bg-card);
+  --mat-sys-surface-container-low: var(--bg-card);
+  --mat-sys-surface-container: var(--bg-card);
+  --mat-sys-surface-container-high: var(--bg-card);
+  --mat-sys-surface-container-highest: var(--bg-card);
+  --mat-sys-surface-variant: var(--bg-card);
+  --mat-sys-outline: var(--border);
+  --mat-sys-outline-variant: var(--border);
+  --mat-card-elevated-container-color: var(--bg-card);
+  --mat-card-filled-container-color: var(--bg-card);
+  --mat-card-outlined-container-color: var(--bg-card);
+  --mat-card-outlined-outline-color: var(--border);
+  --mat-table-background-color: var(--bg-card);
+  --mat-dialog-container-color: var(--bg-card);
 
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -96,6 +158,88 @@ body {
   font-family: 'Press Start 2P', monospace;
 }
 
+.theme-light,
+.theme-dark {
+  .mat-mdc-raised-button:not(.mat-accent):not(.mat-warn),
+  .mat-mdc-unelevated-button:not(.mat-accent):not(.mat-warn) {
+    --mat-button-protected-container-color: var(--button-surface);
+    --mat-button-protected-label-text-color: var(--button-label);
+    --mat-button-protected-state-layer-color: var(--button-label);
+    --mat-button-protected-ripple-color: var(--button-ripple);
+    --mat-button-protected-disabled-container-color: var(--button-disabled-surface);
+    --mat-button-protected-disabled-label-text-color: var(--button-disabled-label);
+
+    --mat-button-filled-container-color: var(--button-surface);
+    --mat-button-filled-label-text-color: var(--button-label);
+    --mat-button-filled-state-layer-color: var(--button-label);
+    --mat-button-filled-ripple-color: var(--button-ripple);
+    --mat-button-filled-disabled-container-color: var(--button-disabled-surface);
+    --mat-button-filled-disabled-label-text-color: var(--button-disabled-label);
+    border: 1px solid var(--button-primary-border);
+  }
+
+  .mat-mdc-outlined-button:not(.mat-accent):not(.mat-warn) {
+    --mat-button-outlined-label-text-color: var(--button-secondary-label);
+    --mat-button-outlined-outline-color: var(--button-secondary-border);
+    --mat-button-outlined-state-layer-color: var(--accent);
+    --mat-button-outlined-ripple-color: var(--button-secondary-ripple);
+    background: var(--button-secondary-surface);
+  }
+
+  .mat-mdc-button:not(.mat-accent):not(.mat-warn) {
+    --mat-button-text-label-text-color: var(--button-text-label);
+    --mat-button-text-state-layer-color: var(--accent);
+    --mat-button-text-ripple-color: var(--button-secondary-ripple);
+  }
+
+  .mat-mdc-raised-button,
+  .mat-mdc-unelevated-button,
+  .mat-mdc-outlined-button,
+  .mat-mdc-button {
+    border-radius: 10px;
+  }
+}
+
+.theme-light {
+  --button-surface: #fff3e8;
+  --button-label: #8a3b00;
+  --button-ripple: rgba(138, 59, 0, 0.12);
+  --button-disabled-surface: #f1e7de;
+  --button-disabled-label: #8b8178;
+  --button-primary-border: #e8a36f;
+  --button-secondary-surface: var(--bg-card);
+  --button-secondary-label: #424242;
+  --button-secondary-border: #d5d9e0;
+  --button-secondary-ripple: rgba(255, 109, 0, 0.12);
+  --button-text-label: #8a3b00;
+}
+
+.theme-dark {
+  --button-surface: #303030;
+  --button-label: #ffb36b;
+  --button-ripple: rgba(255, 179, 107, 0.12);
+  --button-disabled-surface: #292521;
+  --button-disabled-label: #958678;
+  --button-primary-border: #9a5726;
+  --button-secondary-surface: var(--bg-card);
+  --button-secondary-label: #e0e0e0;
+  --button-secondary-border: #4a4a4a;
+  --button-secondary-ripple: rgba(255, 109, 0, 0.12);
+  --button-text-label: #ffb36b;
+}
+
+.theme-light,
+.theme-dark {
+  button mat-icon,
+  a.nav-item mat-icon,
+  a.contact-link mat-icon,
+  a.download-btn mat-icon,
+  a.open-btn mat-icon,
+  a.login-btn mat-icon {
+    color: var(--accent);
+  }
+}
+
 // ================================
 // AG-GRID — globalne style (poza enkapsulacją Angular)
 // ================================
@@ -121,4 +265,3 @@ body {
     background-color: #fffde7 !important;
   }
 }
-

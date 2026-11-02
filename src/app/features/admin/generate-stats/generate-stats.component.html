@@ -42,7 +42,6 @@
             [disabled]="!selectedFile() || loading()"
             (click)="generateStats()"
           >
-            <mat-icon>analytics</mat-icon>
             {{ loading() ? 'Generowanie...' : 'Generuj statystyki' }}
           </button>
         </div>

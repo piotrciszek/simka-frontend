@@ -11,9 +11,13 @@
   </div>
 
   <div class="navbar-actions">
-    <!-- Przełącznik motywu -->
-    <button mat-icon-button [matMenuTriggerFor]="themeMenu" title="Zmień motyw">
-      <mat-icon>palette</mat-icon>
+    <button
+      mat-button
+      class="theme-trigger"
+      [matMenuTriggerFor]="themeMenu"
+      [attr.aria-label]="'Zmień motyw. Aktualny: ' + currentThemeLabel"
+    >
+      <mat-icon>{{ currentThemeIcon }}</mat-icon>
     </button>
     <mat-menu #themeMenu="matMenu">
       @for (theme of themes; track theme.value) {
@@ -24,19 +28,14 @@
       }
     </mat-menu>
 
-    <!-- User info -->
-    <!-- <div class="user-info">
-      <mat-icon>person</mat-icon>
-      <span>{{ authService.getCurrentUser()?.username }}</span> -->
-    <!-- <span class="role-badge">{{ authService.getCurrentUser()?.role }}</span> -->
-    <!-- </div> -->
-
-    <button mat-button [matMenuTriggerFor]="userMenu" class="user-info">
-      <mat-icon>person</mat-icon>
+    <button
+      mat-button
+      [matMenuTriggerFor]="userMenu"
+      class="user-info"
+      aria-label="Menu użytkownika"
+    >
       <span>{{ authService.getCurrentUser()?.username }}</span>
-      <!-- <span class="role-badge role-{{ authService.getCurrentUser()?.role }}">
-        {{ authService.getCurrentUser()?.role }}
-      </span> -->
+      <mat-icon class="menu-indicator">expand_more</mat-icon>
     </button>
 
     <mat-menu #userMenu="matMenu">
