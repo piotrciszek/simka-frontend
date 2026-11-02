@@ -75,7 +75,7 @@
                 [value]="gamePlan().pace"
                 (selectionChange)="updateGamePlan('pace', $event.value)"
               >
-                @for (opt of paceOptions; track opt) {
+                @for (opt of paceOptions; track $index) {
                   <mat-option [value]="opt">{{ opt }}</mat-option>
                 }
               </mat-select>
@@ -87,7 +87,7 @@
                 [value]="gamePlan().trapFrequency"
                 (selectionChange)="updateGamePlan('trapFrequency', $event.value)"
               >
-                @for (opt of frequencyOptions; track opt) {
+                @for (opt of frequencyOptions; track $index) {
                   <mat-option [value]="opt">{{ opt }}</mat-option>
                 }
               </mat-select>
@@ -99,7 +99,7 @@
                 [value]="gamePlan().pressFrequency"
                 (selectionChange)="updateGamePlan('pressFrequency', $event.value)"
               >
-                @for (opt of frequencyOptions; track opt) {
+                @for (opt of frequencyOptions; track $index) {
                   <mat-option [value]="opt">{{ opt }}</mat-option>
                 }
               </mat-select>
@@ -111,7 +111,7 @@
                 [value]="gamePlan().offenseFocus"
                 (selectionChange)="updateGamePlan('offenseFocus', $event.value)"
               >
-                @for (opt of offenseOptions; track opt) {
+                @for (opt of offenseOptions; track $index) {
                   <mat-option [value]="opt">{{ opt }}</mat-option>
                 }
               </mat-select>
@@ -136,24 +136,29 @@
                   [compareWith]="comparePlayer"
                 >
                   <mat-option [value]="null">-- Key #{{ i + 1 }} --</mat-option>
-                  @for (p of sortedPlayers(); track p.id) {
-                    <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                  @for (p of getPlayersForKeyPlayers(); track p.id) {
+                    <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }} ({{ p.position }})</mat-option>
                   }
                 </mat-select>
-                @if (
-                  getControl(keyPlayersArray, i).touched &&
-                  getControl(keyPlayersArray, i).hasError('required')
-                ) {
-                  <mat-error>Wybierz zawodnika</mat-error>
-                }
-                @if (
-                  getControl(keyPlayersArray, i).touched && keyPlayersArray.hasError('duplicates')
-                ) {
-                  <mat-error>Gracz już wybrany</mat-error>
-                }
+                <!-- Błędy poszczególnych pól usunięte - tylko podświetlanie czerwone -->
               </mat-form-field>
             }
           </div>
+
+          <!-- Komunikat błędu dla całej sekcji Key Players -->
+          @if (!isFormArrayFullyValid(keyPlayersArray)) {
+            <div class="form-section-errors">
+              <div class="error-summary">
+                <mat-icon>error</mat-icon>
+                <span>Sprawdź zaznaczone pola</span>
+              </div>
+              <ul class="error-list">
+                @for (error of getFormArrayErrors(keyPlayersArray); track $index) {
+                  <li class="error-message">{{ error }}</li>
+                }
+              </ul>
+            </div>
+          }
         </mat-card-content>
       </mat-card>
 
@@ -175,23 +180,32 @@
                 >
                   <mat-option [value]="null">-- IL {{ i + 1 }} --</mat-option>
                   @for (p of sortedPlayers(); track p.id) {
-                    <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }}</mat-option>
+                    <mat-option [value]="p">{{ p.firstName }} {{ p.lastName }} ({{ p.position }})</mat-option>
                   }
                 </mat-select>
-                @if (
-                  getControl(injuredListArray, i).touched &&
-                  getControl(injuredListArray, i).hasError('required')
-                ) {
-                  <mat-error>Wybierz zawodnika</mat-error>
-                }
-                @if (
-                  getControl(injuredListArray, i).touched && injuredListArray.hasError('duplicates')
-                ) {
-                  <mat-error>Gracz już wybrany</mat-error>
-                }
+                <!-- Błędy poszczególnych pól usunięte - tylko podświetlanie czerwone -->
               </mat-form-field>
             }
           </div>
+
+          <!-- Komunikat błędu dla całej sekcji IL -->
+          @if (
+            !ilDisabled() &&
+            injuredListArray.touched &&
+            !isFormArrayFullyValid(injuredListArray)
+          ) {
+            <div class="form-section-errors">
+              <div class="error-summary">
+                <mat-icon>error</mat-icon>
+                <span>Sprawdź zaznaczone pola</span>
+              </div>
+              <ul class="error-list">
+                @for (error of getFormArrayErrors(injuredListArray); track $index) {
+                  <li class="error-message">{{ error }}</li>
+                }
+              </ul>
+            </div>
+          }
         </mat-card-content>
       </mat-card>
 
@@ -203,7 +217,7 @@
         <mat-card-content>
           <div class="depth-chart">
             <div class="depth-grid">
-              @for (pos of positions; track pos) {
+              @for (pos of positions; track $index) {
                 <div class="depth-position">
                   <div class="position-label">{{ pos }}</div>
                   @for (i of [0, 1, 2]; track i) {
@@ -221,19 +235,7 @@
                           </mat-option>
                         }
                       </mat-select>
-                      @if (
-                        getControl(depthChartArray(pos), i).touched &&
-                        getControl(depthChartArray(pos), i).hasError('required')
-                      ) {
-                        <mat-error>Wybierz zawodnika</mat-error>
-                      }
-                      @if (
-                        i === 0 &&
-                        getControl(depthChartArray(pos), i).touched &&
-                        form.get('depthChart')!.hasError('starterDuplicates')
-                      ) {
-                        <mat-error>Starter już wybrany</mat-error>
-                      }
+                      <!-- Błędy poszczególnych pól usunięte - tylko podświetlanie czerwone -->
                     </mat-form-field>
                   }
                 </div>
@@ -241,7 +243,7 @@
             </div>
 
             <div class="depth-grid-mobile">
-              @for (pos of positionsMobile; track pos) {
+              @for (pos of positionsMobile; track $index) {
                 <div class="depth-row-mobile">
                   <div class="position-label-mobile">{{ pos }}</div>
                   <div class="depth-fields-mobile">
@@ -260,6 +262,7 @@
                             </mat-option>
                           }
                         </mat-select>
+                        <!-- Błędy poszczególnych pól usunięte - tylko podświetlanie czerwone -->
                       </mat-form-field>
                     }
                   </div>
@@ -267,22 +270,58 @@
               }
             </div>
           </div>
+
+          <!-- Komunikaty błędów dla całej sekcji Depth Chart -->
+          @if (form.get('depthChart')?.errors || !positions.every(pos => isFormArrayFullyValid(depthChartArray(pos)))) {
+            <div class="form-section-errors">
+              <div class="error-summary">
+                <mat-icon>error</mat-icon>
+                <span>Sprawdź zaznaczone pola</span>
+              </div>
+
+              <!-- Błędy cross-position (starter duplicates) -->
+              <ul class="error-list">
+                @if (form.get('depthChart')?.errors) {
+                  <li class="error-message">
+                    {{ getErrorMessage(form.get('depthChart')!) }}
+                  </li>
+                }
+
+                <!-- Błędy per-position -->
+                @for (pos of positions; track $index) {
+                  @if (!isFormArrayFullyValid(depthChartArray(pos))) {
+                    @for (error of getFormArrayErrors(depthChartArray(pos)); track $index) {
+                      <li class="error-message">
+                        <strong>{{ pos }}:</strong>&nbsp;{{ error }}
+                      </li>
+                    }
+                  }
+                }
+              </ul>
+            </div>
+          }
         </mat-card-content>
       </mat-card>
+
+      <!-- BŁĘDY WALIDACJI -->
+      @if (hasFormErrors()) {
+        <div class="alert alert-error">
+          <mat-icon>error</mat-icon>
+          Popraw błędy w formularzu przed wysłaniem taktyki.
+        </div>
+      }
 
       <!-- PRZYCISKI -->
       <div class="actions">
         <button mat-stroked-button (click)="clearForm()">
-          <mat-icon>clear</mat-icon>
           Wyczyść
         </button>
         <button
           mat-raised-button
           color="primary"
           (click)="submitTactics()"
-          [disabled]="submitting()"
+          [disabled]="submitting() || form.invalid"
         >
-          <mat-icon>send</mat-icon>
           {{ submitting() ? 'Wysyłanie...' : 'Wyślij do zatwierdzenia' }}
         </button>
       </div>
