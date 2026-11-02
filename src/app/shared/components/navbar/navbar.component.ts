@@ -49,6 +49,19 @@ export class NavbarComponent {
     { value: 'retro', label: 'Retro', icon: 'sports_basketball' },
   ];
 
+  get currentThemeIcon(): string {
+    return (
+      this.themes.find(theme => theme.value === this.themeService.currentTheme())?.icon ??
+      'contrast'
+    );
+  }
+
+  get currentThemeLabel(): string {
+    return (
+      this.themes.find(theme => theme.value === this.themeService.currentTheme())?.label ?? 'motyw'
+    );
+  }
+
   setTheme(theme: Theme): void {
     this.themeService.setTheme(theme);
   }

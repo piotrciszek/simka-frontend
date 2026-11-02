@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  color: var(--text-primary);
+  font: inherit;
+}
+
 .tactics-log-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -6,10 +12,35 @@
 .page-title {
   color: var(--text-primary);
   margin-bottom: 1.5rem;
+  font: inherit;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tactics-log-container mat-card {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .tactics-table {
   width: 100%;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font: inherit;
+
+  th,
+  td {
+    color: inherit;
+    font: inherit;
+    border-bottom-color: var(--border);
+  }
+
+  th {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
 }
 
 .team-cell {

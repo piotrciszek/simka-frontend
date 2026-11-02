@@ -42,7 +42,6 @@
             [disabled]="!selectedFile() || loading()"
             (click)="loadFile()"
           >
-            <mat-icon>refresh</mat-icon>
             {{ loading() ? 'Ładowanie...' : 'Załaduj i przebuduj bazę' }}
           </button>
         </div>
