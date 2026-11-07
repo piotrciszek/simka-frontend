@@ -30,7 +30,7 @@
       }
     </nav>
     <button mat-icon-button [matMenuTriggerFor]="themeMenu" title="Zmień motyw">
-      <mat-icon>palette</mat-icon>
+      <mat-icon>{{ currentThemeIcon }}</mat-icon>
     </button>
     <mat-menu #themeMenu="matMenu">
       @for (theme of themes; track theme.value) {

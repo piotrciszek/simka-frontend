@@ -25,6 +25,8 @@ export const NAV_MENUS: NavMenu[] = [
     key: 'season',
     links: [
       { label: 'Standings', route: 'standings' },
+      // Tymczasowo — wersja z API do porównania z iframe
+      { label: 'Standings v2', route: 'standings-v2' },
       { label: 'Schedule', route: 'schedule' },
       { label: 'League Leaders', route: 'league-leaders' },
       { label: 'Weekly / Monthly Awards', route: 'wm-awards' },

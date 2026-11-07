@@ -32,6 +32,13 @@ export class PublicHeaderComponent {
     { value: 'retro', label: 'Retro', icon: 'sports_basketball' },
   ];
 
+  get currentThemeIcon(): string {
+    return (
+      this.themes.find(theme => theme.value === this.themeService.currentTheme())?.icon ??
+      'contrast'
+    );
+  }
+
   isOpen(key: string): boolean {
     return this.openMenu() === key;
   }

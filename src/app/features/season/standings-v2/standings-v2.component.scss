@@ -1,0 +1,257 @@
+.standings-container {
+  padding: 1rem;
+
+  // Na telefonie każdy piksel szerokości się liczy
+  @media (max-width: 600px) {
+    padding: 0.5rem;
+  }
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+}
+
+.page-title {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.season-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.season-field {
+  width: 8rem;
+}
+
+.hint-error {
+  color: var(--error);
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+
+  &.alert-error {
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--error);
+    border: 1px solid var(--error);
+  }
+}
+
+// East | West obok siebie, na węższych ekranach jedna pod drugą
+.conferences {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// min-width: 0 — element grida domyślnie nie zwęża się poniżej szerokości treści,
+// bez tego szeroka tabela rozpychałaby kolumnę zamiast włączać przewijanie
+.conference {
+  min-width: 0;
+}
+
+// Przewijanie na poziomie pojedynczej tabeli (nie całej konferencji),
+// więc pasek pojawia się pod każdą dywizją, która się nie mieści
+.table-scroll {
+  overflow-x: auto;
+}
+
+.conference-title {
+  color: var(--accent);
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem;
+}
+
+.table-title {
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin: 1rem 0 0.25rem;
+}
+
+// table-layout: fixed — szerokości kolumn nie zależą od treści konkretnej tabeli,
+// więc liczby zaczynają się w tym samym miejscu we wszystkich dywizjach.
+// Kolumny liczbowe mają stałe, wąskie szerokości; Team nie ma width, więc przy table-layout: fixed
+// dostaje całą resztę miejsca. min-width = ~10rem na Team + suma liczbowych (24.5rem);
+// poniżej tego włącza się pasek przewijania.
+.standings-table {
+  width: 100%;
+  min-width: 33rem;
+  table-layout: fixed;
+  background: var(--bg-card);
+
+  .mat-column-wins,
+  .mat-column-losses {
+    width: 2.3rem;
+  }
+
+  .mat-column-winPct,
+  .mat-column-last10 {
+    width: 3rem;
+  }
+
+  .mat-column-home,
+  .mat-column-road {
+    width: 3.2rem;
+  }
+
+  .mat-column-gb {
+    width: 2.7rem;
+  }
+
+  .mat-column-streak {
+    width: 2.9rem;
+  }
+
+  .mat-column-team {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 10.85rem;
+    // Kolumna sticky musi mieć własne tło — inaczej przewijane liczby prześwitują pod nazwą
+    background: var(--bg-card);
+  }
+
+  // Na desktopie pełna nazwa, skrót ukryty (odwrotnie w media query niżej)
+  .team-abbr {
+    display: none;
+  }
+
+  th {
+    color: var(--accent);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    color: var(--text-primary);
+    font-size: 0.8rem;
+  }
+
+  th,
+  td {
+    padding: 0 0.5rem;
+    white-space: nowrap;
+  }
+
+  // Krótkie wartości (W, L, L10, Home, Road, Strk) — do środka, pod nagłówkiem
+  .num {
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Win% i GB — do prawej, żeby przecinki dziesiętne stały w jednej linii.
+  // mat-table sam dodaje klasę mat-column-<nazwa> do th i td danej kolumny;
+  // ta sama specyficzność co .num, więc wygrywa kolejność — musi być niżej.
+  .mat-column-winPct,
+  .mat-column-gb {
+    text-align: right;
+  }
+
+  // "*" przed nazwą drużyny z miejscem premiowanym awansem do playoffów
+  .seed-mark {
+    color: var(--accent);
+    margin-right: 0.15rem;
+  }
+
+  // Linia odcięcia między ostatnim miejscem z awansem a pierwszym bez
+  tr.cutoff td {
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .streak-win {
+    color: var(--success);
+  }
+
+  .streak-loss {
+    color: var(--error);
+  }
+
+  // Telefon: wszystkie kolumny zostają, ale każda ma stałą, wąską szerokość dopasowaną
+  // do najdłuższej wartości (np. "25-16", "12,5", "W12"). Suma ok. 23rem — na najwęższych
+  // ekranach może pojawić się lekki scroll, wtedy Team zostaje przyklejony (sticky).
+  // Media query musi być na końcu bloku — nadpisuje szerokości i font-size zdefiniowane wyżej.
+  @media (max-width: 600px) {
+    // Bez sztywnego min-width z desktopu — szerokość tabeli = suma kolumn (table-layout: fixed)
+    min-width: 0;
+
+    // Tokeny Angular Material — domyślnie 56px nagłówek / 52px wiersz
+    --mat-table-header-container-height: 32px;
+    --mat-table-row-item-container-height: 30px;
+
+    th,
+    td {
+      padding: 0 0.25rem;
+    }
+
+    th {
+      font-size: 0.65rem;
+      letter-spacing: 0;
+    }
+
+    td {
+      font-size: 0.75rem;
+    }
+
+    .team-full {
+      display: none;
+    }
+
+    .team-abbr {
+      display: inline;
+    }
+
+    .mat-column-team {
+      width: 3.5rem;
+      // Delikatna kreska oddzielająca przyklejoną kolumnę od przewijanych liczb
+      border-right: 1px solid var(--border);
+    }
+
+    .mat-column-wins,
+    .mat-column-losses {
+      width: 2rem;
+    }
+
+    .mat-column-winPct {
+      width: 2.75rem;
+    }
+
+    .mat-column-last10,
+    .mat-column-home,
+    .mat-column-road {
+      width: 3rem;
+    }
+
+    .mat-column-gb {
+      width: 2.5rem;
+    }
+
+    .mat-column-streak {
+      width: 2.25rem;
+    }
+  }
+}

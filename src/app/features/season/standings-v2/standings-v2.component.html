@@ -1,0 +1,119 @@
+<div class="standings-container">
+  <div class="toolbar">
+    <div class="title-block">
+      <h1 class="page-title">Standings</h1>
+      @if (header(); as h) {
+        <span class="subtitle">{{ h }}</span>
+      }
+    </div>
+
+    <form class="season-form" (ngSubmit)="loadSeason()">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="season-field">
+        <mat-label>Sezon</mat-label>
+        <input matInput type="number" name="season" [(ngModel)]="seasonInput" />
+        @if (invalidInput()) {
+          <mat-hint class="hint-error">Podaj poprawny rok sezonu</mat-hint>
+        }
+      </mat-form-field>
+      <button mat-flat-button type="submit" [disabled]="standings.isLoading()">Pokaż</button>
+    </form>
+
+    <mat-button-toggle-group
+      [value]="view()"
+      (change)="setView($event.value)"
+      aria-label="Układ tabeli"
+    >
+      <mat-button-toggle value="division">Division</mat-button-toggle>
+      <mat-button-toggle value="playoffs">Playoffs</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  @if (standings.isLoading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (errorMessage(); as msg) {
+    <div class="alert alert-error">{{ msg }}</div>
+  }
+
+  <div class="conferences">
+    @for (conf of conferences(); track conf.name) {
+      <section class="conference">
+        <h2 class="conference-title">{{ conf.name }}</h2>
+
+        @for (table of conf.tables; track $index) {
+          <!-- Podtytuł tylko w widoku Division; Playoffs ma jedną tabelę na konferencję -->
+          @if (table.title) {
+            <h3 class="table-title">{{ table.title }}</h3>
+          }
+          <!-- Osobny kontener przewijania dla każdej tabeli — każda dywizja ma własny pasek -->
+          <div class="table-scroll">
+            <table mat-table [dataSource]="table.rows" class="standings-table">
+              <!-- sticky: mat-table przykleja kolumnę do lewej krawędzi przy przewijaniu w poziomie -->
+              <ng-container matColumnDef="team" sticky>
+                <th mat-header-cell *matHeaderCellDef>Team</th>
+                <!-- title — pełna nazwa w tooltipie, gdy widać tylko skrót -->
+                <td mat-cell *matCellDef="let r" [attr.title]="r.team">
+                  @if (r.playoffSeed) {
+                    <span class="seed-mark">*</span>
+                  }
+                  <!-- Obie wersje w DOM, CSS przełącza widoczność zależnie od szerokości ekranu -->
+                  <span class="team-full">{{ r.team }}</span>
+                  <span class="team-abbr">{{ r.abbr }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="wins">
+                <th mat-header-cell *matHeaderCellDef class="num">W</th>
+                <td mat-cell *matCellDef="let r" class="num">{{ r.wins }}</td>
+              </ng-container>
+              <ng-container matColumnDef="losses">
+                <th mat-header-cell *matHeaderCellDef class="num">L</th>
+                <td mat-cell *matCellDef="let r" class="num">{{ r.losses }}</td>
+              </ng-container>
+              <ng-container matColumnDef="winPct">
+                <th mat-header-cell *matHeaderCellDef class="num">Win%</th>
+                <td mat-cell *matCellDef="let r" class="num">{{ r.winPct }}</td>
+              </ng-container>
+              <ng-container matColumnDef="last10">
+                <th mat-header-cell *matHeaderCellDef class="num">L 10</th>
+                <td mat-cell *matCellDef="let r" class="num">{{ r.last10 }}</td>
+              </ng-container>
+              <ng-container matColumnDef="home">
+                <th mat-header-cell *matHeaderCellDef class="num">Home</th>
+                <td mat-cell *matCellDef="let r" class="num">{{ r.home }}</td>
+              </ng-container>
+              <ng-container matColumnDef="road">
+                <th mat-header-cell *matHeaderCellDef class="num">Road</th>
+                <td mat-cell *matCellDef="let r" class="num">{{ r.road }}</td>
+              </ng-container>
+              <ng-container matColumnDef="gb">
+                <th mat-header-cell *matHeaderCellDef class="num">GB</th>
+                <td mat-cell *matCellDef="let r" class="num">{{ r.gb }}</td>
+              </ng-container>
+              <ng-container matColumnDef="streak">
+                <th mat-header-cell *matHeaderCellDef class="num">Strk</th>
+                <td
+                  mat-cell
+                  *matCellDef="let r"
+                  class="num"
+                  [class.streak-win]="r.streakType === 'win'"
+                  [class.streak-loss]="r.streakType === 'loss'"
+                >
+                  {{ r.streak }}
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- cutoff: linia odcięcia pod ostatnim miejscem z awansem (tylko widok Playoffs) -->
+              <tr
+                mat-row
+                *matRowDef="let r; columns: displayedColumns"
+                [class.cutoff]="r.cutoffAfter"
+              ></tr>
+            </table>
+          </div>
+        }
+      </section>
+    }
+  </div>
+</div>
