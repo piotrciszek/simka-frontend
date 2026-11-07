@@ -47,6 +47,14 @@ export const routes: Routes = [
           import('./features/season/standings/standings.component').then(m => m.StandingsComponent),
       },
       {
+        // Tymczasowo obok iframe — do porównania przed podmianą
+        path: 'standings-v2',
+        loadComponent: () =>
+          import('./features/season/standings-v2/standings-v2.component').then(
+            m => m.StandingsV2Component,
+          ),
+      },
+      {
         path: 'schedule',
         loadComponent: () =>
           import('./features/season/schedule/schedule.component').then(m => m.ScheduleComponent),
@@ -269,6 +277,14 @@ export const routes: Routes = [
         path: 'standings',
         loadComponent: () =>
           import('./features/season/standings/standings.component').then(m => m.StandingsComponent),
+      },
+      {
+        // Tymczasowo obok iframe — do porównania przed podmianą
+        path: 'standings-v2',
+        loadComponent: () =>
+          import('./features/season/standings-v2/standings-v2.component').then(
+            m => m.StandingsV2Component,
+          ),
       },
       {
         path: 'schedule',
